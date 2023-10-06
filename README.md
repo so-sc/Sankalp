@@ -6,8 +6,8 @@ Sankalp is a user-friendly registration form application. This intuitive and eff
 ## Workflow
 
 <div align="center" style="display: flex;">
-  <img width="50%" src="./assets/user.png" alt="User model" />
-  <img width="50%" src="./assets/admin.png" alt="Admin model" />
+  <img width="40%" src="./assets/user.png" alt="User model" />
+  <img width="40%" src="./assets/admin.png" alt="Admin model" />
 </div>
 
 ## Contributors
@@ -22,7 +22,6 @@ Sankalp is a user-friendly registration form application. This intuitive and eff
   <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="80" viewBox="0 0 132 64">
     <a href="https://github.com/HeimanPictures" >
       <svg x="0" y="0" width="64" height="64">
-        <title>Akkil M G</title>
         <circle cx="32" cy="32" r="32" stroke="#c0c0c0" stroke-width="1" fill="url(#fill0)"/>
         <defs>
           <pattern id="fill0" x="0" y="0" width="64" height="64" patternUnits="userSpaceOnUse">
@@ -33,7 +32,6 @@ Sankalp is a user-friendly registration form application. This intuitive and eff
     </a>
     <a href="https://github.com/Deveesh-Shetty" >
       <svg x="68" y="0" width="64" height="64">
-        <title>Deveesh Shetty</title>
         <circle cx="32" cy="32" r="32" stroke="#c0c0c0" stroke-width="1" fill="url(#fill1)"/>
         <defs>
           <pattern id="fill1" x="0" y="0" width="64" height="64" patternUnits="userSpaceOnUse">
