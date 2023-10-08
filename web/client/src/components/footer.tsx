@@ -44,7 +44,7 @@ export default function Footer() {
               </Link>
             </div>
           </div>
-          <div className="">
+          <div>
             <div className="flex flex-col">
               <Link href={youtubeLink} target="_blank">
                 YouTube
@@ -62,7 +62,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="flex-shrink-0">
-          <p className="pt-2">
+          <p>
             Sahyadri College of Engineering and Management, Adyar, Mangalore -
             575007 IN
           </p>
