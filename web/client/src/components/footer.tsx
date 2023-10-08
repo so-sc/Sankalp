@@ -14,7 +14,7 @@ const communityGuidelines = "https://github.com/so-sc/code-of-conduct"
 export default function Footer() {
   return (
     <footer className="relative z-10 tracking-wider bg-foreground/10 pt-12">
-      <div className="container mx-auto md:items-center lg:items-start grid gap-8 grid-cols-1  lg:grid-cols-3 mb-8">
+      <div className="container mx-auto md:items-center lg:items-start grid gap-8 grid-cols-1 lg:grid-cols-3 mb-8">
         <div>
           <div className="relative h-8 aspect-video">
             <Image src="/sosc.png" alt="SOSC Logo" fill sizes="100%" />
@@ -26,7 +26,7 @@ export default function Footer() {
         </div>
         <div className="grid grid-cols-2">
           <div className="">
-            <div className="flex text-white flex-col">
+            <div className="flex flex-col">
               <Link href={githubLink} target="_blank">
                 GitHub
               </Link>
@@ -45,7 +45,7 @@ export default function Footer() {
             </div>
           </div>
           <div className="">
-            <div className="flex text-white flex-col">
+            <div className="flex flex-col">
               <Link href={youtubeLink} target="_blank">
                 YouTube
               </Link>
@@ -61,7 +61,7 @@ export default function Footer() {
             </div>
           </div>
         </div>
-        <div className="text-white flex-shrink-0">
+        <div className="flex-shrink-0">
           <p className="pt-2">
             Sahyadri College of Engineering and Management, Adyar, Mangalore -
             575007 IN
@@ -72,7 +72,7 @@ export default function Footer() {
           <p className="pt-2">+91 97412 68512</p>
         </div>
       </div>
-      <div className="text-white">
+      <div>
         <p className="py-5 px-5 text-center bg-background/50">
           SOSC © {new Date().getFullYear()}
         </p>
