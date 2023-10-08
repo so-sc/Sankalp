@@ -1,0 +1,38 @@
+
+/**/
+GET http://localhost:7000/
+
+/* Registration in Event
+{
+    stName: "Akkil M G",
+    college: "Sahyadri College of Engineering & Management",
+    branch: "ISE",
+    year: 1,
+    eventOpt: ()
+}
+*/
+POST http://localhost:7000/registration/0
+
+/* Registration in Hackathon
+{
+    TmName: 'NightHawks', // Team name
+    college: 'Sahyadri College of Engineering & Management', // College
+    theme: 2, // Theme opted from modal
+    themeName: 'Stock market prediction', // Theme name he is has decided
+    tlName: 'Deveesh Shetty', // Team Leader Name
+    tlEmail: '', // Team Leader Email
+    tlYear: 3, 
+    memNo: 3, // include leader count also
+    member: ({
+        name: 'Akkil M G',
+        email: 'test1@gmail.com',
+        year: 3,
+    }, {
+        name: 'Tejas GK',
+        email: 'test2@gmail.com',
+        year: 3,
+    }),
+}
+*/
+POST http://localhost:7000/registration/1 
+
