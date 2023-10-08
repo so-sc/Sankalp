@@ -17,7 +17,7 @@ export default function Footer() {
       <div className="container mx-auto md:items-center lg:items-start grid gap-8 grid-cols-1  lg:grid-cols-3 mb-8">
         <div>
           <div className="relative h-8 aspect-video">
-            <Image src="/sosc.png" alt="SOSC Logo" fill />
+            <Image src="/sosc.png" alt="SOSC Logo" fill sizes="100%" />
           </div>
           <p className="font-bold mt-3">
             SOSC <br />

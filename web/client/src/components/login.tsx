@@ -7,6 +7,7 @@ import { H2 } from "@/components/ui/typography"
 import { zodResolver } from "@hookform/resolvers/zod"
 import Link from "next/link"
 import { useForm } from "react-hook-form"
+import { TbLoader2 } from "react-icons/tb"
 import { z } from "zod"
 
 const formSchema = z.object({
@@ -66,8 +67,13 @@ export default function Login() {
               </FormItem>
             )}
           />
-          <Button type="submit" className="mt-4">
-            Log in
+          <Button
+            type="submit"
+            className="mt-4 flex items-center gap-2"
+            disabled={form.formState.isLoading}
+          >
+            Login
+            {form.formState.isLoading && <TbLoader2 className="animate-spin" />}
           </Button>
         </form>
       </Form>

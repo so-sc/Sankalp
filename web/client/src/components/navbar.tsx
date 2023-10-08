@@ -41,6 +41,7 @@ export default function Navbar() {
               src="https://github.com/heimanpictures.png"
               alt="User Profile"
               fill
+              sizes="100%"
               className="rounded-full cursor-pointer"
             />
           </div>
