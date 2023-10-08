@@ -20,7 +20,7 @@ export default function Navbar() {
         className={`${
           toggle
             ? "translate-y-0 bg-foreground/10"
-            : "-translate-y-[200%] md:translate-y-0"
+            : "absolute md:relative -translate-y-[200%] md:translate-y-0"
         } py-4 md:py-0 md:grid md:grid-cols-6 px-4 md:border-t-8 border-t-foreground/10 transition-all duration-500`}
       >
         <div className="flex items-center h-full md:place-self-start">
