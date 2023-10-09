@@ -10,13 +10,11 @@ interface HomePageProps {
 }
 
 export default function HomePage({ searchParams }: HomePageProps) {
-  const state = (searchParams.state as FormState) || "login"
+  const state = (searchParams.state as FormState) || "register"
   console.log(state)
   return (
-    <main className="min-h-screen container mx-auto p-8 lg:p-20 xl:p-24">
-      <H1 className="lg:text-9xl text-center mb-4 md:mb-8 lg:mb-12 xl:mb-16 ">
-        DevHost 2023
-      </H1>
+    <main className="container mx-auto px-8 lg:px-20 xl:px-24 py-12">
+      <H1 className="lg:text-9xl text-center mb-8">DevHost 2023</H1>
       {state === "login" ? (
         <Login />
       ) : state === "register" ? (

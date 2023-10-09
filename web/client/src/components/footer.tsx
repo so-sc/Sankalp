@@ -13,16 +13,16 @@ const communityGuidelines = "https://github.com/so-sc/code-of-conduct"
 
 export default function Footer() {
   return (
-    <footer className="relative z-10 tracking-wider bg-foreground/10 pt-12">
-      <div className="container mx-auto md:items-center lg:items-start grid gap-8 grid-cols-1 lg:grid-cols-3 mb-8">
-        <div>
-          <div className="relative h-8 aspect-video">
+    <footer className="relative md:mt-8 bottom-0 z-10 tracking-wider bg-foreground/10 pt-12">
+      <div className="container mx-auto md:items-center lg:items-start grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mb-8">
+        <div className="col-span-1 md:col-span-2 lg:col-span-1 flex lg:block items-center justify-center gap-2">
+          <div className="relative h-8 aspect-video mt-2 lg:mt-0">
             <Image src="/sosc.png" alt="SOSC Logo" fill sizes="100%" />
           </div>
-          <p className="font-bold mt-3">
-            SOSC <br />
-            Sahyadri Open-Source Community
-          </p>
+          <div className="font-bold mt-3">
+            <p>SOSC</p>
+            <p>Sahyadri Open-Source Community</p>
+          </div>
         </div>
         <div className="grid grid-cols-2">
           <div className="">
@@ -69,11 +69,11 @@ export default function Footer() {
           <Link target="_blank" href="mailto:sosc@sahyadri.edu.in">
             sosc@sahyadri.edu.in
           </Link>
-          <p className="pt-2">+91 97412 68512</p>
+          <p className="pt-2">+91 87624 58575</p>
         </div>
       </div>
       <div>
-        <p className="py-5 px-5 text-center bg-background/50">
+        <p className="py-5 px-5 text-center bg-background">
           SOSC © {new Date().getFullYear()}
         </p>
       </div>

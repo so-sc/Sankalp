@@ -77,7 +77,7 @@ export default function Register() {
 
   return (
     <div className="w-3/4 mx-auto">
-      <H2 className="text-center mb-4">Register to DevHost</H2>
+      {/* <H2 className="text-center mb-4">Register to DevHost</H2> */}
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onRegister)}

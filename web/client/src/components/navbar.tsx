@@ -12,7 +12,7 @@ export default function Navbar() {
   return (
     <>
       <div
-        className="px-4 py-4 md:hidden cursor-pointer bg-foreground/10"
+        className="px-4 py-4 md:hidden cursor-pointer"
         onClick={() => setToggle(!toggle)}
       >
         {toggle ? <TbX /> : <FaBars />}
