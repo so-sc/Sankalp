@@ -31,8 +31,15 @@ const TOTAL_TALKS = 6
 const TOTAL_ESPORTS = 2
 
 // Change this to change the event name of talks and esports
-const TALKS = ["Talk 1", "Talk 2", "Talk 3", "Talk 4", "Talk 5", "Talk 6"]
-const ESPORTS = ["eSports 1", "eSports 2"]
+const TALKS = [
+  "How to suck at writing Dates - Deveesh Shetty",
+  "How to be a God - Akkil MG",
+  "Intro to HTML (How to meet Ladies) - Tejas Nayak",
+  "How to do damage control - Varshaa Shetty",
+  "Asking sponsorships 101 - Pratheeksha",
+  "How to ethically get full CGPA - Sushruth Rao",
+]
+const ESPORTS = ["Ludo 1v1v1v1", "Candy Crush Saga"]
 
 const studentSchema = z.object({
   role: z.literal("student"),
@@ -224,13 +231,13 @@ export default function Register() {
               control={form.control}
               name="role.role"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Your Role</FormLabel>
+                <FormItem className="flex items-center gap-2 h-full mt-2">
+                  <FormLabel>Your Role:</FormLabel>
                   <FormControl>
                     <RadioGroup
                       onValueChange={field.onChange}
                       defaultValue={field.value}
-                      className="flex items-center gap-4 mt-1"
+                      className="flex items-center gap-8"
                     >
                       <FormItem className="flex items-center space-x-3 space-y-0">
                         <FormControl>
@@ -257,7 +264,6 @@ export default function Register() {
             {/* Conditionally render form based on whether the user is student or employee */}
             {userRole === "student" ? (
               <div className="mt-2 flex flex-col gap-2">
-                <p className="text-center">Registering as a Student</p>
                 <FormField
                   control={form.control}
                   name="role.college"
@@ -346,7 +352,6 @@ export default function Register() {
               </div>
             ) : userRole === "employee" ? (
               <div className="mt-2 flex flex-col gap-2">
-                <p className="text-center">Registering as an Employee</p>
                 <FormField
                   control={form.control}
                   name="role.company"
@@ -404,8 +409,8 @@ export default function Register() {
           </div>
           {/* An attempt to make it multistepped failed... I will be back... For now this is working */}
           <div className="flex flex-col gap-2">
-            <p className="text-center mt-2 ">
-              Select the Events you want to register
+            <p className="text-center mt-2 text-xl">
+              Select the Talks you want to register
             </p>
             <FormField
               control={form.control}
@@ -415,21 +420,40 @@ export default function Register() {
                   {field.value.map((item: boolean, index: number) => (
                     <FormItem
                       key={index}
-                      className="flex items-center my-2 gap-4"
+                      className="flex flex-col my-2 gap-1 border-b-2 border-b-foreground/20 pb-2"
                     >
-                      <FormLabel>{TALKS[index] || "YTD"}</FormLabel>
+                      <FormLabel className="text-base">
+                        {TALKS[index] || "YTD"}
+                      </FormLabel>
                       <FormControl className="h-full">
-                        <Switch
-                          checked={item}
-                          // Update the value at given index and keep rest the same
-                          onCheckedChange={() =>
+                        <RadioGroup
+                          onValueChange={() =>
                             field.onChange([
                               ...field.value.slice(0, index),
                               !item,
                               ...field.value.slice(index + 1),
                             ])
                           }
-                        />
+                          defaultValue={`${item}`}
+                          className="flex items-center gap-8 mt-1"
+                        >
+                          <FormItem className="flex items-center space-x-3 space-y-0">
+                            <FormControl>
+                              <RadioGroupItem value="true" />
+                            </FormControl>
+                            <FormLabel className="font-normal">
+                              Attending
+                            </FormLabel>
+                          </FormItem>
+                          <FormItem className="flex items-center space-x-3 space-y-0">
+                            <FormControl>
+                              <RadioGroupItem value="false" />
+                            </FormControl>
+                            <FormLabel className="font-normal">
+                              Not attending
+                            </FormLabel>
+                          </FormItem>
+                        </RadioGroup>
                       </FormControl>
                       {form.formState.errors.event?.talks?.message && (
                         <p className="text-red-500">
@@ -441,6 +465,9 @@ export default function Register() {
                 </div>
               )}
             />
+            <p className="text-center mt-2 text-xl">
+              Select the eSports you want to register
+            </p>
             <FormField
               control={form.control}
               name="event.esports"
@@ -449,21 +476,40 @@ export default function Register() {
                   {field.value.map((item: boolean, index: number) => (
                     <FormItem
                       key={index}
-                      className="flex items-center my-2 gap-4"
+                      className="flex flex-col my-2 gap-1 border-b-2 border-b-foreground/20 pb-2"
                     >
-                      <FormLabel>{ESPORTS[index] || "YTD"}</FormLabel>
+                      <FormLabel className="text-base">
+                        {ESPORTS[index] || "YTD"}
+                      </FormLabel>
                       <FormControl className="h-full">
-                        <Switch
-                          checked={item}
-                          // Update the value at given index and keep rest the same
-                          onCheckedChange={() =>
+                        <RadioGroup
+                          onValueChange={() =>
                             field.onChange([
                               ...field.value.slice(0, index),
                               !item,
                               ...field.value.slice(index + 1),
                             ])
                           }
-                        />
+                          defaultValue={`${item}`}
+                          className="flex items-center gap-8 mt-1"
+                        >
+                          <FormItem className="flex items-center space-x-3 space-y-0">
+                            <FormControl>
+                              <RadioGroupItem value="true" />
+                            </FormControl>
+                            <FormLabel className="font-normal">
+                              Attending
+                            </FormLabel>
+                          </FormItem>
+                          <FormItem className="flex items-center space-x-3 space-y-0">
+                            <FormControl>
+                              <RadioGroupItem value="false" />
+                            </FormControl>
+                            <FormLabel className="font-normal">
+                              Not attending
+                            </FormLabel>
+                          </FormItem>
+                        </RadioGroup>
                       </FormControl>
                       {form.formState.errors.event?.esports?.message && (
                         <p className="text-red-500">
