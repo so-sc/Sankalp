@@ -39,37 +39,12 @@ const employeeSchema = z.object({
   designation: z.string().min(2),
 })
 
-const formSchema = z
-  .object({
-    name: z.string().min(3).max(48),
-    email: z.string().email(),
-    password: z.string().min(8).max(24),
-    passwordConfirmation: z.string().min(8).max(24),
-    role: z.union([studentSchema, employeeSchema]),
-  })
-  .refine((data) => data.password === data.passwordConfirmation, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"], // path of error
-  })
-
-try {
-  const form = {
-    name: "John Doe",
-    email: "john@gmail.com",
-    password: "password",
-    passwordConfirmation: "password",
-    role: {
-      role: "student",
-      college: "Sahyadri College of Engineering and Management",
-      course: "BE",
-      yearOfStudy: "1",
-      branch: "CSE",
-    },
-  }
-  console.log(formSchema.parse(form))
-} catch (error) {
-  console.log(error)
-}
+const formSchema = z.object({
+  name: z.string().min(3).max(48),
+  email: z.string().email(),
+  gender: z.enum(["male", "female", "non-binary", "other"]),
+  role: z.union([studentSchema, employeeSchema]),
+})
 
 export type Step = 1 | 2
 
@@ -84,8 +59,6 @@ export default function Register() {
     defaultValues: {
       name: "",
       email: "",
-      password: "",
-      passwordConfirmation: "",
       role: {
         role: "student",
         college: "",
@@ -149,39 +122,30 @@ export default function Register() {
               />
               <FormField
                 control={form.control}
-                name="password"
+                name="gender"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="Password"
-                        {...field}
-                      />
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Gender" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="male">Male</SelectItem>
+                          <SelectItem value="female">Female</SelectItem>
+                          <SelectItem value="non-binary">Non Binary</SelectItem>
+                          <SelectItem value="other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </FormControl>
-                    {form.formState.errors.password?.message && (
+                    {form.formState.errors.gender?.message && (
                       <p className="text-red-500">
-                        {form.formState.errors.password?.message}
-                      </p>
-                    )}
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="passwordConfirmation"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="Confirm password"
-                        {...field}
-                      />
-                    </FormControl>
-                    {form.formState.errors.passwordConfirmation?.message && (
-                      <p className="text-red-500">
-                        {form.formState.errors.passwordConfirmation?.message}
+                        {form.formState.errors.gender?.message}
                       </p>
                     )}
                   </FormItem>
