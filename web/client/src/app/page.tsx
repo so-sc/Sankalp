@@ -1,6 +1,5 @@
 import Login from "@/components/login"
 import Register from "@/components/register"
-import { H1 } from "@/components/ui/typography"
 import Link from "next/link"
 
 export type SearchParams = { [key: string]: string | string[] | undefined }
@@ -14,7 +13,6 @@ export default function HomePage({ searchParams }: HomePageProps) {
   console.log(state)
   return (
     <main className="container mx-auto px-8 lg:px-20 xl:px-24 py-12">
-      <H1 className="lg:text-9xl text-center mb-8">DevHost 2023</H1>
       {state === "login" ? (
         <Login />
       ) : state === "register" ? (

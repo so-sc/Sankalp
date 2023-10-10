@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { H2 } from "@/components/ui/typography"
+import { H1, H2 } from "@/components/ui/typography"
 import { zodResolver } from "@hookform/resolvers/zod"
 import Link from "next/link"
 import { useForm } from "react-hook-form"
@@ -29,6 +29,7 @@ export default function Login() {
 
   return (
     <div className="w-3/4 mx-auto">
+      <H1 className="lg:text-9xl text-center mb-8">DevHost 2023</H1>
       <H2 className="text-center mb-4">Login to Dashboard</H2>
       <Form {...form}>
         <form

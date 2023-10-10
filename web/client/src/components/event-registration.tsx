@@ -1,4 +1,4 @@
-import { Step } from "@/components/register"
+import { CommonRegistrationProps } from "@/components/register"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/form"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Dispatch, SetStateAction } from "react"
 import { useForm } from "react-hook-form"
 import { TbCaretLeftFilled, TbCaretRightFilled } from "react-icons/tb"
 import { z } from "zod"
@@ -20,7 +19,7 @@ const TOTAL_TALKS = 6
 const TOTAL_ESPORTS = 2
 
 // Change this to change the event name of talks and esports
-const TALKS = [
+export const TALKS = [
   "How to suck at writing Dates - Deveesh Shetty",
   "How to be a God - Akkil MG",
   "Intro to HTML (How to meet Ladies) - Tejas Nayak",
@@ -28,9 +27,9 @@ const TALKS = [
   "Asking sponsorships 101 - Pratheeksha",
   "How to ethically get full CGPA - Sushruth Rao",
 ]
-const ESPORTS = ["Ludo 1v1v1v1", "Candy Crush Saga"]
+export const ESPORTS = ["Ludo 1v1v1v1", "Candy Crush Saga"]
 
-const eventSchema = z.object({
+export const eventSchema = z.object({
   talks: z
     .boolean()
     .array()
@@ -43,15 +42,10 @@ const eventSchema = z.object({
     .default(Array(TOTAL_ESPORTS).fill(false)),
 })
 
-interface EventRegistrationProps {
-  setRegistrationData: Dispatch<SetStateAction<{}>>
-  setStep: Dispatch<SetStateAction<Step>>
-}
-
 export default function EventRegistration({
   setRegistrationData,
   setStep,
-}: EventRegistrationProps) {
+}: CommonRegistrationProps) {
   const form = useForm<z.infer<typeof eventSchema>>({
     resolver: zodResolver(eventSchema),
     defaultValues: {
@@ -61,7 +55,8 @@ export default function EventRegistration({
   })
   function onRegister(values: z.infer<typeof eventSchema>) {
     console.log(values)
-    setRegistrationData((prev) => ({ ...prev, ...values }))
+    setRegistrationData((prev) => ({ ...prev, event: values }))
+    setStep(3)
   }
 
   return (
@@ -187,8 +182,8 @@ export default function EventRegistration({
               </div>
             )}
           />
-          <Button type="submit" className="mt-4 w-full flex items-center gap-1">
-            Register
+          <Button className="mt-4 w-full flex items-center gap-1">
+            Next <TbCaretRightFilled />
           </Button>
         </div>
       </form>
