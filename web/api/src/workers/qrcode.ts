@@ -1,23 +1,20 @@
 
-
 import { encrypt, decrypt } from "./crypt";
 // import {  } from "./db/sankalpUser"
 
 const apiUrl = 'https://qr.heimanbotz.workers.dev/';
-
+const fetch = (url: string) => import('node-fetch').then(({default: fetch}) => fetch(url));
 export const qrCreator = async (id: string) => {
     try {
-        const data = await encrypt(id);
-        const response = await fetch(`${apiUrl}qrcode?data=${data}`);
+        const response = await fetch(`${apiUrl}qrcode?data=${id}`);
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const res: any = await response.json();
-        const info = res.json();
-        if (!info["success"]){
-            return { success: false, message: `Error: ${info["message"]}` }
+        if (!res["success"]){
+            return { success: false, message: `Error: ${res["message"]}` }
         }
-        return { success: true, link: `${apiUrl}download/${info["id"]}`, id: info["id"] }
+        return { success: true, link: `${apiUrl}download/${res["id"]}`, id: res["id"] }
       } catch (error) {
         return { success: false, message: `Error: ${error}` }
       }

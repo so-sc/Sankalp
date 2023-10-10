@@ -1,0 +1,12 @@
+{
+    "name": "sankalp",
+    "version": "0.0.1",
+    "scripts": {
+        "start": "concurrently \"npm run client\" \"npm run api\"",
+        "client": "cd web/client && pnpm i && pnpm dev",
+        "api": "cd web/api && pnpm i && pnpm start"
+    },
+    "dependencies": {
+        "next": "13.5.4"
+    }
+}

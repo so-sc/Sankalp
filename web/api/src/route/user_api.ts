@@ -1,7 +1,7 @@
 import express from "express";
-import { EventRegister, HackathonRegister, EventRegisterByID, HackathonRegisterByID, EventRegisterAddEvent, HackathonRegisterRemoveMembers, HackathonRegisterAddMembers } from "../db/sankalpUser";
+import { EventRegister, HackathonRegister, EventRegisterByID, HackathonRegisterByID, EventRegisterAddEvent, HackathonRegisterRemoveMembers, HackathonRegisterAddMembers, EventRegisterRemoveEvent } from "../db/sankalpUser";
 import { decrypt, encrypt } from "../workers/crypt";
-import { eventModel, hackathonModel } from "../workers/modal";
+import { EventModels, EventModelE, EventModelS, HackathonModel } from "../workers/model";
 import { qrCreator, formID } from "../workers/qrcode";
 import { sendCopyMail } from "../workers/mail";
 
@@ -11,41 +11,47 @@ const router = express.Router();
 router.post("/registration/:info", async(req, res) => {
     try {
         const info = Number(req.params.info);
-        var register;
         if (info === 0) { // Event registration
-            const data: eventModel = req.body;
+            const datax: EventModels = req.body;
+            var data: EventModelE | EventModelS;
+            if (datax.student) {
+                data = req.body;
+            } else {
+                data = req.body;
+            }
             data.verify = false;
-            register = await EventRegister(data);
+            var register = await EventRegister(data);
             if (!register.success) {
                 res.status(500).json({ success: false, message: register.message })
             }
-            var dt = await qrCreator(await encrypt(register.id));
+            var dt = await qrCreator(register.id);
             if (!dt.success) {
                 res.status(500).json({ success: false, message: dt.message })
             }
-            var rs = await sendCopyMail(register.id, true, data.mail, dt.id);
-            if (!rs.success) {
-                res.status(500).json({ success: false, message: rs.message })
+            var rs = await sendCopyMail(`${req.protocol}://${req.hostname}`, true, data.mail, dt.id);
+            if (!rs['success']===true) {
+                console.log("Mailed failed");
+                res.status(500).json({ success: false, message: rs.message });
             }
             data.qrId = dt.id;
-            res.status(200).json({ success: true, id: await encrypt(register.id), dl: dt.link })
+            res.status(200).json({ success: true, id: register.id, dl: dt.link })
         } else { // Hackathon registration
-            const data: hackathonModel = req.body;
+            const data: HackathonModel = req.body;
             data.verify = false;
-            register = await HackathonRegister(data);
+            var register = await HackathonRegister(data);
             if (!register.success) {
                 res.status(500).json({ success: false, message: register.message })
             }
-            var dt = await qrCreator(await encrypt(register.id));
+            var dt = await qrCreator(register.id);
             if (!dt.success) {
                 res.status(500).json({ success: false, message: dt.message })
             }
-            var rs = await sendCopyMail(register.id, false, data.tlEmail, dt.id);
+            var rs = await sendCopyMail(`${req.protocol}://${req.hostname}`, false, data.tlEmail, dt.id);
             if (!rs.success) {
                 res.status(500).json({ success: false, message: rs.message })
             }
             data.qrId = dt.id;
-            res.status(200).json({ success: true, id: await encrypt(register.id), dl: dt.link })
+            res.status(200).json({ success: true, id: register.id, dl: dt.link })
         }
     } catch (e) {
         res.status(500).json({ success: false, message: e.message })
@@ -55,7 +61,6 @@ router.post("/registration/:info", async(req, res) => {
 router.get("/info/:id", async(req, res) => {
     try {
         var id = req.params.id;
-        id = await decrypt(id);
         var register;
         try { // Event registration
             register = await EventRegisterByID(id);
@@ -78,13 +83,18 @@ router.patch("/modifier/:info/:id", async(req, res) => {
         const id = req.params.id;
         var modify;
         if (info === 0) {
-            const events = req.body;
-            modify = await EventRegisterAddEvent(id, events);
+            const data = req.body;
+            if (data['add'] === true) { // Adds event
+                modify = await EventRegisterAddEvent(id, data['events']);
+            } else { // Removes events
+                modify = await EventRegisterRemoveEvent(id, data['events']);
+            }
+            
         } else {
             const data = req.body;
-            if (data['add'] === true) {
+            if (data['add'] === true) { // Adds member
                 modify = await HackathonRegisterAddMembers(id, data['member']);
-            } else {
+            } else { // Remove events
                 modify = await HackathonRegisterRemoveMembers(id, data['email']);
             } 
         }
@@ -97,9 +107,9 @@ router.patch("/modifier/:info/:id", async(req, res) => {
 })
 
 // Feedback
-router.post("/feedback/:id", async(req, res) => {
+router.post("/feedback", async(req, res) => {
     try {
-
+        
     } catch (e) {
         res.status(500).json({ success: false, message: e.message })
     }

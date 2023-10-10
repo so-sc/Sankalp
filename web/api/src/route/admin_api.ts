@@ -20,8 +20,8 @@ router.post("/", async(req, res) => {
     }
 })
 
-// Generate QRCode
-router.post("/gen-qrcode", async(req, res) => {
+// 
+router.post("/", async(req, res) => {
     try {
 
     } catch (e) {

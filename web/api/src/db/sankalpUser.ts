@@ -1,7 +1,7 @@
 //
 
 import mongo from "mongoose";
-import { eventModel, hackathonModel, member } from "workers/modal";
+import { HackathonModel, Member } from "workers/model";
 
 const eventRegistration = new mongo.Schema({
     stName: {
@@ -14,19 +14,35 @@ const eventRegistration = new mongo.Schema({
     },
     college: {
         type: String,
-        require: true
+        require: false
     },
     branch: {
         type: String,
-        require: true
+        require: false
     },
     year: {
         type: Number,
-        require: true
+        require: false
     },
     eventOpt: {
         type: [Number],
         require: true
+    },
+    student: {
+        type: Boolean,
+        default: false
+    },
+    gender: {
+        type: Number,
+        default: false
+    },
+    company: {
+        type: String,
+        require: false
+    },
+    designation: {
+        type: String,
+        require: false
     },
     verify: {
         type: Boolean,
@@ -77,6 +93,10 @@ const hackathonRegistration = new mongo.Schema({
         type: Number,
         require: true
     },
+    tlPhNo: {
+        type: Number,
+        require: true
+    },
     memNo: {
         type: Number,
         require: true
@@ -124,7 +144,7 @@ export const EventRegisters = async () => Event.find();
 export const EventRegistersBy = async (param: any) => Event.find({ param });
 export const EventRegisterByID = async (id: String) => Event.findById({ id });
 
-export const EventRegister = async (data: eventModel) => {
+export const EventRegister = async (data: any) => {
     try {
         const event = new Event(data);
         const info = await event.save();
@@ -144,9 +164,18 @@ export const EventRegistersVerifyByID = async (id: string) => {
     }
 }
 
-export const EventRegisterAddEvent = async (id: string, no: number ) => {
+export const EventRegisterAddEvent = async (id: string, no: Array<number> ) => {
     try {
         Event.findOneAndUpdate({ _id: new mongo.Types.ObjectId(id) }, { $addToSet: { eventOpt: no } });
+        return { success: true }
+    } catch (e) {
+        return { success: false }
+    }
+}
+
+export const EventRegisterRemoveEvent = async (id: string, no: Array<number> ) => {
+    try {
+        Event.findOneAndUpdate({ _id: new mongo.Types.ObjectId(id) }, { $pullAll: { myArrayField: no } });
         return { success: true }
     } catch (e) {
         return { success: false }
@@ -159,7 +188,7 @@ export const HackathonRegisters = async () => Hackathon.find();
 export const HackathonRegistersBy = async (param: any) => Hackathon.find({ param });
 export const HackathonRegisterByID = async (id: string) => Hackathon.find({ _id: new mongo.Types.ObjectId(id) });
 
-export const HackathonRegister = async (data: hackathonModel) => {
+export const HackathonRegister = async (data: HackathonModel) => {
     try {
         const hackathon = new Hackathon(data);
         const info = await hackathon.save();
@@ -179,7 +208,7 @@ export const hackathonRegistersVerifyByID = async (id: string) => {
     }
 }
 
-export const HackathonRegisterAddMembers = async (id: string, data: Array<member> ) => {
+export const HackathonRegisterAddMembers = async (id: string, data: Array<Member> ) => {
     try {
         Hackathon.findOneAndUpdate({ _id: new mongo.Types.ObjectId(id) }, { $addToSet: { member: { $each: data } } });
         return { success: true }

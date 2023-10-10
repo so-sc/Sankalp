@@ -8,7 +8,7 @@ import compression from 'compression';
 import cors from 'cors';
 import mongo from 'mongoose';
 import { User } from "./route/user_api";
-
+import { admin } from "./route/admin_api";
 require('dotenv').config();
 
 const app = express();
@@ -29,17 +29,16 @@ app.use(bodyParser.json());
 const server = http.createServer(app);
 
 
-app.get("/", (req, res) => {
+app.get("/", async(req, res) => {
     res.status(200).json({success: true})
-    res.status(200).json({hi: true})
 })
+
 
 // User Interface API routes
 app.use("/api/user/", User)
 
-// // Admin Interface API routes
-// const admin = require("../route/admin_api")
-// app.use("/api/admin/", admin)
+// Admin Interface API routes
+app.use("/api/admin/", admin)
 
 
 server.listen(7000, () => console.log("Server running at http://localhost:7000"));

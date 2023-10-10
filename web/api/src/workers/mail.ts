@@ -6,15 +6,15 @@ require('dotenv').config();
 
 
 const transporter = nodemailer.createTransport({
-    service: 'smtp.gmail.com',
+    service: 'gmail',
     auth: {
         user: process.env.EMAIL,
         pass: process.env.PASS,
     },
 });
 
-export const sendCopyMail = async (id: string, event: boolean, mail: string, qrId: string) => {
-  const preview = `/preview/${id}`
+export const sendCopyMail = async (domain: string, event: boolean, mail: string, qrId: string) => {
+  const preview = `${domain}/preview/${qrId}`
   try {
     transporter.sendMail({
         from: process.env.EMAIL,
@@ -73,9 +73,10 @@ export const sendCopyMail = async (id: string, event: boolean, mail: string, qrI
           console.error('Error sending email:', error);
           return { success: false, message: `Error: ${error}` }
         } else {
-            return { success: true, message: info.response }
+          return { success: true, message: info.response }
         }
     });
+    return { success: true }
   } catch (e) {
     return { success: false, message: `Error: ${e.message}` }
   }

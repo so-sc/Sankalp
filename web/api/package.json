@@ -1,6 +1,6 @@
 {
-    "name": "sankalp",
-    "version": "1.0.0",
+    "name": "sankalp-api",
+    "version": "0.0.1",
     "description": "",
     "main": "server.js",
     "scripts": {
@@ -15,16 +15,16 @@
         "@types/cors": "^2.8.14",
         "@types/crypto-js": "^4.1.2",
         "@types/express": "^4.17.18",
+        "@types/jsonwebtoken": "^9.0.3",
         "@types/mongoose": "^5.11.97",
         "@types/node-fetch": "^2.6.6",
+        "@types/nodemailer": "^6.4.11",
         "dotenv": "^16.3.1",
         "nodemon": "^3.0.1",
         "ts-node": "^10.9.1",
         "typescript": "^5.2.2"
     },
     "dependencies": {
-        "@types/jsonwebtoken": "^9.0.3",
-        "@types/nodemailer": "^6.4.11",
         "body-parser": "^1.20.2",
         "compression": "^1.7.4",
         "cookie-parser": "^1.4.6",
