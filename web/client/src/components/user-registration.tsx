@@ -67,7 +67,6 @@ export default function UserRegistration({
   const userRole = form.watch("role.role")
 
   function onNextStep(values: z.infer<typeof userSchema>) {
-    console.log(values)
     setRegistrationData((prev) => ({ ...prev, user: values }))
     setStep(2)
   }

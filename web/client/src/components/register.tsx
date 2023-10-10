@@ -25,15 +25,15 @@ export default function Register() {
     z.infer<typeof formSchema>
   >({
     user: {
-      name: "Deveesh Shetty",
-      email: "deveeshshetty@gmail.com",
-      phone: "9741268512",
+      name: "",
+      email: "",
+      phone: "",
       gender: "male",
       role: {
         role: "student",
-        college: "Sahyadri College of Engineering and Management",
-        course: "BE",
-        branch: "CSE",
+        college: "",
+        course: "",
+        branch: "",
         yearOfStudy: "1",
       },
     },
@@ -43,9 +43,7 @@ export default function Register() {
     },
   })
 
-  const [step, setStep] = useState<Step>(3)
-
-  console.log(registrationData)
+  const [step, setStep] = useState<Step>(1)
 
   return (
     <>

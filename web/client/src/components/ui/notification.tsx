@@ -9,7 +9,7 @@ import {
 } from "react-icons/ai"
 
 const notificationVariants = cva(
-  "flex items-center gap-4 border px-8 py-4 rounded-lg",
+  "flex flex-col md:flex-row items-center gap-4 border px-8 py-4 rounded-lg",
   {
     variants: {
       variant: {

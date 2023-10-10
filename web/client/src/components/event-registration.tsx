@@ -54,7 +54,6 @@ export default function EventRegistration({
     },
   })
   function onRegister(values: z.infer<typeof eventSchema>) {
-    console.log(values)
     setRegistrationData((prev) => ({ ...prev, event: values }))
     setStep(3)
   }

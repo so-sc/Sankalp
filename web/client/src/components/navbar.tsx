@@ -1,7 +1,6 @@
 "use client"
 
 import { ModeToggle } from "@/components/ui/mode-toggle"
-import Image from "next/image"
 import Link from "next/link"
 import { useState } from "react"
 import { FaBars } from "react-icons/fa"
@@ -50,20 +49,8 @@ export default function Navbar() {
             Contact
           </Link>
         </ul>
-        <div className="flex flex-row-reverse justify-between md:flex-row gap-2 items-center h-full md:place-self-end">
+        <div className="flex gap-2 items-center h-full md:place-self-end">
           <ModeToggle />
-          <div className="flex items-center gap-2">
-            <div className="relative w-8 aspect-square">
-              <Image
-                src="https://github.com/heimanpictures.png"
-                alt="User Profile"
-                fill
-                sizes="100%"
-                className="rounded-full cursor-pointer"
-              />
-            </div>
-            <p className="md:hidden">Name</p>
-          </div>
         </div>
       </nav>
     </>

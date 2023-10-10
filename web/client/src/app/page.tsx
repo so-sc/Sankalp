@@ -10,7 +10,6 @@ interface HomePageProps {
 
 export default function HomePage({ searchParams }: HomePageProps) {
   const state = (searchParams.state as FormState) || "register"
-  console.log(state)
   return (
     <main className="container mx-auto px-8 lg:px-20 xl:px-24 py-12">
       {state === "login" ? (
