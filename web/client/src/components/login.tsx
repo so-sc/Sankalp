@@ -24,7 +24,7 @@ export default function Login() {
     },
   })
   async function onLogin(values: z.infer<typeof formSchema>) {
-    console.log(values)
+    console.log(values) 
   }
 
   return (

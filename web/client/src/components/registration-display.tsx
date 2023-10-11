@@ -12,7 +12,7 @@ interface RegistrationDisplayProps {
   setStep: Dispatch<SetStateAction<Step>>
 }
 
-const numberDisplay = ["1st", "2nd", "3rd", "4th", "5th"]
+export const numberDisplay = ["1st", "2nd", "3rd", "4th", "5th"]
 
 export default function RegistrationDisplay({
   registrationData,
