@@ -1,6 +1,5 @@
 "use client"
 
-import { numberDisplay } from "@/components/registration-display"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -19,6 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
+import { numberDisplay } from "@/lib/constants"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { TbLoader2 } from "react-icons/tb"
@@ -32,7 +32,7 @@ const THEMES = [
   "Agriculture",
   "Environment",
   "Finance",
-]
+] as const
 
 const memberSchema = z.object({
   name: z.string().min(3).max(50),
@@ -41,10 +41,10 @@ const memberSchema = z.object({
   year: z.enum(["1", "2", "3", "4", "5"]),
 })
 
-const teamSchema = z.object({
+export const teamSchema = z.object({
   teamName: z.string().min(3).max(50),
   totalMembers: z.number().min(MIN_MEMBERS).max(MAX_MEMBERS), // Including the leader
-  teamTheme: z.string().min(3).max(50),
+  teamTheme: z.enum(THEMES),
   teamStatement: z.string().min(25).max(250),
   teamCollege: z.string().min(3).max(50),
   leader: memberSchema, // Same schema but in the name of leader
@@ -69,7 +69,7 @@ export default function HackathonRegistration() {
     defaultValues: {
       teamName: "",
       totalMembers: 2,
-      teamTheme: "",
+      teamTheme: "Agriculture",
       teamStatement: "",
       teamCollege: "",
       leader: teamLeader,

@@ -4,26 +4,25 @@ import EventRegistration, { eventSchema } from "@/components/event-registration"
 import RegistrationDisplay from "@/components/registration-display"
 import { H1 } from "@/components/ui/typography"
 import UserRegistration, { userSchema } from "@/components/user-registration"
+import { UserProfile } from "@/lib/types"
 import Link from "next/link"
 import { Dispatch, SetStateAction, useState } from "react"
 import { z } from "zod"
 
-export const formSchema = z.object({
+export const registrationSchema = z.object({
   user: userSchema,
   event: eventSchema,
 })
 
 export interface CommonRegistrationProps {
-  setRegistrationData: Dispatch<SetStateAction<z.infer<typeof formSchema>>>
+  setRegistrationData: Dispatch<SetStateAction<UserProfile>>
   setStep: Dispatch<SetStateAction<Step>>
 }
 
 export type Step = 1 | 2 | 3
 
 export default function Register() {
-  const [registrationData, setRegistrationData] = useState<
-    z.infer<typeof formSchema>
-  >({
+  const [registrationData, setRegistrationData] = useState<UserProfile>({
     user: {
       name: "",
       email: "",

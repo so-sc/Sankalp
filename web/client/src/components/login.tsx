@@ -3,9 +3,10 @@
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { H1, H2 } from "@/components/ui/typography"
+import { H2 } from "@/components/ui/typography"
 import { zodResolver } from "@hookform/resolvers/zod"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { TbLoader2 } from "react-icons/tb"
 import { z } from "zod"
@@ -16,6 +17,8 @@ const formSchema = z.object({
 })
 
 export default function Login() {
+  const router = useRouter()
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -23,13 +26,14 @@ export default function Login() {
       password: "",
     },
   })
+
   async function onLogin(values: z.infer<typeof formSchema>) {
-    console.log(values) 
+    console.log(values)
+    router.push("/dashboard")
   }
 
   return (
     <div className="w-3/4 mx-auto">
-      <H1 className="lg:text-9xl text-center mb-8">DevHost 2023</H1>
       <H2 className="text-center mb-4">Login to Dashboard</H2>
       <Form {...form}>
         <form
@@ -58,7 +62,11 @@ export default function Login() {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input type="password" placeholder="Password" {...field} />
+                  <Input
+                    type="password"
+                    placeholder="Password (Registration ID which you got in mail)"
+                    {...field}
+                  />
                 </FormControl>
                 {form.formState.errors.password?.message && (
                   <p className="text-red-500">
