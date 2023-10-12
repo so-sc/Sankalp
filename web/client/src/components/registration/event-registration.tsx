@@ -1,4 +1,4 @@
-import { CommonRegistrationProps } from "@/components/registration-forms/register"
+import { CommonRegistrationProps } from "@/components/registration/register"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -15,36 +15,48 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { TbCaretLeftFilled, TbCaretRightFilled } from "react-icons/tb"
 
+interface EventRegistrationProps extends CommonRegistrationProps {
+  registrationData: UserProfile
+  isUpdation?: boolean
+}
+
 export default function EventRegistration({
   setRegistrationData,
   setStep,
-}: CommonRegistrationProps) {
+  registrationData,
+  isUpdation = false,
+}: EventRegistrationProps) {
   const form = useForm<Event>({
     resolver: zodResolver(eventSchema),
     defaultValues: {
-      talks: Array(TOTAL_TALKS).fill(false),
-      esports: Array(TOTAL_ESPORTS).fill(false),
+      ...registrationData.event,
     },
   })
   function onRegister(values: Event) {
     setRegistrationData((prev: UserProfile) => ({ ...prev, event: values }))
-    setStep(3)
+    setStep!(3)
   }
 
   return (
     <Form {...form}>
-      <Button
-        className="flex gap-2"
-        variant="outline"
-        onClick={() => setStep(1)}
-      >
-        <TbCaretLeftFilled /> Prev
-      </Button>
+      {!isUpdation && (
+        <Button
+          className="flex gap-2"
+          variant="outline"
+          onClick={() => setStep!(1)}
+        >
+          <TbCaretLeftFilled /> Prev
+        </Button>
+      )}
       <form onSubmit={form.handleSubmit(onRegister)}>
         <div className="flex flex-col gap-2">
-          <p className="text-center mt-2 text-xl">
-            Select the Talks you want to register
-          </p>
+          <div className="text-center mt-2">
+            {isUpdation ? (
+              <p className="font-bold">Dev Talks</p>
+            ) : (
+              <p className="text-xl">Select the talks you want to register</p>
+            )}
+          </div>
           <FormField
             control={form.control}
             name="talks"
@@ -98,9 +110,13 @@ export default function EventRegistration({
               </div>
             )}
           />
-          <p className="text-center mt-2 text-xl">
-            Select the eSports you want to register
-          </p>
+          <div className="text-center mt-2">
+            {isUpdation ? (
+              <p className="font-bold">eSports Events</p>
+            ) : (
+              <p className="text-xl">Select the eSports you want to register</p>
+            )}
+          </div>
           <FormField
             control={form.control}
             name="esports"
@@ -155,7 +171,13 @@ export default function EventRegistration({
             )}
           />
           <Button className="mt-4 w-full flex items-center gap-1">
-            Next <TbCaretRightFilled />
+            {isUpdation ? (
+              <p>Update Selection</p>
+            ) : (
+              <p>
+                Next <TbCaretRightFilled />
+              </p>
+            )}
           </Button>
         </div>
       </form>

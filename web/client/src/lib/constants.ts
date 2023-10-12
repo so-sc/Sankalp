@@ -25,3 +25,5 @@ export const THEMES = [
   "Environment",
   "Finance",
 ] as const
+
+export const HACKATHON_NAME = "Aavruti"

@@ -1,8 +1,8 @@
 "use client"
 
 import RegistrationDisplay from "@/components/registration-display"
-import EventRegistration from "@/components/registration-forms/event-registration"
-import UserRegistration from "@/components/registration-forms/user-registration"
+import EventRegistration from "@/components/registration/event-registration"
+import UserRegistration from "@/components/registration/user-registration"
 import { H1 } from "@/components/ui/typography"
 import { Step, UserProfile } from "@/lib/types"
 import Link from "next/link"
@@ -10,7 +10,7 @@ import { Dispatch, SetStateAction, useState } from "react"
 
 export interface CommonRegistrationProps {
   setRegistrationData: Dispatch<SetStateAction<UserProfile>>
-  setStep: Dispatch<SetStateAction<Step>>
+  setStep?: Dispatch<SetStateAction<Step>>
 }
 
 export default function Register() {
@@ -29,8 +29,8 @@ export default function Register() {
       },
     },
     event: {
-      talks: [false, false, true, true, false, false],
-      esports: [false, true],
+      talks: [false, false, false, false, false, false],
+      esports: [false, false],
     },
   })
 
@@ -51,6 +51,7 @@ export default function Register() {
         ) : step === 2 ? (
           <EventRegistration
             setRegistrationData={setRegistrationData}
+            registrationData={registrationData}
             setStep={setStep}
           />
         ) : (

@@ -4,8 +4,8 @@ import { H1 } from "@/components/ui/typography"
 import UserDisplay from "@/components/user-display"
 import { ESPORTS, TALKS } from "@/lib/constants"
 import { Step, UserProfile } from "@/lib/types"
-import { Dispatch, SetStateAction } from "react"
-import { TbCaretLeftFilled } from "react-icons/tb"
+import { Dispatch, SetStateAction, useState } from "react"
+import { TbCaretLeftFilled, TbLoader2 } from "react-icons/tb"
 
 interface RegistrationDisplayProps {
   registrationData: UserProfile
@@ -17,9 +17,12 @@ export default function RegistrationDisplay({
   setStep,
 }: RegistrationDisplayProps) {
   const { user, event } = registrationData
+  const [isLoading, setIsLoading] = useState(false)
 
   function handleRegistration() {
+    setIsLoading(true)
     console.log(registrationData)
+    setIsLoading(false)
   }
 
   return (
@@ -81,8 +84,13 @@ export default function RegistrationDisplay({
           that will be your entry pass to the event.
         </p>
       </Notification>
-      <Button className="w-full mt-8 md:mt-4" onClick={handleRegistration}>
+      <Button
+        className="mt-4 flex items-center gap-2"
+        disabled={isLoading}
+        onClick={handleRegistration}
+      >
         Confirm Registration
+        {isLoading && <TbLoader2 className="animate-spin" />}
       </Button>
     </main>
   )

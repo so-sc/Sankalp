@@ -1,4 +1,4 @@
-import { CommonRegistrationProps } from "@/components/registration-forms/register"
+import { CommonRegistrationProps } from "@/components/registration/register"
 import { Button } from "@/components/ui/button"
 import {
   Form,

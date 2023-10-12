@@ -1,4 +1,4 @@
-import HackathonRegistration from "@/components/registration-forms/hackathon-registration"
+import HackathonRegistration from "@/components/registration/hackathon-registration"
 import { H1, H2 } from "@/components/ui/typography"
 
 export default function HackathonPage() {

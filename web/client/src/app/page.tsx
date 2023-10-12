@@ -1,5 +1,5 @@
 import Login from "@/components/login"
-import Register from "@/components/registration-forms/register"
+import Register from "@/components/registration/register"
 import { H1 } from "@/components/ui/typography"
 import Link from "next/link"
 
