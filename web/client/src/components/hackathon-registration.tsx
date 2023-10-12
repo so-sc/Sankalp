@@ -86,7 +86,13 @@ export default function HackathonRegistration() {
   const totalMembers = form.watch("totalMembers")
 
   function onTeamRegister(values: z.infer<typeof teamSchema>) {
-    console.log(values)
+    // Fixes the edge case for eg. when the user fills names for 4 members
+    // and then changes the total members to less than that
+    const finalValues = {
+      ...values,
+      members: values.members.slice(0, totalMembers - 1),
+    }
+    console.log(finalValues)
   }
 
   return (
