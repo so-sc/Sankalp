@@ -30,15 +30,13 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { TbLoader2 } from "react-icons/tb"
 
-export default function HackathonRegistration() {
-  // This will be fetched from the database
-  const teamLeader: Member = {
-    name: "Deveesh Shetty",
-    email: "deveeshshetty@gmail.com",
-    phone: "1234567890",
-    year: "3",
-  }
+interface HackathonRegistrationProps {
+  leader: Member // Well the schema is same for both XD
+}
 
+export default function HackathonRegistration({
+  leader,
+}: HackathonRegistrationProps) {
   const form = useForm<HackathonTeam>({
     resolver: zodResolver(teamSchema),
     defaultValues: {
@@ -47,7 +45,7 @@ export default function HackathonRegistration() {
       teamTheme: "Agriculture",
       teamStatement: "",
       teamCollege: "",
-      leader: teamLeader,
+      leader: leader,
       members: [
         {
           name: "",
@@ -221,7 +219,7 @@ export default function HackathonRegistration() {
                         placeholder="Team leader name"
                         readOnly
                         {...field}
-                        value={teamLeader.name}
+                        value={leader.name}
                         className="read-only:bg-foreground/10"
                       />
                     </FormControl>
@@ -244,7 +242,7 @@ export default function HackathonRegistration() {
                         placeholder="Team leader email ID"
                         readOnly
                         {...field}
-                        value={teamLeader.email}
+                        value={leader.email}
                         className="read-only:bg-foreground/10"
                       />
                     </FormControl>
@@ -267,7 +265,7 @@ export default function HackathonRegistration() {
                         placeholder="Team leader Phone number"
                         readOnly
                         {...field}
-                        value={teamLeader.phone}
+                        value={leader.phone}
                         className="read-only:bg-foreground/10"
                       />
                     </FormControl>
@@ -290,9 +288,7 @@ export default function HackathonRegistration() {
                         placeholder="Team leader year of study"
                         readOnly
                         {...field}
-                        value={`${
-                          numberDisplay[Number(teamLeader.year) - 1]
-                        } year`}
+                        value={`${numberDisplay[Number(leader.year) - 1]} year`}
                         className="read-only:bg-foreground/10"
                       />
                     </FormControl>
