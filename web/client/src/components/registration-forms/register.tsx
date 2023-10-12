@@ -1,25 +1,17 @@
 "use client"
 
-import EventRegistration, { eventSchema } from "@/components/event-registration"
 import RegistrationDisplay from "@/components/registration-display"
+import EventRegistration from "@/components/registration-forms/event-registration"
+import UserRegistration from "@/components/registration-forms/user-registration"
 import { H1 } from "@/components/ui/typography"
-import UserRegistration, { userSchema } from "@/components/user-registration"
-import { UserProfile } from "@/lib/types"
+import { Step, UserProfile } from "@/lib/types"
 import Link from "next/link"
 import { Dispatch, SetStateAction, useState } from "react"
-import { z } from "zod"
-
-export const registrationSchema = z.object({
-  user: userSchema,
-  event: eventSchema,
-})
 
 export interface CommonRegistrationProps {
   setRegistrationData: Dispatch<SetStateAction<UserProfile>>
   setStep: Dispatch<SetStateAction<Step>>
 }
-
-export type Step = 1 | 2 | 3
 
 export default function Register() {
   const [registrationData, setRegistrationData] = useState<UserProfile>({

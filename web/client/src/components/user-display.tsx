@@ -1,8 +1,8 @@
 import { numberDisplay } from "@/lib/constants"
-import { UserProfile } from "@/lib/types"
+import { User } from "@/lib/types"
 
 interface UserDisplayProps {
-  user: UserProfile["user"]
+  user: User
 }
 
 export default function UserDisplay({ user }: UserDisplayProps) {

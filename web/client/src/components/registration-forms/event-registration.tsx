@@ -1,4 +1,4 @@
-import { CommonRegistrationProps } from "@/components/register"
+import { CommonRegistrationProps } from "@/components/registration-forms/register"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -8,53 +8,26 @@ import {
   FormLabel,
 } from "@/components/ui/form"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { ESPORTS, TALKS, TOTAL_ESPORTS, TOTAL_TALKS } from "@/lib/constants"
+import { eventSchema } from "@/lib/schemas"
+import { Event, UserProfile } from "@/lib/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { TbCaretLeftFilled, TbCaretRightFilled } from "react-icons/tb"
-import { z } from "zod"
-
-// Made this variable at what cost? My brain cells
-// Just vary this to change the number of talks and esports
-const TOTAL_TALKS = 6
-const TOTAL_ESPORTS = 2
-
-// Change this to change the event name of talks and esports
-export const TALKS = [
-  "How to suck at writing Dates - Deveesh Shetty",
-  "How to be a God - Akkil MG",
-  "Intro to HTML (How to meet Ladies) - Tejas Nayak",
-  "How to do damage control - Varshaa Shetty",
-  "Asking sponsorships 101 - Pratheeksha",
-  "How to ethically get full CGPA - Sushruth Rao",
-]
-export const ESPORTS = ["Ludo 1v1v1v1", "Candy Crush Saga"]
-
-export const eventSchema = z.object({
-  talks: z
-    .boolean()
-    .array()
-    .length(TOTAL_TALKS)
-    .default(Array(TOTAL_TALKS).fill(false)),
-  esports: z
-    .boolean()
-    .array()
-    .length(TOTAL_ESPORTS)
-    .default(Array(TOTAL_ESPORTS).fill(false)),
-})
 
 export default function EventRegistration({
   setRegistrationData,
   setStep,
 }: CommonRegistrationProps) {
-  const form = useForm<z.infer<typeof eventSchema>>({
+  const form = useForm<Event>({
     resolver: zodResolver(eventSchema),
     defaultValues: {
       talks: Array(TOTAL_TALKS).fill(false),
       esports: Array(TOTAL_ESPORTS).fill(false),
     },
   })
-  function onRegister(values: z.infer<typeof eventSchema>) {
-    setRegistrationData((prev) => ({ ...prev, event: values }))
+  function onRegister(values: Event) {
+    setRegistrationData((prev: UserProfile) => ({ ...prev, event: values }))
     setStep(3)
   }
 

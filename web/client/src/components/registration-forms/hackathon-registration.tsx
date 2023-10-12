@@ -18,53 +18,28 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { numberDisplay } from "@/lib/constants"
+import {
+  MAX_MEMBERS,
+  MIN_MEMBERS,
+  THEMES,
+  numberDisplay,
+} from "@/lib/constants"
+import { teamSchema } from "@/lib/schemas"
+import { HackathonTeam, Member } from "@/lib/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { TbLoader2 } from "react-icons/tb"
-import { z } from "zod"
-
-const MIN_MEMBERS = 2 // Including the leader
-const MAX_MEMBERS = 4 // Including the leader
-const THEMES = [
-  "Healthcare",
-  "Education",
-  "Agriculture",
-  "Environment",
-  "Finance",
-] as const
-
-const memberSchema = z.object({
-  name: z.string().min(3).max(50),
-  email: z.string().email(),
-  phone: z.string().length(10),
-  year: z.enum(["1", "2", "3", "4", "5"]),
-})
-
-export const teamSchema = z.object({
-  teamName: z.string().min(3).max(50),
-  totalMembers: z.number().min(MIN_MEMBERS).max(MAX_MEMBERS), // Including the leader
-  teamTheme: z.enum(THEMES),
-  teamStatement: z.string().min(25).max(250),
-  teamCollege: z.string().min(3).max(50),
-  leader: memberSchema, // Same schema but in the name of leader
-  // Minimum 1 member and maximum 3 members excluding the leader
-  members: z
-    .array(memberSchema)
-    .min(MIN_MEMBERS - 1)
-    .max(MAX_MEMBERS - 1),
-})
 
 export default function HackathonRegistration() {
   // This will be fetched from the database
-  const teamLeader: z.infer<typeof memberSchema> = {
+  const teamLeader: Member = {
     name: "Deveesh Shetty",
     email: "deveeshshetty@gmail.com",
     phone: "1234567890",
     year: "3",
   }
 
-  const form = useForm<z.infer<typeof teamSchema>>({
+  const form = useForm<HackathonTeam>({
     resolver: zodResolver(teamSchema),
     defaultValues: {
       teamName: "",
@@ -85,7 +60,7 @@ export default function HackathonRegistration() {
   })
   const totalMembers = form.watch("totalMembers")
 
-  function onTeamRegister(values: z.infer<typeof teamSchema>) {
+  function onTeamRegister(values: HackathonTeam) {
     // Fixes the edge case for eg. when the user fills names for 4 members
     // and then changes the total members to less than that
     const finalValues = {

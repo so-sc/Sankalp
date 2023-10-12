@@ -4,30 +4,26 @@ import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { H2 } from "@/components/ui/typography"
+import { loginSchema } from "@/lib/schemas"
+import { LoginUser } from "@/lib/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { TbLoader2 } from "react-icons/tb"
-import { z } from "zod"
-
-const formSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8).max(24),
-})
 
 export default function Login() {
   const router = useRouter()
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<LoginUser>({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   })
 
-  async function onLogin(values: z.infer<typeof formSchema>) {
+  async function onLogin(values: LoginUser) {
     console.log(values)
     router.push("/dashboard")
   }

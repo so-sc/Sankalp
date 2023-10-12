@@ -1,10 +1,9 @@
-import { ESPORTS, TALKS } from "@/components/event-registration"
-import { Step } from "@/components/register"
 import { Button } from "@/components/ui/button"
 import Notification from "@/components/ui/notification"
 import { H1 } from "@/components/ui/typography"
 import UserDisplay from "@/components/user-display"
-import { UserProfile } from "@/lib/types"
+import { ESPORTS, TALKS } from "@/lib/constants"
+import { Step, UserProfile } from "@/lib/types"
 import { Dispatch, SetStateAction } from "react"
 import { TbCaretLeftFilled } from "react-icons/tb"
 
@@ -44,7 +43,7 @@ export default function RegistrationDisplay({
             </p>
             <div className="">
               {event.talks.map(
-                (item, index) =>
+                (item: boolean, index: number) =>
                   item && (
                     <p
                       key={index}
@@ -62,7 +61,7 @@ export default function RegistrationDisplay({
             </p>
             <div className="flex flex-col gap-1">
               {event.esports.map(
-                (item, index) =>
+                (item: boolean, index: number) =>
                   item && (
                     <p
                       key={index}
