@@ -68,20 +68,21 @@ export default function HackathonRegistration() {
     resolver: zodResolver(teamSchema),
     defaultValues: {
       teamName: "",
-      totalMembers: 4,
+      totalMembers: 2,
       teamTheme: "",
       teamStatement: "",
       teamCollege: "",
       leader: teamLeader,
-      members: Array(MAX_MEMBERS - 1).fill({
-        name: "",
-        email: "",
-        phone: "",
-        year: "2",
-      }),
+      members: [
+        {
+          name: "",
+          email: "",
+          phone: "",
+          year: "2",
+        },
+      ],
     },
   })
-
   const totalMembers = form.watch("totalMembers")
 
   function onTeamRegister(values: z.infer<typeof teamSchema>) {
@@ -120,7 +121,7 @@ export default function HackathonRegistration() {
                   <FormLabel className="basis-40">Total Members:</FormLabel>
                   <FormControl>
                     <Select
-                      onValueChange={field.onChange}
+                      onValueChange={(value) => field.onChange(Number(value))}
                       defaultValue={field.value.toString()}
                     >
                       <FormControl>
@@ -282,7 +283,7 @@ export default function HackathonRegistration() {
                     <FormControl>
                       <Input
                         type="text"
-                        placeholder="Team leader Phome number"
+                        placeholder="Team leader Phone number"
                         readOnly
                         {...field}
                         value={teamLeader.phone}
