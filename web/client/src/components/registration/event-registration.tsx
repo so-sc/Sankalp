@@ -34,7 +34,7 @@ export default function EventRegistration({
   })
   function onRegister(values: Event) {
     setRegistrationData((prev: UserProfile) => ({ ...prev, event: values }))
-    setStep!(3)
+    if (!isUpdation) setStep!(3)
   }
 
   return (

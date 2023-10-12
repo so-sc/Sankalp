@@ -47,7 +47,7 @@ export default function UserRegistration({
 
   function onNextStep(values: User) {
     setRegistrationData((prev: UserProfile) => ({ ...prev, user: values }))
-    setStep(2)
+    setStep!(2)
   }
   return (
     <Form {...form}>
