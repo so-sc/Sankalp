@@ -48,7 +48,7 @@ export default function Register() {
   return (
     <>
       {step === 1 && (
-        <H1 className="lg:text-9xl text-center mb-8">DevHost 2023</H1>
+        <H1 className="lg:text-9xl text-center mb-8 text-3xl font-bold tracking-tighter sm:text-5xl  bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-500">DevHost 2023</H1>
       )}
 
       <div className="w-3/4 mx-auto">
