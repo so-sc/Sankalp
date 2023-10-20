@@ -1,5 +1,5 @@
 import express from "express";
-import { EventRegister, HackathonRegister, EventRegisterByID, HackathonRegisterByID, EventRegisterAddEvent, HackathonRegisterRemoveMembers, HackathonRegisterAddMembers, EventRegisterRemoveEvent } from "../db/sankalpUser";
+import { EventRegister, HackathonRegister, EventRegisterByID, HackathonRegisterByID, EventRegisterAddEvent, HackathonRegisterRemoveMembers, HackathonRegisterAddMembers, EventRegisterRemoveEvent, EventQRAdder, HackathonQRAdder } from "../db/sankalpUser";
 import { decrypt, encrypt } from "../workers/crypt";
 import { EventModels, EventModelE, EventModelS, HackathonModel } from "../workers/model";
 import { qrCreator, formID } from "../workers/qrcode";
@@ -28,6 +28,7 @@ router.post("/registration/:info", async(req, res) => {
             if (!dt.success) {
                 res.status(500).json({ success: false, message: dt.message })
             }
+            await EventQRAdder(register.id, dt.id);
             var rs = await sendCopyMail(`${req.protocol}://${req.hostname}`, true, data.mail, dt.id);
             if (!rs['success']===true) {
                 console.log("Mailed failed");
@@ -46,6 +47,7 @@ router.post("/registration/:info", async(req, res) => {
             if (!dt.success) {
                 res.status(500).json({ success: false, message: dt.message })
             }
+            await HackathonQRAdder(register.id, dt.id);
             var rs = await sendCopyMail(`${req.protocol}://${req.hostname}`, false, data.tlEmail, dt.id);
             if (!rs.success) {
                 res.status(500).json({ success: false, message: rs.message })
@@ -58,14 +60,20 @@ router.post("/registration/:info", async(req, res) => {
     }
 })
 
-router.get("/info/:id", async(req, res) => {
+// Get info of event or hackathon
+router.get("/info/:info/:id", async(req, res) => {
     try {
+        var info = Number(req.params.info);
         var id = req.params.id;
         var register;
-        try { // Event registration
-            register = await EventRegisterByID(id);
-        } catch (e) { // Hackathon registration
-            register = await HackathonRegisterByID(id);
+        try {
+            if (info === 0) { // Event registration
+                register = await EventRegisterByID(id);
+            } else { // Hackathon registration
+                register = await HackathonRegisterByID(id);
+            }
+        } catch (e) { 
+            return res.status(500).json({ success: false, message: `Error: ${e}` })
         }
         if (!register) {
             res.status(500).json({ success: false, message: 'No info on this ID.' })
@@ -77,7 +85,7 @@ router.get("/info/:id", async(req, res) => {
 })
 
 // Modifier
-router.patch("/modifier/:info/:id", async(req, res) => {
+router.post("/modifier/:info/:id", async(req, res) => {
     try {
         const info = Number(req.params.info);
         const id = req.params.id;
@@ -89,27 +97,19 @@ router.patch("/modifier/:info/:id", async(req, res) => {
             } else { // Removes events
                 modify = await EventRegisterRemoveEvent(id, data['events']);
             }
-            
         } else {
             const data = req.body;
             if (data['add'] === true) { // Adds member
                 modify = await HackathonRegisterAddMembers(id, data['member']);
             } else { // Remove events
                 modify = await HackathonRegisterRemoveMembers(id, data['email']);
-            } 
+            }
         }
         if (!modify.success) {
             res.status(500).json({ success: false, message: 'No info on this data.' })
+        } else {
+            res.status(200).json({ success: true, message: 'Updated the details.' })
         }
-    } catch (e) {
-        res.status(500).json({ success: false, message: e.message })
-    }
-})
-
-// Feedback
-router.post("/feedback", async(req, res) => {
-    try {
-        
     } catch (e) {
         res.status(500).json({ success: false, message: e.message })
     }

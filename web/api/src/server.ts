@@ -8,7 +8,7 @@ import compression from 'compression';
 import cors from 'cors';
 import mongo from 'mongoose';
 import { User } from "./route/user_api";
-import { admin } from "./route/admin_api";
+import { Admin } from "./route/admin_api";
 require('dotenv').config();
 
 const app = express();
@@ -38,7 +38,7 @@ app.get("/", async(req, res) => {
 app.use("/api/user/", User)
 
 // Admin Interface API routes
-app.use("/api/admin/", admin)
+app.use("/api/admin/", Admin)
 
 
 server.listen(7000, () => console.log("Server running at http://localhost:7000"));

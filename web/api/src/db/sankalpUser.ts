@@ -24,10 +24,10 @@ const eventRegistration = new mongo.Schema({
         type: Number,
         require: false
     },
-    eventOpt: {
-        type: [Number],
+    eventOpt: [{
+        type: Number,
         require: true
-    },
+    }],
     student: {
         type: Boolean,
         default: false
@@ -48,6 +48,14 @@ const eventRegistration = new mongo.Schema({
         type: Boolean,
         default: false
     }, 
+    hack: {
+        type: Object,
+        default: {
+            isHack: false,
+            team: null
+        },
+        require: true
+    },
     qrId: {
         type: String,
         require: false
@@ -107,7 +115,7 @@ const hackathonRegistration = new mongo.Schema({
                 type: String,
                 require: true,
             },
-            mail: {
+            email: {
                 type: String,
                 require: true,
             },
@@ -140,9 +148,11 @@ hackathonRegistration.pre('save', function (next) {
 
 // Event Registration
 export const Event = mongo.model('Event', eventRegistration);
-export const EventRegisters = async () => Event.find();
-export const EventRegistersBy = async (param: any) => Event.find({ param });
-export const EventRegisterByID = async (id: String) => Event.findById({ id });
+export const EventRegisters = async (st: boolean) => { return Event.find( { student: st } ); }
+export const EventRegistersBy = async (param: any) => { return Event.find({ param }); }
+export const EventRegisterByID = async (id: String) => {
+    return Event.findById(id);
+}
 
 export const EventRegister = async (data: any) => {
     try {
@@ -152,6 +162,13 @@ export const EventRegister = async (data: any) => {
     } catch (e) {
         return { success: false, message: 'The ID is invalid.' }
     }
+}
+
+export const EventQRAdder = async (id: string, qId: string) => {
+    await Event.updateOne(
+        { _id: new mongo.Types.ObjectId(id) },
+        { $set: { qrId: qId } }
+    )
 }
 
 export const EventRegistersVerifyByID = async (id: string) => {
@@ -166,7 +183,11 @@ export const EventRegistersVerifyByID = async (id: string) => {
 
 export const EventRegisterAddEvent = async (id: string, no: Array<number> ) => {
     try {
-        Event.findOneAndUpdate({ _id: new mongo.Types.ObjectId(id) }, { $addToSet: { eventOpt: no } });
+        await Event.updateOne(
+            { _id: new mongo.Types.ObjectId(id) },
+            { $addToSet: { eventOpt: { $each: no } } },
+            {  upsert: true, new: true }
+        );
         return { success: true }
     } catch (e) {
         return { success: false }
@@ -175,7 +196,12 @@ export const EventRegisterAddEvent = async (id: string, no: Array<number> ) => {
 
 export const EventRegisterRemoveEvent = async (id: string, no: Array<number> ) => {
     try {
-        Event.findOneAndUpdate({ _id: new mongo.Types.ObjectId(id) }, { $pullAll: { myArrayField: no } });
+        await Event.updateOne(
+            { _id: new mongo.Types.ObjectId(id) },
+            { $pull: { eventOpt: { $in: no } } },
+            { new: true }
+        );
+        // console.log(result); { acknowledged: true, modifiedCount: 1, upsertedId: null, upsertedCount: 0, matchedCount: 1 }
         return { success: true }
     } catch (e) {
         return { success: false }
@@ -184,18 +210,44 @@ export const EventRegisterRemoveEvent = async (id: string, no: Array<number> ) =
 
 // Hackathon Registration
 export const Hackathon = mongo.model('Hackathon', hackathonRegistration);
-export const HackathonRegisters = async () => Hackathon.find();
-export const HackathonRegistersBy = async (param: any) => Hackathon.find({ param });
-export const HackathonRegisterByID = async (id: string) => Hackathon.find({ _id: new mongo.Types.ObjectId(id) });
+export const HackathonRegisters = async () => { return Hackathon.find(); }
+export const HackathonRegistersBy = async (param: any) => { return Hackathon.find({ param }); }
+export const HackathonRegisterByID = async (id: string) => { return Hackathon.find({ _id: new mongo.Types.ObjectId(id) }); }
 
 export const HackathonRegister = async (data: HackathonModel) => {
     try {
         const hackathon = new Hackathon(data);
         const info = await hackathon.save();
+        var mails = Array()
+        for (var i=0; i< (data.member).length; i++) {
+            mails.push(data.member[i].email)
+        }
+        await Event.updateMany(
+            { mail: { $in: mails } },
+            { $set: { hack: {
+                team: info._id.toString(),
+                isHack: true
+            } } }
+        );
+        await Event.updateOne(
+            { mail: data.tlEmail },
+            { $set: { hack: {
+                team: info._id.toString(),
+                isHack: true,
+                leader: true
+            } } }
+        )
         return { success: true, id: info._id.toString() }
     } catch (e) {
         return { success: false, message: 'The data is invalid.' }
     }
+}
+
+export const HackathonQRAdder = async (id: string, qId: string) => {
+    await Event.updateOne(
+        { _id: new mongo.Types.ObjectId(id) },
+        { $set: { qrId: qId } }
+    )
 }
 
 export const hackathonRegistersVerifyByID = async (id: string) => {
@@ -210,16 +262,42 @@ export const hackathonRegistersVerifyByID = async (id: string) => {
 
 export const HackathonRegisterAddMembers = async (id: string, data: Array<Member> ) => {
     try {
-        Hackathon.findOneAndUpdate({ _id: new mongo.Types.ObjectId(id) }, { $addToSet: { member: { $each: data } } });
+        var mails = Array()
+        for (var i=0; i< (data).length; i++) {
+            mails.push(data[i].email)
+        }
+        // await Event.updateOne(
+        //     { mail: { $in: mails } },
+        //     { $set: { hack: {
+        //         team: id,
+        //         isHack: true
+        //     } } }
+        // )
+        await Hackathon.updateOne(
+            { _id: new mongo.Types.ObjectId(id) }, 
+            { $addToSet: { member: { $each: data } } }, 
+            { upsert: true, new: true }
+        );
         return { success: true }
     } catch (e) {
         return { success: false }
     }
 }
 
-export const HackathonRegisterRemoveMembers = async (id: string, email: string) => {
+export const HackathonRegisterRemoveMembers = async (id: string, email: Array<string>) => {
     try {
-        Hackathon.findOneAndUpdate({ _id: new mongo.Types.ObjectId(id) }, { $pull: { 'member.mail': email } } );
+        // await Event.updateOne(
+        //     { mail: { $in: email } },
+        //     { $set: { hack: {
+        //         team: null,
+        //         isHack: false
+        //     } } }
+        // )
+        await Hackathon.updateOne(
+            { _id: new mongo.Types.ObjectId(id) }, 
+            { $pull: { member: { email: { $in: email} } }  },
+            { new: true }
+        );
         return { success: true }
     } catch (e) {
         return { success: false }

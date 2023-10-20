@@ -1,6 +1,4 @@
 
-
-
 export const EventNameModel = {
     1: "",
     2: "",
@@ -33,6 +31,7 @@ export const Theme = {
     5: 'Open'
 }
 
+// User Interfaces & types
 export interface EventModels {
     stName: string,
     mail: string,
@@ -46,6 +45,7 @@ export interface EventModels {
     designation?: string,
     // Student
     college?: string,
+    
     branch?: string,
     course?: string,
     year?: number,
@@ -57,7 +57,7 @@ export type EventModelE = Omit<EventModels, "college" | "branch" | "course" | "y
 export interface Member {
     name: string,
     email: string,
-    year: number,
+    year: number
 }
 
 export interface HackathonModel {
@@ -74,3 +74,10 @@ export interface HackathonModel {
     verify: Boolean,
     qrId: string,
 }
+
+
+// Admin Interfaces & types
+
+
+// export interface
+
