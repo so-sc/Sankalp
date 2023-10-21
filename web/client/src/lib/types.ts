@@ -6,6 +6,9 @@ import {
 } from "@/lib/schemas"
 import { z } from "zod"
 
+export type SearchParams = { [key: string]: string | string[] | undefined }
+export type FormState = "login" | "register"
+
 export type UserProfile = z.infer<typeof registrationSchema>
 export type HackathonTeam = z.infer<typeof teamSchema>
 export type User = UserProfile["user"]

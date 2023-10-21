@@ -1,10 +1,9 @@
 import Login from "@/components/login"
 import Register from "@/components/registration/register"
 import { H1 } from "@/components/ui/typography"
+import { FormState, SearchParams } from "@/lib/types"
 import Link from "next/link"
 
-export type SearchParams = { [key: string]: string | string[] | undefined }
-export type FormState = "login" | "register"
 interface HomePageProps {
   searchParams: SearchParams
 }
