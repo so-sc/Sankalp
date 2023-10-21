@@ -1,29 +1,20 @@
 "use client"
 
-import EventRegistration, { eventSchema } from "@/components/event-registration"
 import RegistrationDisplay from "@/components/registration-display"
+import EventRegistration from "@/components/registration/event-registration"
+import UserRegistration from "@/components/registration/user-registration"
 import { H1 } from "@/components/ui/typography"
-import UserRegistration, { userSchema } from "@/components/user-registration"
+import { Step, UserProfile } from "@/lib/types"
 import Link from "next/link"
 import { Dispatch, SetStateAction, useState } from "react"
-import { z } from "zod"
-
-export const formSchema = z.object({
-  user: userSchema,
-  event: eventSchema,
-})
 
 export interface CommonRegistrationProps {
-  setRegistrationData: Dispatch<SetStateAction<z.infer<typeof formSchema>>>
-  setStep: Dispatch<SetStateAction<Step>>
+  setRegistrationData: Dispatch<SetStateAction<UserProfile>>
+  setStep?: Dispatch<SetStateAction<Step>>
 }
 
-export type Step = 1 | 2 | 3
-
 export default function Register() {
-  const [registrationData, setRegistrationData] = useState<
-    z.infer<typeof formSchema>
-  >({
+  const [registrationData, setRegistrationData] = useState<UserProfile>({
     user: {
       name: "",
       email: "",
@@ -38,8 +29,8 @@ export default function Register() {
       },
     },
     event: {
-      talks: [false, false, true, true, false, false],
-      esports: [false, true],
+      talks: [false, false, false, false, false, false],
+      esports: [false, false],
     },
   })
 
@@ -60,6 +51,7 @@ export default function Register() {
         ) : step === 2 ? (
           <EventRegistration
             setRegistrationData={setRegistrationData}
+            registrationData={registrationData}
             setStep={setStep}
           />
         ) : (

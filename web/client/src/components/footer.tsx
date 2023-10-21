@@ -1,4 +1,4 @@
-import Image from "next/image"
+import SOSCLogo from "@/assets/sosc-logo"
 import Link from "next/link"
 
 const githubLink = "https://github.com/so-sc"
@@ -17,9 +17,9 @@ export default function Footer() {
       <div className="container mx-auto md:items-center lg:items-start grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mb-8">
         <div className="col-span-1 md:col-span-2 lg:col-span-1 flex lg:block items-center justify-center gap-2">
           <div className="relative h-8 aspect-video mt-2 lg:mt-0">
-            <Image src="/sosc.png" alt="SOSC Logo" fill sizes="100%" />
+            <SOSCLogo />
           </div>
-          <div className="font-bold mt-3">
+          <div className="font-bold mt-1">
             <p>SOSC</p>
             <p>Sahyadri Open-Source Community</p>
           </div>
@@ -27,35 +27,71 @@ export default function Footer() {
         <div className="grid grid-cols-2">
           <div className="">
             <div className="flex flex-col">
-              <Link href={githubLink} target="_blank">
+              <Link
+                href={githubLink}
+                target="_blank"
+                className="hover:text-foreground/80 transition-colors"
+              >
                 GitHub
               </Link>
-              <Link href={linkedinLink} target="_blank">
+              <Link
+                href={linkedinLink}
+                target="_blank"
+                className="hover:text-foreground/80 transition-colors"
+              >
                 Linkedin
               </Link>
-              <Link href={instagramLink} target="_blank">
+              <Link
+                href={instagramLink}
+                target="_blank"
+                className="hover:text-foreground/80 transition-colors"
+              >
                 Instagram
               </Link>
-              <Link href={facebookLink} target="_blank">
+              <Link
+                href={facebookLink}
+                target="_blank"
+                className="hover:text-foreground/80 transition-colors"
+              >
                 Facebook
               </Link>
-              <Link href={twitterLink} target="_blank">
+              <Link
+                href={twitterLink}
+                target="_blank"
+                className="hover:text-foreground/80 transition-colors"
+              >
                 Twitter
               </Link>
             </div>
           </div>
           <div>
             <div className="flex flex-col">
-              <Link href={youtubeLink} target="_blank">
+              <Link
+                href={youtubeLink}
+                target="_blank"
+                className="hover:text-foreground/80 transition-colors"
+              >
                 YouTube
               </Link>
-              <Link href={discordLink} target="_blank">
+              <Link
+                href={discordLink}
+                target="_blank"
+                className="hover:text-foreground/80 transition-colors"
+              >
                 Discord
               </Link>
-              <Link href={communityGuidelines} target="_blank">
+              <Link
+                href={communityGuidelines}
+                target="_blank"
+                className="hover:text-foreground/80 transition-colors"
+              >
                 Community Guidelines
               </Link>
-              <Link href="#" target="_blank">
+              <Link
+                href="#"
+                target="_blank"
+                className="hover:text-foreground/80 transition-colors"
+              >
                 Donate
               </Link>
             </div>
@@ -66,7 +102,11 @@ export default function Footer() {
             Sahyadri College of Engineering and Management, Adyar, Mangalore -
             575007 IN
           </p>
-          <Link target="_blank" href="mailto:sosc@sahyadri.edu.in">
+          <Link
+            target="_blank"
+            className="hover:text-foreground/80 transition-colors"
+            href="mailto:sosc@sahyadri.edu.in"
+          >
             sosc@sahyadri.edu.in
           </Link>
           <p className="pt-2">+91 87624 58575</p>

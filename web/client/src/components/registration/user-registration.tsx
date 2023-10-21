@@ -1,4 +1,4 @@
-import { CommonRegistrationProps } from "@/components/register"
+import { CommonRegistrationProps } from "@/components/registration/register"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -16,38 +16,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { userSchema } from "@/lib/schemas"
+import { User, UserProfile } from "@/lib/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { TbCaretRightFilled } from "react-icons/tb"
-import { z } from "zod"
-
-const studentSchema = z.object({
-  role: z.literal("student"),
-  college: z.string().min(3),
-  course: z.string().min(2),
-  yearOfStudy: z.enum(["1", "2", "3", "4", "5"]),
-  branch: z.string().min(2),
-})
-
-const employeeSchema = z.object({
-  role: z.literal("employee"),
-  company: z.string().min(3),
-  designation: z.string().min(2),
-})
-
-export const userSchema = z.object({
-  name: z.string().min(3).max(48),
-  email: z.string().email(),
-  phone: z.string().length(10),
-  gender: z.enum(["male", "female", "non-binary", "other"]),
-  role: z.union([studentSchema, employeeSchema]),
-})
 
 export default function UserRegistration({
   setRegistrationData,
   setStep,
 }: CommonRegistrationProps) {
-  const form = useForm<z.infer<typeof userSchema>>({
+  const form = useForm<User>({
     resolver: zodResolver(userSchema),
     defaultValues: {
       name: "",
@@ -66,9 +45,9 @@ export default function UserRegistration({
 
   const userRole = form.watch("role.role")
 
-  function onNextStep(values: z.infer<typeof userSchema>) {
-    setRegistrationData((prev) => ({ ...prev, user: values }))
-    setStep(2)
+  function onNextStep(values: User) {
+    setRegistrationData((prev: UserProfile) => ({ ...prev, user: values }))
+    setStep!(2)
   }
   return (
     <Form {...form}>

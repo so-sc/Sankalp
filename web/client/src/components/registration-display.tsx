@@ -1,27 +1,28 @@
-import { ESPORTS, TALKS } from "@/components/event-registration"
-import { Step, formSchema } from "@/components/register"
 import { Button } from "@/components/ui/button"
 import Notification from "@/components/ui/notification"
 import { H1 } from "@/components/ui/typography"
-import { Dispatch, SetStateAction } from "react"
-import { TbCaretLeftFilled } from "react-icons/tb"
-import { z } from "zod"
+import UserDisplay from "@/components/user-display"
+import { ESPORTS, TALKS } from "@/lib/constants"
+import { Step, UserProfile } from "@/lib/types"
+import { Dispatch, SetStateAction, useState } from "react"
+import { TbCaretLeftFilled, TbLoader2 } from "react-icons/tb"
 
 interface RegistrationDisplayProps {
-  registrationData: z.infer<typeof formSchema>
+  registrationData: UserProfile
   setStep: Dispatch<SetStateAction<Step>>
 }
-
-const numberDisplay = ["1st", "2nd", "3rd", "4th", "5th"]
 
 export default function RegistrationDisplay({
   registrationData,
   setStep,
 }: RegistrationDisplayProps) {
   const { user, event } = registrationData
+  const [isLoading, setIsLoading] = useState(false)
 
   function handleRegistration() {
+    setIsLoading(true)
     console.log(registrationData)
+    setIsLoading(false)
   }
 
   return (
@@ -37,60 +38,15 @@ export default function RegistrationDisplay({
         Confirm Registration for DevHost 2023
       </H1>
       <div>
-        <p className="text-center mb-2 bg-foreground/10 px-2 py-2">
-          Attendee Details
-        </p>
-        <p className="py-1 border-b border-b-foreground/10">
-          Name: <span className="font-bold">{user.name}</span>
-        </p>
-        <p className="py-1 border-b border-b-foreground/10">
-          Email: <span className="font-bold">{user.email}</span>
-        </p>
-        <p className="py-1 border-b border-b-foreground/10">
-          Gender:{" "}
-          <span className="font-bold">
-            {user.gender[0].toUpperCase() + user.gender.slice(1)}
-          </span>
-        </p>
-        {user.role.role === "student" ? (
-          <>
-            <p className="py-1 border-b border-b-foreground/10">
-              College: <span className="font-bold">{user.role.college}</span>
-            </p>
-            <p className="py-1 border-b border-b-foreground/10">
-              Course: <span className="font-bold">{user.role.course}</span>
-            </p>
-            <p className="py-1 border-b border-b-foreground/10">
-              Branch: <span className="font-bold">{user.role.branch}</span>
-            </p>
-            <p className="py-1">
-              Year of Study:{" "}
-              <span className="font-bold">
-                {numberDisplay[Number(user.role.yearOfStudy) - 1]} year
-              </span>
-            </p>
-          </>
-        ) : user.role.role === "employee" ? (
-          <>
-            <p className="py-1 border-b border-b-foreground/10">
-              Company: <span className="font-bold">{user.role.company}</span>
-            </p>
-            <p className="py-1">
-              Designation:{" "}
-              <span className="font-bold">{user.role.designation}</span>
-            </p>
-          </>
-        ) : (
-          <p className="text-center text-red-500">Please select a role</p>
-        )}
         <div className="flex flex-col gap-4 mt-4">
+          <UserDisplay user={user} />
           <div>
             <p className="text-center mb-2 bg-foreground/10 px-2 py-2">
               Talks you have opted in
             </p>
             <div className="">
               {event.talks.map(
-                (item, index) =>
+                (item: boolean, index: number) =>
                   item && (
                     <p
                       key={index}
@@ -108,7 +64,7 @@ export default function RegistrationDisplay({
             </p>
             <div className="flex flex-col gap-1">
               {event.esports.map(
-                (item, index) =>
+                (item: boolean, index: number) =>
                   item && (
                     <p
                       key={index}
@@ -128,8 +84,13 @@ export default function RegistrationDisplay({
           that will be your entry pass to the event.
         </p>
       </Notification>
-      <Button className="w-full mt-8 md:mt-4" onClick={handleRegistration}>
+      <Button
+        className="mt-4 flex items-center gap-2"
+        disabled={isLoading}
+        onClick={handleRegistration}
+      >
         Confirm Registration
+        {isLoading && <TbLoader2 className="animate-spin" />}
       </Button>
     </main>
   )

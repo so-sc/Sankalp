@@ -12,7 +12,9 @@ const feedbackData = new mongo.Schema({
         type: String,
         require: true
     },
-    
+}, {
+    collection: "feedback",
+    timestamps: true,
 }) 
 
 
@@ -26,8 +28,8 @@ const adminAuth = new mongo.Schema({
         require: true
     },
     volunter: {
-        type: Boolean,
-        default: false
+        type: Object,
+        require: false
     }
 }, {
     collection: "admins",
@@ -35,8 +37,13 @@ const adminAuth = new mongo.Schema({
 })
 
 
-export const Admin = mongo.model('auth', adminAuth);
+export const AdminData = mongo.model('auth', adminAuth);
 
-export const authSessionToken = (sToken: string) => Admin.findOne({
+export const authSessionToken = (sToken: string) => AdminData.findOne({
     'authentication.sessionToken': sToken,
 });
+
+
+
+export const FeedbackData = mongo.model('auth', feedbackData);
+

@@ -21,7 +21,7 @@ export function H1({ children, className, ...props }: HeadingProps) {
 
 export function H2({ children, className, ...props }: HeadingProps) {
   return (
-    <h1
+    <h2
       className={cn(
         "scroll-m-20 border-b pb-2 text-2xl md:text-3xl font-semibold tracking-tight first:mt-0",
         className
@@ -29,13 +29,13 @@ export function H2({ children, className, ...props }: HeadingProps) {
       {...props}
     >
       {children}
-    </h1>
+    </h2>
   )
 }
 
 export function H3({ children, className, ...props }: HeadingProps) {
   return (
-    <h1
+    <h3
       className={cn(
         "scroll-m-20 text-2xl font-semibold tracking-tight",
         className
@@ -43,6 +43,6 @@ export function H3({ children, className, ...props }: HeadingProps) {
       {...props}
     >
       {children}
-    </h1>
+    </h3>
   )
 }
