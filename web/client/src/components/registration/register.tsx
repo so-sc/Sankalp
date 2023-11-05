@@ -4,6 +4,7 @@ import RegistrationDisplay from "@/components/registration-display"
 import EventRegistration from "@/components/registration/event-registration"
 import UserRegistration from "@/components/registration/user-registration"
 import { H1 } from "@/components/ui/typography"
+import { MAIN_EVENT_NAME } from "@/lib/constants"
 import { Step, UserProfile } from "@/lib/types"
 import Link from "next/link"
 import { Dispatch, SetStateAction, useState } from "react"
@@ -39,7 +40,7 @@ export default function Register() {
   return (
     <>
       {step === 1 && (
-        <H1 className="lg:text-9xl text-center mb-8">DevHost 2023</H1>
+        <H1 className="lg:text-9xl text-center mb-8">{MAIN_EVENT_NAME}</H1>
       )}
 
       <div className="w-3/4 mx-auto">
@@ -48,13 +49,13 @@ export default function Register() {
             setRegistrationData={setRegistrationData}
             setStep={setStep}
           />
-        ) : step === 2 ? (
-          <EventRegistration
-            setRegistrationData={setRegistrationData}
-            registrationData={registrationData}
-            setStep={setStep}
-          />
         ) : (
+          // ) : step === 2 ? (
+          //   <EventRegistration
+          //     setRegistrationData={setRegistrationData}
+          //     registrationData={registrationData}
+          //     setStep={setStep}
+          //   />
           <RegistrationDisplay
             registrationData={registrationData}
             setStep={setStep}

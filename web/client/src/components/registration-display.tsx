@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button"
 import Notification from "@/components/ui/notification"
 import { H1 } from "@/components/ui/typography"
 import UserDisplay from "@/components/user-display"
-import { ESPORTS, TALKS } from "@/lib/constants"
+import { ESPORTS, MAIN_EVENT_NAME, TALKS } from "@/lib/constants"
 import { Step, UserProfile } from "@/lib/types"
 import { Dispatch, SetStateAction, useState } from "react"
 import { TbCaretLeftFilled, TbLoader2 } from "react-icons/tb"
@@ -30,21 +30,21 @@ export default function RegistrationDisplay({
       <Button
         className="flex gap-2"
         variant="outline"
-        onClick={() => setStep(2)}
+        onClick={() => setStep((prev: Step) => (prev - 1) as Step)}
       >
         <TbCaretLeftFilled /> Prev
       </Button>
       <H1 className="text-3xl lg:text-4xl text-center my-4">
-        Confirm Registration for DevHost 2023
+        Confirm Registration for {MAIN_EVENT_NAME}
       </H1>
       <div>
         <div className="flex flex-col gap-4 mt-4">
           <UserDisplay user={user} />
-          <div>
+          {/* <div>
             <p className="text-center mb-2 bg-foreground/10 px-2 py-2">
               Talks you have opted in
             </p>
-            <div className="">
+            <div>
               {event.talks.map(
                 (item: boolean, index: number) =>
                   item && (
@@ -75,7 +75,7 @@ export default function RegistrationDisplay({
                   )
               )}
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
       <Notification variant="info" className="mt-2">
@@ -85,7 +85,7 @@ export default function RegistrationDisplay({
         </p>
       </Notification>
       <Button
-        className="mt-4 flex items-center gap-2"
+        className="mt-4 w-full flex items-center gap-2"
         disabled={isLoading}
         onClick={handleRegistration}
       >

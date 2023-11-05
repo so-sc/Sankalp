@@ -10,7 +10,7 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { ESPORTS, TALKS, TOTAL_ESPORTS, TOTAL_TALKS } from "@/lib/constants"
 import { eventSchema } from "@/lib/schemas"
-import { Event, UserProfile } from "@/lib/types"
+import { Event, Step, UserProfile } from "@/lib/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { TbCaretLeftFilled, TbCaretRightFilled } from "react-icons/tb"
@@ -34,7 +34,7 @@ export default function EventRegistration({
   })
   function onRegister(values: Event) {
     setRegistrationData((prev: UserProfile) => ({ ...prev, event: values }))
-    if (!isUpdation) setStep!(3)
+    if (!isUpdation) setStep!((prev: Step) => (prev + 1) as Step)
   }
 
   return (
@@ -43,7 +43,7 @@ export default function EventRegistration({
         <Button
           className="flex gap-2"
           variant="outline"
-          onClick={() => setStep!(1)}
+          onClick={() => setStep!((prev: Step) => (prev - 1) as Step)}
         >
           <TbCaretLeftFilled /> Prev
         </Button>
@@ -174,7 +174,7 @@ export default function EventRegistration({
             {isUpdation ? (
               <p>Update Selection</p>
             ) : (
-              <p>
+              <p className="flex items-center gap-1">
                 Next <TbCaretRightFilled />
               </p>
             )}

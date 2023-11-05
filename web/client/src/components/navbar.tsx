@@ -1,6 +1,7 @@
 "use client"
 
 import { ModeToggle } from "@/components/ui/mode-toggle"
+import { MAIN_EVENT_NAME, MAIN_EVENT_WEBSITE } from "@/lib/constants"
 import Link from "next/link"
 import { useState } from "react"
 import { FaBars } from "react-icons/fa"
@@ -33,11 +34,11 @@ export default function Navbar() {
         </div>
         <ul className="relative flex flex-col md:flex-row justify-center gap-2 md:gap-8 col-span-4 place-self-center md:bg-foreground/10 w-full h-full py-4 rounded-b-full">
           <Link
-            href="https://devhost.sosc.org.in"
+            href={MAIN_EVENT_WEBSITE}
             target="_blank"
             className="hover:underline underline-offset-2"
           >
-            DevHost
+            {MAIN_EVENT_NAME}
           </Link>
           <Link
             href="/hackathon"

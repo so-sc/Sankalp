@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button"
 import Notification from "@/components/ui/notification"
 import {
   HACKATHON_NAME,
+  MAIN_EVENT_WEBSITE,
   MAX_MEMBERS,
   MIN_MEMBERS,
   THEMES,
@@ -93,7 +94,7 @@ export default function HackathonDashboard({ team }: HackathonDashboardProps) {
                 <Link href="/hackathon">Register for {HACKATHON_NAME}</Link>
               </Button>
               <Link
-                href="devhost.sosc.org.in/hackathon"
+                href={MAIN_EVENT_WEBSITE}
                 target="_blank"
                 className="flex items-center gap-2 justify-center text-sm text-foreground/70 hover:text-foreground hover:underline underline-offset-4 transition-colors"
               >

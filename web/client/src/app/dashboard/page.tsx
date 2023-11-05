@@ -1,7 +1,7 @@
 import HackathonDashboard from "@/components/dashboard/hackathon-dashboard"
 import UserDashboard from "@/components/dashboard/user-dashboard"
 import { H1, H2 } from "@/components/ui/typography"
-import { HACKATHON_NAME } from "@/lib/constants"
+import { HACKATHON_NAME, MAIN_EVENT_NAME } from "@/lib/constants"
 import { hackathonTeam, userProfile } from "@/lib/placeholder"
 
 export default function DashboardPage() {
@@ -12,7 +12,7 @@ export default function DashboardPage() {
   // search deeply in the member list too and return the team.... Akkil on you :P
   return (
     <main className="container mx-auto px-8 lg:px-20 xl:px-24 py-12">
-      <H1>DevHost 2023 - Dashboard</H1>
+      <H1>{MAIN_EVENT_NAME} - Dashboard</H1>
       <H2 className="mt-3">Welcome {userProfile.user.name}!</H2>
       <div className="grid md:grid-cols-2 mt-4 gap-4">
         <UserDashboard userProfile={userProfile} />

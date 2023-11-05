@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { userSchema } from "@/lib/schemas"
-import { User, UserProfile } from "@/lib/types"
+import { Step, User, UserProfile } from "@/lib/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { TbCaretRightFilled } from "react-icons/tb"
@@ -47,7 +47,7 @@ export default function UserRegistration({
 
   function onNextStep(values: User) {
     setRegistrationData((prev: UserProfile) => ({ ...prev, user: values }))
-    setStep!(2)
+    setStep!((prev: Step) => (prev + 1) as Step)
   }
   return (
     <Form {...form}>
