@@ -9,6 +9,7 @@ import cors from 'cors';
 import mongo from 'mongoose';
 import { User } from "./route/user_api";
 import { Admin } from "./route/admin_api";
+import { Auth } from './route/auth_api';
 require('dotenv').config();
 
 const app = express();
@@ -16,7 +17,7 @@ const app = express();
 mongo.Promise = Promise;
 mongo.connect(process.env.MONGODB)
 const db = mongo.connection
-db.on('error', (error: Error) => console.log(error.message))
+db.on('error', (error: Error) => console.log("Check your mongodb please. There is an issue with mongodb."))
 db.on('open', () => console.log("Mongodb is connected."))
 app.use(express.json())
 // app.use(cors({
@@ -24,6 +25,8 @@ app.use(express.json())
 // }));
 // app.use(compression());
 // app.use(cookieParser());
+
+app.use(cors());
 app.use(bodyParser.json());
 
 const server = http.createServer(app);
@@ -39,6 +42,9 @@ app.use("/api/user/", User)
 
 // Admin Interface API routes
 app.use("/api/admin/", Admin)
+
+// Auth Interface API routes
+app.use("/api/auth", Auth)
 
 
 server.listen(7000, () => console.log("Server running at http://localhost:7000"));

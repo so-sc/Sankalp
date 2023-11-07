@@ -1,61 +1,31 @@
 //
 
 import mongo from "mongoose";
-import { HackathonModel, Member } from "workers/model";
+import { EventModels, HackathonModel, Member } from "workers/model";
 
-const eventRegistration = new mongo.Schema({
-    stName: {
-        type: String,
-        require: true
-    },
-    mail: {
-        type: String,
-        require: true
-    },
-    college: {
-        type: String,
-        require: false
-    },
-    branch: {
-        type: String,
-        require: false
-    },
-    year: {
+const eventRegistration = new mongo.Schema<EventModels>({
+    talk: [{
         type: Number,
         require: false
-    },
-    eventOpt: [{
-        type: Number,
-        require: true
     }],
-    student: {
+    event: {
         type: Boolean,
-        default: false
-    },
-    gender: {
-        type: Number,
-        default: false
-    },
-    company: {
-        type: String,
         require: false
     },
-    designation: {
-        type: String,
-        require: false
+    eventInfo: {
+        type: {
+            eve: Number,
+            pno: Number,
+            participant: {
+                info: String
+            }
+        },
+        required: true
     },
     verify: {
         type: Boolean,
         default: false
     }, 
-    hack: {
-        type: Object,
-        default: {
-            isHack: false,
-            team: null
-        },
-        require: true
-    },
     qrId: {
         type: String,
         require: false
@@ -66,18 +36,16 @@ const eventRegistration = new mongo.Schema({
 })
 
 eventRegistration.pre('save', function (next) {
-    // Convert the eventOpt array into a Set to remove duplicates
-    const uniqueEventOpt = Array.from(new Set(this.eventOpt));
-    this.eventOpt = uniqueEventOpt;
+    try{
+        // Convert the eventOpt array into a Set to remove duplicates
+    const uniqueEventOpt = Array.from(new Set(this.talk));
+    this.talk = uniqueEventOpt;
     next();
+    } catch(e) {}
 });
 
 const hackathonRegistration = new mongo.Schema({
-    TmName: {
-        type: String,
-        require: true
-    },
-    college: {
+    name: {
         type: String,
         require: true
     },
@@ -89,43 +57,17 @@ const hackathonRegistration = new mongo.Schema({
         type: String,
         require: false
     },
-    tlName: {
-        type: String,
-        require: true
-    },
-    tlEmail: {
-        type: String,
-        require: true
-    },
-    tlYear: {
-        type: Number,
-        require: true
-    },
-    tlPhNo: {
-        type: Number,
-        require: true
-    },
     memNo: {
         type: Number,
         require: true
     },
-    member: {
-        type: [{
-            name: {
-                type: String,
-                require: true,
-            },
-            email: {
-                type: String,
-                require: true,
-            },
-            year: {
-                type: String,
-                require: true,
-            }
-        }],
-        require: false
-    },
+    member: [{
+        type: {
+            info: String,
+            lead: Boolean
+        },
+        require: true
+    }],
     verify: {
         type: Boolean,
         default: false
