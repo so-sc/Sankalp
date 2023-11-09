@@ -46,37 +46,16 @@ export interface Member {
     lead: boolean
 }
 
-export interface SignupModal {
-    name: string,
-    email: string,
-    gender: number,
-    verify: boolean,
-    student: boolean,
-    PhNo: string,
-    // Employee
-    company?: string,
-    designation?: string,
-    // Student
-    college?: string,
-    branch?: string,
-    course?: string,
-    year?: number,
-}
-
-export interface SigninModal {
-    email: string,
-    id: string
-}
-
 // User Interfaces & types
 export interface EventModels {
     verify: boolean,
     qrId: string,
-    event?: boolean,
+    isEvent?: boolean,
     // Talk
+    mail?: string,
     talk?: Array<number>,
     // Event
-    eventInfo: {
+    event: {
         eve: number,
         pno: number,
         participant: Array<Omit<Member, "lead">>
@@ -102,5 +81,26 @@ export interface HackathonModel {
 // Admin Interfaces & types
 
 
-// export interface
+// Authentication interface
 
+export interface SignupModal {
+    name: string,
+    email: string,
+    gender: number,
+    verify: boolean,
+    student: boolean,
+    PhNo: string,
+    // Employee
+    company?: string,
+    designation?: string,
+    // Student
+    college?: string,
+    branch?: string,
+    course?: string,
+    year?: number,
+}
+
+export interface SigninModal {
+    email: string,
+    id: string
+}
