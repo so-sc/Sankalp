@@ -11,7 +11,8 @@ const userRegisteration = new mongo.Schema<SignupModal>({
     },
     email: {
         type: String,
-        require: true
+        require: true,
+        unique: true
     },
     gender: {
         type: Number,
