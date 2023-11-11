@@ -10,7 +10,8 @@ const feedbackData = new mongo.Schema({
     },
     mail: {
         type: String,
-        require: true
+        require: true,
+        unique: true
     },
 }, {
     collection: "feedback",
@@ -25,7 +26,8 @@ const adminAuth = new mongo.Schema({
     },
     email: {
         type: String,
-        require: true
+        require: true,
+        unique: true
     },
     volunter: {
         type: Object,

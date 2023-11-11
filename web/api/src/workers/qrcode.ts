@@ -22,7 +22,7 @@ export const qrCreator = async (id: string) => {
 
 export const formID = async (eid: string) => {
     try {
-      const data = await decrypt(eid);
+      const data = decrypt(eid);
       return { success: true, data: data }
     } catch(error) {
       return { success: false, message: `Error: ${error}` }

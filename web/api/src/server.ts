@@ -7,7 +7,7 @@ import cookieParser from 'cookie-parser';
 import compression from 'compression';
 import cors from 'cors';
 import mongo from 'mongoose';
-import { User } from "./route/user_api";
+import { App } from "./route/app_api";
 import { Admin } from "./route/admin_api";
 import { Auth } from './route/auth_api';
 require('dotenv').config();
@@ -38,10 +38,10 @@ app.get("/", async(req, res) => {
 
 
 // User Interface API routes
-app.use("/api/user/", User)
+app.use("/api/app", App)
 
 // Admin Interface API routes
-app.use("/api/admin/", Admin)
+app.use("/api/admin", Admin)
 
 // Auth Interface API routes
 app.use("/api/auth", Auth)

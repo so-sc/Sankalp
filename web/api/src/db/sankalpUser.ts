@@ -1,7 +1,8 @@
 //
 
 import mongo from "mongoose";
-import { EventModels, HackathonModel, Member, SignupModal } from "workers/model";
+import { EventModels, HackathonModel, Member, SigninModal, SignupModal } from "../workers/model";
+import { createToken } from "../workers/auth";
 
 
 const userRegisteration = new mongo.Schema<SignupModal>({
@@ -11,7 +12,8 @@ const userRegisteration = new mongo.Schema<SignupModal>({
     },
     email: {
         type: String,
-        require: true
+        require: true,
+        unique: true
     },
     gender: {
         type: Number,
@@ -59,10 +61,10 @@ const userRegisteration = new mongo.Schema<SignupModal>({
 })
 
 export const User = mongo.model('users', userRegisteration);
-export const UserRegisters = async (st: boolean) => { return User.find( { student: st } ); }
-export const UserRegistersBy = async (param: any) => { return User.find({ param }); }
+export const UserRegisters = (st: boolean) => { return User.find( { student: st } ); }
+export const UserRegistersBy = (param: any) => { return User.find({ param }); }
 export const UserRegisterByID = async (id: String) => {
-    return User.findById(id);
+    return await User.findById(id);
 }
 
 export const UserRegister = async (data: any) => {
@@ -76,12 +78,35 @@ export const UserRegister = async (data: any) => {
 }
 
 export const UserRegistersVerifyByID = async (id: string) => {
-    if (User.find({ _id: new mongo.Types.ObjectId(id), verify: false})) {
+    const rs = await User.find({ _id: new mongo.Types.ObjectId(id), verify: true});
+    if (rs.length!==0) {
         return { success: false, message: 'Attendee is already verified.' }
-    }else if (User.updateOne({ _id: new mongo.Types.ObjectId(id) }, { $set: { verify: true }})) {
+    }else if (await User.findById(id)) {
+        await User.updateOne({ _id: new mongo.Types.ObjectId(id) }, { $set: { verify: true }})
         return { success: true }
     } else {
         return { success: false, message: 'The data is invalid.' }
+    }
+}
+
+export const UserSigninChecker = async (data: SigninModal) => {
+    try {
+        var result = await User.findOne({ _id: data.id, email: data.email });
+        if (result) {
+            if (result.verify) {
+                return { success: false, message: "Attendee has already verified." }
+            }
+            var rs = await createToken(data.id);
+            if (rs.success) {
+                return { success: true, token: rs.token, verify: result.verify };
+            } else {
+                return { success: false, message: rs.message }
+            }
+        } else {
+            return { success: false, message: "Attendee not found." }
+        }
+    } catch (e) {
+        return { success: false, message: 'The ID is invalid.' }
     }
 }
 
@@ -132,10 +157,10 @@ eventRegistration.pre('save', function (next) {
 
 // Event Registration
 export const Event = mongo.model('Event', eventRegistration);
-export const EventRegisters = async (st: boolean) => { return Event.find( { student: st } ); }
-export const EventRegistersBy = async (param: any) => { return Event.find({ param }); }
+export const EventRegisters = async (st: boolean) => { return await Event.find( { student: st } ); }
+export const EventRegistersBy = async (param: any) => { return await Event.find({ param }); }
 export const EventRegisterByID = async (id: String) => {
-    return Event.findById(id);
+    return await Event.findById(id);
 }
 
 export const EventRegister = async (data: any) => {
@@ -157,6 +182,7 @@ export const EventRegister = async (data: any) => {
                 { $set: { talk: info._id } }
             );
         }
+
         return { success: true, id: info._id.toString() }
     } catch (e) {
         return { success: false, message: 'The ID is invalid.' }
@@ -171,9 +197,9 @@ export const EventQRAdder = async (id: string, qId: string) => {
 }
 
 export const EventRegistersVerifyByID = async (id: string) => {
-    if (Event.find({ _id: new mongo.Types.ObjectId(id), verify: false})) {
+    if (await Event.find({ _id: new mongo.Types.ObjectId(id), verify: true})) {
         return { success: false, message: 'Attendee is already verified.' }
-    }else if (Event.updateOne({ _id: new mongo.Types.ObjectId(id) }, { $set: { verify: true }})) {
+    }else if (await Event.updateOne({ _id: new mongo.Types.ObjectId(id) }, { $set: { verify: true }})) {
         return { success: true }
     } else {
         return { success: false, message: 'The data is invalid.' }
@@ -200,7 +226,6 @@ export const EventRegisterRemoveTalk = async (id: string, no: Array<number> ) =>
             { $pull: { talk: { $in: no } } },
             { new: true }
         );
-        // console.log(result); { acknowledged: true, modifiedCount: 1, upsertedId: null, upsertedCount: 0, matchedCount: 1 }
         return { success: true }
     } catch (e) {
         return { success: false }
@@ -239,7 +264,7 @@ const hackathonRegistration = new mongo.Schema({
         require: true
     },
     theme: {
-        type: String,
+        type: Number,
         require: true
     },
     themeName: {
@@ -252,8 +277,14 @@ const hackathonRegistration = new mongo.Schema({
     },
     member: [{
         type: {
-            info: String,
-            lead: Boolean
+            info: {
+                type: String,
+                require: true
+            },
+            lead: {
+                type: Boolean,
+                require: false
+            }
         },
         require: true
     }],
@@ -281,12 +312,13 @@ hackathonRegistration.pre('save', function (next) {
 
 // Hackathon Registration
 export const Hackathon = mongo.model('Hackathon', hackathonRegistration);
-export const HackathonRegisters = async () => { return Hackathon.find(); }
-export const HackathonRegistersBy = async (param: any) => { return Hackathon.find({ param }); }
-export const HackathonRegisterByID = async (id: string) => { return Hackathon.find({ _id: new mongo.Types.ObjectId(id) }); }
+export const HackathonRegisters = async () => { return await Hackathon.find(); }
+export const HackathonRegistersBy = async (param: any) => { return await Hackathon.find({ param }); }
+export const HackathonRegisterByID = async (id: string) => { return await Hackathon.find({ _id: new mongo.Types.ObjectId(id) }); }
 
-export const HackathonRegister = async (data: HackathonModel) => {
+export const HackathonRegister = async (data: any) => {
     try {
+        data.verify = false;
         const hackathon = new Hackathon(data);
         const info = await hackathon.save();
         var mails = Array()
@@ -294,19 +326,19 @@ export const HackathonRegister = async (data: HackathonModel) => {
         for (var i=0; i< (data.member).length; i++) {
             data.member[i].lead?lead=await User.findById(data.member[i].info).select('email'):mails.push(await User.findById(data.member[i].info).select('email'));
         }
-        await Event.updateMany(
+        await User.updateMany(
             { mail: { $in: mails } },
             { $set: { hack: {
                 team: info._id.toString()
             } } }
         );
-        await Event.updateOne(
+        await User.updateOne(
             { mail: lead },
             { $set: { hack: {
                 team: info._id.toString(),
                 lead: true
             } } }
-        )
+        );
         return { success: true, id: info._id.toString() }
     } catch (e) {
         return { success: false, message: 'The data is invalid.' }
@@ -321,13 +353,24 @@ export const HackathonQRAdder = async (id: string, qId: string) => {
 }
 
 export const hackathonRegistersVerifyByID = async (id: string) => {
-    if (Hackathon.find({ _id: new mongo.Types.ObjectId(id), verify: false})) {
+    if (await Hackathon.find({ _id: new mongo.Types.ObjectId(id), verify: true})) {
         return { success: false, message: 'Hackathon team is already verified.' }
-    }else if (Hackathon.updateOne({ _id: new mongo.Types.ObjectId(id) }, { $set: { verify: true }})) {
+    }else if (await Hackathon.updateOne({ _id: new mongo.Types.ObjectId(id) }, { $set: { verify: true }})) {
         return { success: true }
     } else {
         return { success: false, message: 'The ID is invalid.' }
     }
+}
+
+export const hackathonRegisterGetLeadEmail = async (id: string) => {
+    const hack: HackathonModel = await Hackathon.findById(id);
+    const part = hack.member;
+    for (var i=0; i<part.length; i++) {
+        if (part[i].lead) {
+            return (await UserRegisterByID(part[i].info)).email
+        }
+    }
+    return null
 }
 
 export const HackathonRegisterAddMembers = async (id: string, emails: Array<string> ) => {
@@ -341,6 +384,13 @@ export const HackathonRegisterAddMembers = async (id: string, emails: Array<stri
             { $addToSet: { member: { info: { $each: ids } } } }, // 'member.info'
             { upsert: true, new: true }
         );
+        // Add 
+        // await User.updateMany(
+        //     { mail: { $in: mails } },
+        //     { $set: { hack: {
+        //         team: info._id.toString()
+        //     } } }
+        // );
         return { success: true }
     } catch (e) {
         return { success: false }
@@ -358,6 +408,13 @@ export const HackathonRegisterRemoveMembers = async (id: string, emails: Array<s
             { $pull: { member: { info: { $in: ids } } } }, // 'member.info'
             { new: true }
         );
+        // Add
+        // await User.updateMany(
+            //     { mail: { $in: mails } },
+            //     { $set: { hack: {
+            //         team: info._id.toString()
+            //     } } }
+            // );
         return { success: true }
     } catch (e) {
         return { success: false }

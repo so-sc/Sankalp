@@ -43,29 +43,23 @@ export const Theme = {
 
 export interface Member {
     info: string,
-    lead: boolean
+    lead?: boolean
 }
 
 // User Interfaces & types
 export interface EventModels {
-    verify: boolean,
-    qrId: string,
-    isEvent?: boolean,
+    verify?: boolean,
+    qrId?: string,
+    isEvent: boolean,
     // Talk
-    mail?: string,
     talk?: Array<number>,
     // Event
-    event: {
+    event?: {
         eve: number,
         pno: number,
-        participant: Array<Omit<Member, "lead">>
+        participant: Array<Member>
     }
 }
-
-export type EventModelE = Omit<EventModels, "talk">;
-export type EventModelT = Omit<EventModels, "eventInfo">
-
-
 
 export interface HackathonModel {
     name: string,
@@ -73,8 +67,8 @@ export interface HackathonModel {
     themeName: string,
     memNo: number,
     member: Array<Member>,
-    verify: Boolean,
-    qrId: string,
+    verify?: Boolean,
+    qrId?: string,
 }
 
 
