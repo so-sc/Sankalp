@@ -67,13 +67,23 @@ export const UserRegisterByID = async (id: String) => {
     return await User.findById(id);
 }
 
+export const UserRegistersGetIDByMail = async (mail: string) => {
+    if (await User.findOne({ email: mail })) {
+        return { success: true, id: (await User.findOne({ email: mail }))._id.toString() }
+    }
+    return { success: false, message: "Check your Email id. The user may not have registered"}
+}
+
 export const UserRegister = async (data: any) => {
     try {
+        if (!(await User.find({ email: data.email }))) {
+            return { success: false, message: "The Email ID already exists." }
+        }
         const user = new User(data);
         const info = await user.save();
         return { success: true, id: info._id.toString() }
     } catch (e) {
-        return { success: false, message: 'The ID is invalid.' }
+        return { success: false, message: 'The data provided is invalid. Check the fields again.' }
     }
 }
 
@@ -193,7 +203,7 @@ export const EventRegister = async (data: any) => {
         }
         return { success: true, id: info._id.toString() }
     } catch (e) {
-        return { success: false, message: 'The ID is invalid.' }
+        return { success: false, message: 'The data is invalid.' }
     }
 }
 
@@ -293,17 +303,13 @@ const hackathonRegistration = new mongo.Schema({
         type: Number,
         require: true
     },
-    themeName: {
+    themeDesc: {
         type: String,
         require: false
     },
-    memNo: {
-        type: Number,
-        require: true
-    },
     member: [{
         type: {
-            info: {
+            mail: {
                 type: String,
                 require: true
             },
@@ -342,9 +348,18 @@ export const HackathonRegisters = async () => { return await Hackathon.find(); }
 export const HackathonRegistersBy = async (param: any) => { return await Hackathon.find({ param }); }
 export const HackathonRegisterByID = async (id: string) => { return await Hackathon.find({ _id: new mongo.Types.ObjectId(id) }); }
 
-export const HackathonRegister = async (data: any) => {
+export const HackathonRegister = async (id: string, data: any) => {
     try {
         data.verify = false;
+        data.member.push({ info: id, lead: true })
+        var rs;
+        for (var i=0; i<data.member.length; i++) {
+            rs = await UserRegistersGetIDByMail(data.member[i].info);
+            if (!rs.success){
+                return rs
+            }
+            data.member[i].info = rs.id;
+        }
         const hackathon = new Hackathon(data);
         const info = await hackathon.save();
         var mails = Array()
@@ -393,7 +408,7 @@ export const hackathonRegisterGetLeadEmail = async (id: string) => {
     const part = hack.member;
     for (var i=0; i<part.length; i++) {
         if (part[i].lead) {
-            return (await UserRegisterByID(part[i].info)).email
+            return (await UserRegisterByID(part[i].mail)).email
         }
     }
     return null

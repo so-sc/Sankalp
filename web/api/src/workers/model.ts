@@ -43,7 +43,7 @@ export const Theme = {
 
 // Member
 export interface Member {
-    info: string,
+    mail: string,
     lead?: boolean
 }
 
@@ -70,8 +70,7 @@ export interface EventModels {
 export interface HackathonModel {
     name: string,
     theme: number,
-    themeName: string,
-    memNo: number,
+    themeDesc: string,
     member: Array<Member>,
     verify?: Boolean,
     qrId?: string,

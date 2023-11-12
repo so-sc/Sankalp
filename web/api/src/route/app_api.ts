@@ -18,10 +18,13 @@ router.get("/registration/:info", verifyToken, async(req, res) => {
         data.verify = false;
         if (info==='e' || info==='t') { // Event & Talk registration
             register = await EventRegister(data);
-        } else if (info==='h') { // Hackathon registration
-            register = await HackathonRegister(data);
+        } else if (info==='h') { // Hackathon registrationW
+            register = await HackathonRegister(req.body.id, data);
         } else {
             res.status(500).json({ success: false, message: "Check your info params." })
+        }
+        if (!register.success) {
+            res.status(500).json({ success: false, message: register.message });
         }
         var dt = await qrCreator(register.id);
         if (!dt.success) {
