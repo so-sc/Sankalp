@@ -42,7 +42,7 @@ export default function HackathonRegistration({
     defaultValues: {
       teamName: "",
       totalMembers: 2,
-      teamTheme: "Agriculture",
+      teamTheme: THEMES[0],
       teamStatement: "",
       teamCollege: "",
       leader: leader,

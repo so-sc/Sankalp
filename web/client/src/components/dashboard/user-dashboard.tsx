@@ -23,13 +23,13 @@ export default function UserDashboard({ userProfile }: UserDashboardProps) {
       <UserDisplay user={userProfile.user} />
       <div>
         <p className="text-center mt-4 bg-foreground/10 px-2 py-2">
-          Update your registrations
+          Register for Events
         </p>
-        <EventRegistration
+        {/* <EventRegistration
           setRegistrationData={setCurrentData}
           registrationData={currentData}
           isUpdation
-        />
+        /> */}
       </div>
     </section>
   )

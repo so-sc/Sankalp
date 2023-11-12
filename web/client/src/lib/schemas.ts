@@ -4,6 +4,7 @@ import {
   THEMES,
   TOTAL_ESPORTS,
   TOTAL_TALKS,
+  genders,
 } from "@/lib/constants"
 import { z } from "zod"
 
@@ -38,7 +39,7 @@ export const userSchema = z.object({
   name: z.string().min(3).max(48),
   email: z.string().email(),
   phone: z.string().length(10),
-  gender: z.enum(["male", "female", "non-binary", "other"]),
+  gender: z.enum(genders),
   role: z.union([studentSchema, employeeSchema]),
 })
 
