@@ -5,13 +5,14 @@ import { qrCreator, formID } from "../workers/qrcode";
 import { encrypt } from "workers/crypt";
 import { sendCopyMail } from "../workers/mail";
 import { verifyToken } from "../workers/auth";
+import Mail from "nodemailer/lib/mailer";
 const router = express.Router();
 
 // --- Form ---
 
 // Registration for talk or event or hackathon
 router.get("/registration/:info", verifyToken, async(req, res) => {
-    try {
+    // try {
         const info = req.params.info;
         var data: EventModels | HackathonModel = req.body;
         var register;
@@ -22,26 +23,35 @@ router.get("/registration/:info", verifyToken, async(req, res) => {
             register = await HackathonRegister(req.body.id, data);
         } else {
             res.status(500).json({ success: false, message: "Check your info params." })
+            return
         }
         if (!register.success) {
             res.status(500).json({ success: false, message: register.message });
+            return
         }
         var dt = await qrCreator(register.id);
         if (!dt.success) {
             res.status(500).json({ success: false, message: dt.message })
+            return
         }
-        (info==='e' || info==='t') ? await EventQRAdder(register.id, dt.id): await HackathonQRAdder(register.id, dt.id);
+        if (info==='e' || info==='t') { await EventQRAdder(register.id, dt.id) } else { await HackathonQRAdder(register.id, dt.id); }
         const qr: { [key: string]: string } = {'e': "Event", 't': "Talk",'h': "Hackathon"};
-        const mail = (info==='e' || info == 't')? (await UserRegisterByID(req.body.id)).get('email') : await hackathonRegisterGetLeadEmail(register.id);
+        console.log((await UserRegisterByID(req.body.id)).email);
+        const mail = (info==='e' || info == 't')? (await UserRegisterByID(req.body.id)).email : await hackathonRegisterGetLeadEmail(register.id);
+        if (!mail) {
+            res.status(500).json({ success: false, message: "Issue with fetching the Email ID." })
+            return
+        }
         var rs = await sendCopyMail(`${req.protocol}://${req.hostname}`, qr[info], mail, dt.id);
         if (!rs['success']===true) {
             console.log("Mailed failed");
             res.status(500).json({ success: false, message: rs.message });
+            return
         }
         res.status(200).json({ success: true, dl: dt.link })
-    } catch (e) {
-        res.status(500).json({ success: false, message: e.message })
-    }
+    // } catch (e) {
+    //     res.status(500).json({ success: false, message: e.message })
+    // }
 });
 
 
@@ -57,12 +67,14 @@ router.get("/info/:info", verifyToken, async(req, res) => {
                 register = await HackathonRegisterByID(req.body.id);
             } else {
                 res.status(500).json({ success: false, message: "Check your info params." })
+                return
             }
         } catch (e) { 
             return res.status(500).json({ success: false, message: `Error: ${e}` })
         }
         if (!register) {
             res.status(500).json({ success: false, message: 'No info on this ID.' })
+            return
         }
         res.status(200).json({ success: true, result: register })
     } catch (e) {

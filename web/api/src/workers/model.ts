@@ -43,13 +43,13 @@ export const Theme = {
 
 // Member
 export interface Member {
-    mail: string,
+    info: string,
     lead?: boolean
 }
 
 export interface Talk {
     id: number,
-    verify: boolean
+    verify?: boolean
 }
 
 // Event & Talk & Hackathon Interfaces & types
@@ -102,3 +102,7 @@ export interface SigninModal {
 }
 
 // Admin Model
+
+
+
+// ----------- Response Models ---------

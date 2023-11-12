@@ -76,7 +76,7 @@ export const sendCopyMail = async (domain: string, eve: string, mail: string, qr
     const result = await transporter.sendMail({
         from: process.env.EMAIL,
         to: mail,
-        subject: `SOSC: You have registered ${event? 'events': 'hackathon'} successfully`,
+        subject: `SOSC: You have registered ${eve} successfully`,
         envelope: {
             from: `SOSC ${process.env.EMAIL}`,
             to: `${mail}`

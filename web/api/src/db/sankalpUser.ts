@@ -70,8 +70,9 @@ export const UserRegisterByID = async (id: String) => {
 export const UserRegistersGetIDByMail = async (mail: string) => {
     if (await User.findOne({ email: mail })) {
         return { success: true, id: (await User.findOne({ email: mail }))._id.toString() }
+    } else {
+        return { success: false, message: "Check your Email id. The user may not have registered" }
     }
-    return { success: false, message: "Check your Email id. The user may not have registered"}
 }
 
 export const UserRegister = async (data: any) => {
@@ -103,9 +104,6 @@ export const UserSigninChecker = async (data: SigninModal) => {
     try {
         var result = await User.findOne({ _id: data.id, email: data.email });
         if (result) {
-            if (result.verify) {
-                return { success: false, message: "Attendee has already verified." }
-            }
             var rs = await createToken(data.id);
             if (rs.success) {
                 return { success: true, token: rs.token, verify: result.verify };
@@ -203,6 +201,7 @@ export const EventRegister = async (data: any) => {
         }
         return { success: true, id: info._id.toString() }
     } catch (e) {
+        console.log(e);
         return { success: false, message: 'The data is invalid.' }
     }
 }
@@ -309,7 +308,7 @@ const hackathonRegistration = new mongo.Schema({
     },
     member: [{
         type: {
-            mail: {
+            info: {
                 type: String,
                 require: true
             },
@@ -351,8 +350,7 @@ export const HackathonRegisterByID = async (id: string) => { return await Hackat
 export const HackathonRegister = async (id: string, data: any) => {
     try {
         data.verify = false;
-        data.member.push({ info: id, lead: true })
-        var rs;
+        var rs, lead;
         for (var i=0; i<data.member.length; i++) {
             rs = await UserRegistersGetIDByMail(data.member[i].info);
             if (!rs.success){
@@ -360,12 +358,12 @@ export const HackathonRegister = async (id: string, data: any) => {
             }
             data.member[i].info = rs.id;
         }
+        data.member.push({ info: id, lead: true })
         const hackathon = new Hackathon(data);
         const info = await hackathon.save();
         var mails = Array()
-        var lead;
         for (var i=0; i< (data.member).length; i++) {
-            data.member[i].lead?lead=await User.findById(data.member[i].info).select('email'):mails.push(await User.findById(data.member[i].info).select('email'));
+            data.member[i].lead?lead=(await User.findOne({_id: id})).email:mails.push(data.member[i].info);
         }
         await User.updateMany(
             { mail: { $in: mails } },
@@ -382,6 +380,8 @@ export const HackathonRegister = async (id: string, data: any) => {
         );
         return { success: true, id: info._id.toString() }
     } catch (e) {
+        console.log(e);
+        
         return { success: false, message: 'The data is invalid.' }
     }
 }
@@ -408,7 +408,7 @@ export const hackathonRegisterGetLeadEmail = async (id: string) => {
     const part = hack.member;
     for (var i=0; i<part.length; i++) {
         if (part[i].lead) {
-            return (await UserRegisterByID(part[i].mail)).email
+            return (await UserRegisterByID(part[i].info))?.email;
         }
     }
     return null
