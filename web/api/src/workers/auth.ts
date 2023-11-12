@@ -17,6 +17,24 @@ export const verifyToken = (req: Request, res: Response, next: () => void) => {
     }
 };
 
+export const adminVerifyToken = (req: Request, res: Response, next: () => void) => {
+    const token = req.header('Authorization')?.split(' ')[1];
+    if (!token) {
+        return res.status(401).json({ success: false, message: 'Authentication failed' });
+    }
+    try {
+        const decoded = jwt.verify(token, process.env.KEY) as { id: string };
+        if (true) {
+            req.body.id = decrypt(decoded.id);
+            next();
+        } else {
+            return res.status(401).json({ success: false, message: 'Not an admin.' });
+        }
+    } catch (error) {
+        return res.status(401).json({ success: false, message: 'Authentication failed' });
+    }
+}
+
 export const createToken = async (id: string) => {
     try { 
         const token = jwt.sign({ id: encrypt(id) }, process.env.KEY, { expiresIn: '24h' });

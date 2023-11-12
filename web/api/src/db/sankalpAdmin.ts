@@ -4,15 +4,14 @@
 import mongo from "mongoose";
 
 const feedbackData = new mongo.Schema({
-    name: {
+    id: {
         type: String,
         require: true
     },
-    mail: {
-        type: String,
-        require: true,
-        unique: true
-    },
+    response: {
+        type: Object,
+        require: true
+    }
 }, {
     collection: "feedback",
     timestamps: true,
@@ -30,7 +29,7 @@ const adminAuth = new mongo.Schema({
         unique: true
     },
     volunter: {
-        type: Object,
+        type: Boolean,
         require: false
     }
 }, {
@@ -41,11 +40,14 @@ const adminAuth = new mongo.Schema({
 
 export const AdminData = mongo.model('auth', adminAuth);
 
-export const authSessionToken = (sToken: string) => AdminData.findOne({
-    'authentication.sessionToken': sToken,
-});
+export const isAdmin = async () => {
+    try {
+
+    } catch (e) {
+        return { success: false, message: e.message}
+    }
+}
 
 
 
 export const FeedbackData = mongo.model('auth', feedbackData);
-

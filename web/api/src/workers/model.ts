@@ -41,18 +41,24 @@ export const Theme = {
     5: 'Open'
 }
 
+// Member
 export interface Member {
     info: string,
     lead?: boolean
 }
 
-// User Interfaces & types
+export interface Talk {
+    id: number,
+    verify: boolean
+}
+
+// Event & Talk & Hackathon Interfaces & types
 export interface EventModels {
     verify?: boolean,
     qrId?: string,
     isEvent: boolean,
     // Talk
-    talk?: Array<number>,
+    talk?: Array<Talk>,
     // Event
     event?: {
         eve: number,
@@ -70,9 +76,6 @@ export interface HackathonModel {
     verify?: Boolean,
     qrId?: string,
 }
-
-
-// Admin Interfaces & types
 
 
 // Authentication interface
@@ -98,3 +101,5 @@ export interface SigninModal {
     email: string,
     id: string
 }
+
+// Admin Model

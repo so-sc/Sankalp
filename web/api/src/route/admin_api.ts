@@ -1,9 +1,37 @@
-import express from "express";
 
-import { EventRegisters, HackathonRegisters } from '../db/sankalpUser'
-import {  } from "db/sankalpAdmin";
+import express from "express";
+import { EventRegisters, HackathonRegisters, EventRegistersVerifyTalk, EventRegistersVerifyEvent, hackathonRegistersVerify } from '../db/sankalpUser';
+import { adminVerifyToken } from "../workers/auth";
 
 const router = express.Router();
+
+// ----------------- Verify ------------------------
+
+// Verify the attendee
+router.get("/verify/:info", adminVerifyToken, async(req, res) => {
+    try {
+        var info = req.params.info;
+        var data = req.body;
+        var result;
+        if (info==='t') {
+            result = await EventRegistersVerifyTalk(req.body.id, data.event);
+        } else if (info==='e') {
+            result = await EventRegistersVerifyEvent(req.body.id);
+        } else if (info==='h') {
+            result = await hackathonRegistersVerify(req.body.id);
+        } else {
+            res.status(500).json({ success: false, message: "Check your info params." })
+        }
+        if (!result.success) {
+            res.status(500).json({ success: false, message: result.message })
+        }
+        return res.status(500).json({ success: true })
+    } catch (e) {
+        res.status(500).json({ success: false, message: e.message })
+    }
+});
+
+// ---------------- Access data ---------------------
 
 // Get all students (0) or employee (1) registered in event 
 router.get("/get-event/:info", async(req, res) => {
