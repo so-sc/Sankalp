@@ -58,6 +58,9 @@ const userRegisteration = new mongo.Schema<SignupModal>({
         type: Number,
         require: false
     },
+}, {
+    collection: "users",
+    timestamps: true,
 })
 
 export const User = mongo.model('users', userRegisteration);
@@ -145,7 +148,7 @@ const eventRegistration = new mongo.Schema<EventModels>({
                 info: String
             }]
         },
-        required: true
+        required: false
     },
     verify: {
         type: Boolean,
@@ -173,19 +176,20 @@ eventRegistration.pre('save', function (next) {
 
 
 // Event Registration
-export const Event = mongo.model('Event', eventRegistration);
+export const Event = mongo.model('events', eventRegistration);
 export const EventRegisters = async (st: boolean) => { return await Event.find( { student: st } ); }
 export const EventRegistersBy = async (param: any) => { return await Event.find({ param }); }
 export const EventRegisterByID = async (id: String) => {
     return await Event.findById(id);
 }
 
-export const EventRegister = async (data: any) => {
+export const EventRegister = async (id: string, data: any) => {
     try {
+        if (data.isEvent) { data.data.event.participant.push({ id: id }); }
         const event = new Event(data);
         const info = await event.save();
-        var mail = Array();
         if (data.isEvent) {
+            var mail = Array();
             for (var i=0; i<data.event.pno; i++) {
                 mail.push(await User.findById(data.event.participant[i].info).select('email'));
             }
@@ -195,7 +199,7 @@ export const EventRegister = async (data: any) => {
             );
         } else {
             await User.updateOne(
-                { email: data.mail },
+                { email: id },
                 { $set: { talk: info._id } }
             );
         }
@@ -342,7 +346,7 @@ hackathonRegistration.pre('save', function (next) {
 });
 
 // Hackathon Registration
-export const Hackathon = mongo.model('Hackathon', hackathonRegistration);
+export const Hackathon = mongo.model('hackathon', hackathonRegistration);
 export const HackathonRegisters = async () => { return await Hackathon.find(); }
 export const HackathonRegistersBy = async (param: any) => { return await Hackathon.find({ param }); }
 export const HackathonRegisterByID = async (id: string) => { return await Hackathon.find({ _id: new mongo.Types.ObjectId(id) }); }

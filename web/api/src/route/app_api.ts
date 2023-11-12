@@ -11,14 +11,14 @@ const router = express.Router();
 // --- Form ---
 
 // Registration for talk or event or hackathon
-router.get("/registration/:info", verifyToken, async(req, res) => {
+router.post("/registration/:info", verifyToken, async(req, res) => {
     // try {
         const info = req.params.info;
         var data: EventModels | HackathonModel = req.body;
         var register;
         data.verify = false;
         if (info==='e' || info==='t') { // Event & Talk registration
-            register = await EventRegister(data);
+            register = await EventRegister(req.body.id, data);
         } else if (info==='h') { // Hackathon registrationW
             register = await HackathonRegister(req.body.id, data);
         } else {
@@ -36,7 +36,6 @@ router.get("/registration/:info", verifyToken, async(req, res) => {
         }
         if (info==='e' || info==='t') { await EventQRAdder(register.id, dt.id) } else { await HackathonQRAdder(register.id, dt.id); }
         const qr: { [key: string]: string } = {'e': "Event", 't': "Talk",'h': "Hackathon"};
-        console.log((await UserRegisterByID(req.body.id)).email);
         const mail = (info==='e' || info == 't')? (await UserRegisterByID(req.body.id)).email : await hackathonRegisterGetLeadEmail(register.id);
         if (!mail) {
             res.status(500).json({ success: false, message: "Issue with fetching the Email ID." })
