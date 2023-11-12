@@ -13,14 +13,12 @@ import {
   TALKS,
   TOTAL_ESPORTS,
   TOTAL_TALKS,
-  genders,
 } from "@/lib/constants"
 import { eventSchema } from "@/lib/schemas"
 import { Event, Step, UserProfile } from "@/lib/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { TbCaretLeftFilled, TbCaretRightFilled } from "react-icons/tb"
-import { SignupModal } from "../../../../api/src/workers/model"
 
 interface EventRegistrationProps extends CommonRegistrationProps {
   registrationData: UserProfile
@@ -43,44 +41,6 @@ export default function EventRegistration({
   async function onRegister(values: Event) {
     setRegistrationData((prev: UserProfile) => ({ ...prev, event: values }))
     if (!isUpdation) setStep!((prev: Step) => (prev + 1) as Step)
-
-    // Some helper variables
-    const isStudent = registrationData.user.role.role === "student"
-
-    const signUpData: SignupModal = {
-      name: registrationData.user.name,
-      email: registrationData.user.email,
-      gender:
-        genders.findIndex((gender) => gender === registrationData.user.gender) +
-        1, // Hate you Akkil for taking gender as number and using 1 indexing
-      PhNo: registrationData.user.phone,
-      student: registrationData.user.role.role === "student",
-      verify: true,
-      college:
-        registrationData.user.role.role === "student"
-          ? registrationData.user.role.college
-          : "",
-      branch:
-        registrationData.user.role.role === "student"
-          ? registrationData.user.role.branch
-          : "",
-      year:
-        registrationData.user.role.role === "student"
-          ? Number(registrationData.user.role.yearOfStudy)
-          : 1, // I know this is a bad idea, but it works for now
-      course:
-        registrationData.user.role.role === "student"
-          ? registrationData.user.role.course
-          : "",
-      company:
-        registrationData.user.role.role === "employee"
-          ? registrationData.user.role.company
-          : "",
-      designation:
-        registrationData.user.role.role === "employee"
-          ? registrationData.user.role.designation
-          : "",
-    }
   }
 
   return (

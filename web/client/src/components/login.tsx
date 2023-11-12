@@ -5,8 +5,9 @@ import { Form, FormControl, FormField, FormItem } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { H2 } from "@/components/ui/typography"
 import { loginSchema } from "@/lib/schemas"
-import { LoginUser } from "@/lib/types"
+import { LoginUser, SignIn } from "@/lib/types"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { setCookie } from "cookies-next"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
@@ -24,8 +25,34 @@ export default function Login() {
   })
 
   async function onLogin(values: LoginUser) {
-    console.log(values)
-    router.push("/dashboard")
+    const signInData: SignIn = {
+      email: values.email,
+      id: values.password,
+    }
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/signin`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(signInData),
+        }
+      )
+      const data = await response.json()
+      console.log(data)
+
+      if (data.success) {
+        setCookie("token", data.token, {
+          secure: process.env.NEXT_PUBLIC_NODE_ENV === "production",
+        })
+        router.push("/dashboard")
+      }
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (
