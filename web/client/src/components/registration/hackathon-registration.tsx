@@ -27,6 +27,9 @@ import {
 import { teamSchema } from "@/lib/schemas"
 import { HackathonTeam, Member } from "@/lib/types"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { getCookie } from "cookies-next"
+import { useRouter } from "next/navigation"
+import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { TbLoader2 } from "react-icons/tb"
 
@@ -37,6 +40,14 @@ interface HackathonRegistrationProps {
 export default function HackathonRegistration({
   leader,
 }: HackathonRegistrationProps) {
+  const router = useRouter()
+  useEffect(() => {
+    const token = getCookie("token")
+    if (!token) {
+      router.push("/?state=login")
+    }
+  }, [router])
+
   const form = useForm<HackathonTeam>({
     resolver: zodResolver(teamSchema),
     defaultValues: {

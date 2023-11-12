@@ -10,11 +10,13 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { setCookie } from "cookies-next"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { TbLoader2 } from "react-icons/tb"
 
 export default function Login() {
   const router = useRouter()
+  const [error, setError] = useState("")
 
   const form = useForm<LoginUser>({
     resolver: zodResolver(loginSchema),
@@ -31,6 +33,7 @@ export default function Login() {
     }
 
     try {
+      setError("")
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/signin`,
         {
@@ -49,6 +52,8 @@ export default function Login() {
           secure: process.env.NEXT_PUBLIC_NODE_ENV === "production",
         })
         router.push("/dashboard")
+      } else {
+        setError(data.message)
       }
     } catch (error) {
       console.log(error)
@@ -108,6 +113,7 @@ export default function Login() {
             {form.formState.isLoading && <TbLoader2 className="animate-spin" />}
           </Button>
         </form>
+        {error && <p className="text-red-500 text-center mt-2">{error}</p>}
       </Form>
       <div>
         <p className="text-center mt-4">

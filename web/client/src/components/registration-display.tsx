@@ -17,6 +17,7 @@ export default function RegistrationDisplay({
   setStep,
 }: RegistrationDisplayProps) {
   const { user, event } = registrationData
+  const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
 
   async function handleRegistration() {
@@ -46,6 +47,7 @@ export default function RegistrationDisplay({
     }
 
     try {
+      setError("")
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/signup`,
         {
@@ -59,6 +61,9 @@ export default function RegistrationDisplay({
 
       const data = await response.json()
       console.log(data)
+      if (!data.success) {
+        setError(data.message)
+      }
     } catch (error) {
       console.log(error)
     } finally {
@@ -119,10 +124,11 @@ export default function RegistrationDisplay({
           </div> */}
         </div>
       </div>
+      {error && <p className="text-red-500 text-center mt-2">{error}</p>}
       <Notification variant="info" className="mt-2">
         <p>
-          Please double check your email. QR Code will be sent to you via mail,
-          that will be your entry pass to the event.
+          Please double check your email. A unique ID will be sent to your email
+          which is password to your dashboard.
         </p>
       </Notification>
       <Button
