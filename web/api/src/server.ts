@@ -20,6 +20,7 @@ const db = mongo.connection
 db.on('error', (error: Error) => console.log("Check your mongodb please. There is an issue with mongodb."))
 db.on('open', () => console.log("Mongodb is connected."))
 app.use(express.json())
+
 // app.use(cors({
 //     credentials: true
 // }));

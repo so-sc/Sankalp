@@ -58,9 +58,21 @@ const userRegisteration = new mongo.Schema<SignupModal>({
         type: Number,
         require: false
     },
+    // Autoadded
+    hack: {
+        type: [String],
+        require: false
+    },
+    talk: {
+        type: String,
+        require: false
+    },
+    event: {
+        type: [String],
+        require: false
+    }
 }, {
     collection: "users",
-    timestamps: true,
 })
 
 export const User = mongo.model('users', userRegisteration);
@@ -123,30 +135,36 @@ export const UserSigninChecker = async (data: SigninModal) => {
 
 
 const eventRegistration = new mongo.Schema<EventModels>({
-    talk: [{
-        type: {
+    isEvent: {
+        type: Boolean,
+        require: true
+    },
+    talk: {
+        type: [{
             id: {
                 type: Number,
-                require: true
+                require: false
             },
             verify: {
                 type: Boolean,
                 default: false
             }
-        },
+        }],
         require: false
-    }],
-    isEvent: {
-        type: Boolean,
-        require: true
     },
     event: {
         type: {
-            eve: Number,
-            pno: Number,
-            participant: [{
-                info: String
-            }]
+            eve: {
+                type: Number,
+                require: false
+            },
+            participant: {
+                type: [{
+                    info: { type: String, require: false },
+                    lead: { type: Boolean, require: false }
+                }],
+                require: false
+            }
         },
         required: false
     },
@@ -167,10 +185,12 @@ eventRegistration.pre('save', function (next) {
     try{
         if (!this.isEvent) {
             // Convert the talk array into a Set to remove duplicates
-            const uniqueEventOpt = Array.from(new Set(this.talk));
-            this.talk = uniqueEventOpt;
-            next();
+            const uniqueTalks = this.talk.map(talk => talk.id); // Assuming each talk has an 'id' property
+            this.talk = Array.from(new Set(uniqueTalks)).map(id => ({ id: id, verify: false }));
+        } else {
+            this.set('talk', undefined);
         }
+        next();
     } catch(e) {}
 });
 
@@ -185,28 +205,30 @@ export const EventRegisterByID = async (id: String) => {
 
 export const EventRegister = async (id: string, data: any) => {
     try {
-        if (data.isEvent) { data.data.event.participant.push({ id: id }); }
+        for (const participant of data.event.participant) {
+            const rs = await UserRegistersGetIDByMail(participant.info);
+            if (!rs.success) { return rs; }
+            participant.info = rs.id;
+        }
+        if (data.isEvent) { data.verify = false; data.event.participant.push({ info: id, lead: true }); }      
         const event = new Event(data);
         const info = await event.save();
         if (data.isEvent) {
-            var mail = Array();
-            for (var i=0; i<data.event.pno; i++) {
-                mail.push(await User.findById(data.event.participant[i].info).select('email'));
-            }
+            var ids = data.event.participant.map((participant: Member) => participant.info);
             await User.updateMany(
-                { email: { $in: mail } },
-                { $addToSet: { event: { $each: info._id } } }
+                { _id: { $in: ids } },
+                { $addToSet: { event: info._id } }
             );
         } else {
             await User.updateOne(
-                { email: id },
+                { _id: id },
                 { $set: { talk: info._id } }
             );
         }
         return { success: true, id: info._id.toString() }
     } catch (e) {
         console.log(e);
-        return { success: false, message: 'The data is invalid.' }
+        return { success: false, message: 'Check the provided fields.' }
     }
 }
 
@@ -310,8 +332,8 @@ const hackathonRegistration = new mongo.Schema({
         type: String,
         require: false
     },
-    member: [{
-        type: {
+    member: {
+        type: [{
             info: {
                 type: String,
                 require: true
@@ -320,9 +342,9 @@ const hackathonRegistration = new mongo.Schema({
                 type: Boolean,
                 require: false
             }
-        },
+        }],
         require: true
-    }],
+    },
     verify: {
         type: Boolean,
         default: false

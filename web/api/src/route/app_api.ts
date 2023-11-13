@@ -12,15 +12,17 @@ const router = express.Router();
 
 // Registration for talk or event or hackathon
 router.post("/registration/:info", verifyToken, async(req, res) => {
-    // try {
+    try {
         const info = req.params.info;
-        var data: EventModels | HackathonModel = req.body;
+        const id = req.body.id;
+        var data: EventModels | HackathonModel | any = req.body;
+        delete data.id;
         var register;
-        data.verify = false;
         if (info==='e' || info==='t') { // Event & Talk registration
-            register = await EventRegister(req.body.id, data);
+            register = await EventRegister(id, data);
         } else if (info==='h') { // Hackathon registrationW
-            register = await HackathonRegister(req.body.id, data);
+            data.verify = false;
+            register = await HackathonRegister(id, data);
         } else {
             res.status(500).json({ success: false, message: "Check your info params." })
             return
@@ -29,14 +31,14 @@ router.post("/registration/:info", verifyToken, async(req, res) => {
             res.status(500).json({ success: false, message: register.message });
             return
         }
-        var dt = await qrCreator(register.id);
+        var dt = await qrCreator(register?.id);
         if (!dt.success) {
             res.status(500).json({ success: false, message: dt.message })
             return
         }
         if (info==='e' || info==='t') { await EventQRAdder(register.id, dt.id) } else { await HackathonQRAdder(register.id, dt.id); }
         const qr: { [key: string]: string } = {'e': "Event", 't': "Talk",'h': "Hackathon"};
-        const mail = (info==='e' || info == 't')? (await UserRegisterByID(req.body.id)).email : await hackathonRegisterGetLeadEmail(register.id);
+        const mail = (info==='e' || info == 't')? (await UserRegisterByID(id))?.email : await hackathonRegisterGetLeadEmail(register.id);
         if (!mail) {
             res.status(500).json({ success: false, message: "Issue with fetching the Email ID." })
             return
@@ -48,9 +50,9 @@ router.post("/registration/:info", verifyToken, async(req, res) => {
             return
         }
         res.status(200).json({ success: true, dl: dt.link })
-    // } catch (e) {
-    //     res.status(500).json({ success: false, message: e.message })
-    // }
+    } catch (e) {
+        res.status(500).json({ success: false, message: e.message })
+    }
 });
 
 

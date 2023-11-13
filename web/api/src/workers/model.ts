@@ -61,9 +61,8 @@ export interface EventModels {
     talk?: Array<Talk>,
     // Event
     event?: {
-        eve: number,
-        pno: number,
-        participant: Array<Member>
+        eve?: number,
+        participant?: Array<Member>
     }
 }
 
@@ -94,6 +93,10 @@ export interface SignupModal {
     branch?: string,
     course?: string,
     year?: number,
+    // Auto added
+    hack?: Array<string>,
+    talk?: string,
+    event?: Array<string>
 }
 
 export interface SigninModal {
