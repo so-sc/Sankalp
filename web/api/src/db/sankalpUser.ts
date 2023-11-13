@@ -155,9 +155,7 @@ export const UserRegistersFindUser = async (id: String) => {
 }
 
 export const UserRegistersGetIDByMail = async (mail: string) => {
-    if ((await User.findOne({ email: mail })).hack) {
-        return { success: false, message: `The ${mail} is already in a hackathin team.` }
-    } else if (await User.findOne({ email: mail })) {
+    if (await User.findOne({ email: mail })) {
         return { success: true, id: (await User.findOne({ email: mail }))._id.toString() }
     } else {
         return { success: false, message: "Check your Email id. The user may not have registered" }
@@ -405,7 +403,8 @@ export const EventRegisterRemoveParticipant = async (id: string, data: Array<str
 const hackathonRegistration = new mongo.Schema({
     name: {
         type: String,
-        require: true
+        require: true,
+        unique: true
     },
     theme: {
         type: Number,
@@ -473,6 +472,9 @@ export const HackathonRegister = async (id: string, data: any) => {
             if (!rs.success){
                 return rs
             }
+            if ((await User.findOne({ email: member.info })).hack) {
+                return { success: false, message: `The ${member.info} is already in a hackathin team.` }
+            } 
             member.info = rs.id;
         }
         data.member.push({ info: id, lead: true })

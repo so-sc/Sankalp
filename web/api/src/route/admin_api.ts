@@ -14,11 +14,11 @@ router.get("/verify/:info", adminVerifyToken, async(req, res) => {
         var data = req.body;
         var result;
         if (info==='t') {
-            result = await EventRegistersVerifyTalk(req.body.id, data.event);
+            result = await EventRegistersVerifyTalk(data.eventID, data.event);
         } else if (info==='e') {
-            result = await EventRegistersVerifyEvent(req.body.id);
+            result = await EventRegistersVerifyEvent(data.eventID);
         } else if (info==='h') {
-            result = await hackathonRegistersVerify(req.body.id);
+            result = await hackathonRegistersVerify(data.eventID);
         } else {
             res.status(500).json({ success: false, message: "Check your info params." })
         }

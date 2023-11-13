@@ -2,6 +2,7 @@
 import jwt from "jsonwebtoken";
 import { Request, Response } from 'express';
 import { decrypt, encrypt } from "../workers/crypt";
+import { isAdmin } from "../db/sankalpAdmin";
 
 export const verifyToken = async (req: Request, res: Response, next: () => void) => {
     const token = req.header('Authorization')?.split(' ')[1];
@@ -24,7 +25,7 @@ export const adminVerifyToken = async (req: Request, res: Response, next: () => 
     }
     try {
         const decoded = jwt.verify(token, process.env.KEY) as { id: string };
-        if (true) {
+        if (await isAdmin(await decrypt(decoded.id))) {
             req.body.id = await decrypt(decoded.id);
             next();
         } else {

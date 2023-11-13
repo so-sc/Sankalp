@@ -106,6 +106,19 @@ export interface SigninModal {
 
 // Admin Model
 
+export interface AdminSigupModel {
+    username: string,
+    email: string,
+    isVolunter: boolean,
+    volunter: {
+        events: Array<number>
+    }
+}
+
+export interface AdminSiginModel {
+    username: string,
+    id: string
+}
 
 
 // ----------- Response Models ---------
