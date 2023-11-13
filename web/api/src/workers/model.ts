@@ -109,3 +109,23 @@ export interface SigninModal {
 
 
 // ----------- Response Models ---------
+
+export interface UserResponseModal {
+    name: string,
+    email: string,
+    gender: number,
+    verify: boolean,
+    PhNo: string,
+    // Employee
+    company?: string,
+    designation?: string,
+    // Student
+    college?: string,
+    branch?: string,
+    course?: string,
+    year?: number,
+    // Auto added
+    hacks?: object,
+    talks?: object,
+    events?: Array<object>
+}

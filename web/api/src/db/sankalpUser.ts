@@ -1,7 +1,7 @@
 //
 
 import mongo from "mongoose";
-import { EventModels, HackathonModel, Member, SigninModal, SignupModal, Talk } from "../workers/model";
+import { EventModels, HackathonModel, Member, SigninModal, SignupModal, Talk, UserResponseModal, gender } from "../workers/model";
 import { createToken } from "../workers/auth";
 
 
@@ -83,43 +83,69 @@ export const UserRegisterByID = async (id: String) => {
 }
 
 export const UserRegistersFindUser = async (id: String) => {
-    var data: any = await User.findById(id).select("-_id -__v");
+    var res: any = await User.findById(id).select("-_id -__v");
+    var data: UserResponseModal = {
+        name: res.name,
+        email: res.email,
+        gender: res.gender,
+        verify: res.verify,
+        PhNo: res.PhNo
+    };
+    if (res.student) {
+        data.college = res.college;
+        data.branch = res.branch;
+        data.course = res.course;
+        data.year = res.year;
+    } else {
+        data.company = res.company;
+        data.designation = res.designation;
+    }
     try {
         var temp: any;
-        if (data.hack) {
-            var hackon: any = await Hackathon.findById(data.hack);
-            data.hacks = {}
-            const mem = hackon.member;
+        if (res.hack) {
+            var hk: any = await Hackathon.findById(res.hack).select("-_id -__v");
+            var hackon: any = {
+                name: hk.name,
+                theme: hk.theme,
+                themeDesc: hk.themeDesc,
+                verify: hk.verify,
+                qrId: hk.qrId,
+            }
+            const mem = hk.member;
             hackon.member = Array();
             for (const member of mem) {
-                temp= await User.findById(member.info).select('name email');
+                temp= await User.findById(member.info).select('name email -_id');
                 if (member.lead) {temp.lead = member.lead}
                 if (temp) { hackon.member.push(temp) } else { 
                     return { success: false, message: "Unable to find the user in the team, Please contact developer for support." } 
                 }
-                hackon.member.push(temp);
             }
-            data.hack = hackon;
-            console.log('Hack: data.hack-'+typeof data.hack);
+            data.hacks = hackon;
         }
-        if (data.talk) {
-            data.talk = await Event.findById(data.talk).select('-_id -isEvent');
+        if (res.talk) {
+            data.talks = await Event.findById(res.talk).select('-_id -isEvent -__v');
         }
-        if (data.event) {
-            var eve = data.event;
-            data.event = Array();
+        if (res.event) {
+            var eve = res.event;
+            data.events = Array();
             for(const idx of eve) {
-                var event: any = await Event.findById(idx).select('-_id -isEvent');
-                const part = event.event.participant;
+                var et: any = await Event.findById(idx).select('-_id -isEvent -__v');
+                var event: any = {
+                    verify: et.verify,
+                    qrId: et.qrId,
+                    event: {
+                        eve: et.event.eve
+                    }
+                }
+                const part = et.event.participant;
                 event.event.participant = Array();
                 for (const participant of part) {
-                    temp = await User.findById(participant.info).select('name email');
+                    temp = await User.findById(participant.info).select('name email -_id');
                     if (participant.lead) { temp.lead = participant.lead }
                     event.event.participant.push(temp);
                 }
-                data.event.push(event);
+                data.events.push(event);
             }
-
         }
         return { success: true, data: data }
     } catch (e) {

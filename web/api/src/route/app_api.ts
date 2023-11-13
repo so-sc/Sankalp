@@ -65,9 +65,9 @@ router.get("/info/:info", verifyToken, async(req, res) => {
             if(info === 'u') {
                 register = await UserRegistersFindUser(req.body.id);
             } else if (info === 'et') { // Event & Talk registration
-                register = await EventRegisterFindDetailsByID(req.body.id);
+                register = await EventRegisterFindDetailsByID(req.body.event);
             } else if (info === 'h') { // Hackathon registration
-                register = await HackathonRegisterFindDetailsByID(req.body.id);
+                register = await HackathonRegisterFindDetailsByID(req.body.hackathon);
             } else {
                 res.status(500).json({ success: false, message: "Check your info params." })
                 return
