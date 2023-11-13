@@ -25,7 +25,12 @@ import {
   numberDisplay,
 } from "@/lib/constants"
 import { teamSchema } from "@/lib/schemas"
-import { HackathonTeam, Member } from "@/lib/types"
+import {
+  HackathonRegistration,
+  HackathonTeam,
+  Leader,
+  Member,
+} from "@/lib/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { getCookie } from "cookies-next"
 import { useRouter } from "next/navigation"
@@ -34,7 +39,7 @@ import { useForm } from "react-hook-form"
 import { TbLoader2 } from "react-icons/tb"
 
 interface HackathonRegistrationProps {
-  leader: Member // Well the schema is same for both XD
+  leader: Leader
 }
 
 export default function HackathonRegistration({
@@ -55,14 +60,10 @@ export default function HackathonRegistration({
       totalMembers: 2,
       teamTheme: THEMES[0],
       teamStatement: "",
-      teamCollege: "",
       leader: leader,
       members: [
         {
-          name: "",
           email: "",
-          phone: "",
-          year: "2",
         },
       ],
     },
@@ -76,11 +77,36 @@ export default function HackathonRegistration({
       ...values,
       members: values.members.slice(0, totalMembers - 1),
     }
-    console.log(finalValues)
+
+    const hackathonTeamData: HackathonRegistration = {
+      name: finalValues.teamName,
+      theme: finalValues.teamTheme,
+      themeDesc: finalValues.teamStatement,
+      memNo: finalValues.totalMembers,
+      members: [
+        {
+          email: finalValues.leader.email,
+        },
+        ...finalValues.members.map((member) => ({
+          email: member.email,
+        })),
+      ],
+    }
+
+    console.log(hackathonTeamData)
   }
 
   return (
     <div className="mt-2">
+      <Notification variant="info" className="my-4">
+        <p>
+          Only Team leader has to register for the hackathon. The rest of the
+          team need not register again. <br />
+          Make sure your members are registered to Sankalp before creating team
+          for hackathon, so we can autofetch their details. Because we value
+          your time :)
+        </p>
+      </Notification>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onTeamRegister)}
@@ -195,27 +221,7 @@ export default function HackathonRegistration({
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="teamCollege"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input
-                    type="text"
-                    placeholder="College Name (No abbreivations)"
-                    {...field}
-                  />
-                </FormControl>
-                {form.formState.errors.teamCollege?.message && (
-                  <p className="text-red-500">
-                    {form.formState.errors.teamCollege?.message}
-                  </p>
-                )}
-              </FormItem>
-            )}
-          />
-          <p className="my-4 text-center">Team Member Details</p>
+          <p className="my-4 text-center text-xl">Team Member Details</p>
           <div>
             <p className="mb-2">Team Leader</p>
             <div className="flex flex-col gap-2">
@@ -318,27 +324,6 @@ export default function HackathonRegistration({
                 <div className="flex flex-col gap-2">
                   <FormField
                     control={form.control}
-                    name={`members.${i}.name`}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Input
-                            type="text"
-                            placeholder={`Team member ${i + 1} name`}
-                            {...field}
-                          />
-                        </FormControl>
-                        {form.formState.errors.members &&
-                          form.formState.errors.members[i]?.name?.message && (
-                            <p className="text-red-500">
-                              {form.formState.errors.members[i]?.name?.message}
-                            </p>
-                          )}
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
                     name={`members.${i}.email`}
                     render={({ field }) => (
                       <FormItem>
@@ -358,72 +343,10 @@ export default function HackathonRegistration({
                       </FormItem>
                     )}
                   />
-                  <FormField
-                    control={form.control}
-                    name={`members.${i}.phone`}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Input
-                            type="text"
-                            placeholder={`Team member ${i + 1} phone number`}
-                            {...field}
-                          />
-                        </FormControl>
-                        {form.formState.errors.members &&
-                          form.formState.errors.members[i]?.phone?.message && (
-                            <p className="text-red-500">
-                              {form.formState.errors.members[i]?.phone?.message}
-                            </p>
-                          )}
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name={`members.${i}.year`}
-                    render={({ field }) => (
-                      <FormItem>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue
-                                placeholder={`Team member ${
-                                  i + 1
-                                } year of study`}
-                              />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="1">1st year</SelectItem>
-                            <SelectItem value="2">2nd year</SelectItem>
-                            <SelectItem value="3">3rd year</SelectItem>
-                            <SelectItem value="4">4th year</SelectItem>
-                            <SelectItem value="5">5th year</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        {form.formState.errors.members &&
-                          form.formState.errors.members[i]?.year?.message && (
-                            <p className="text-red-500">
-                              {form.formState.errors.members[i]?.year?.message}
-                            </p>
-                          )}
-                      </FormItem>
-                    )}
-                  />
                 </div>
               </>
             ))}
           </div>
-          <Notification variant="info" className="my-4">
-            <p>
-              Only Team leader has to do the register. The rest of the team need
-              not register again
-            </p>
-          </Notification>
           <Button
             type="submit"
             disabled={form.formState.isSubmitting}

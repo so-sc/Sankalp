@@ -1,4 +1,5 @@
 import {
+  leaderSchema,
   loginSchema,
   memberSchema,
   registrationSchema,
@@ -15,6 +16,7 @@ export type User = UserProfile["user"]
 export type Event = UserProfile["event"]
 export type LoginUser = z.infer<typeof loginSchema>
 export type Member = z.infer<typeof memberSchema>
+export type Leader = z.infer<typeof leaderSchema>
 export type Step = 1 | 2 | 3
 
 export type SignUp = {
@@ -36,4 +38,12 @@ export type SignUp = {
 export type SignIn = {
   email: string
   id: string
+}
+
+export type HackathonRegistration = {
+  name: string
+  theme: string
+  themeDesc: string
+  memNo: number
+  members: Member[]
 }

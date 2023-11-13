@@ -54,6 +54,10 @@ export const loginSchema = z.object({
 })
 
 export const memberSchema = z.object({
+  email: z.string().email(),
+})
+
+export const leaderSchema = z.object({
   name: z.string().min(3).max(50),
   email: z.string().email(),
   phone: z.string().length(10),
@@ -65,8 +69,7 @@ export const teamSchema = z.object({
   totalMembers: z.number().min(MIN_MEMBERS).max(MAX_MEMBERS), // Including the leader
   teamTheme: z.enum(THEMES),
   teamStatement: z.string().min(25).max(250),
-  teamCollege: z.string().min(3).max(50),
-  leader: memberSchema, // Same schema but in the name of leader
+  leader: leaderSchema, // Same schema but in the name of leader
   // Minimum 1 member and maximum 3 members excluding the leader
   members: z
     .array(memberSchema)
