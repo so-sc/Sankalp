@@ -1,7 +1,7 @@
 //
 
 import mongo from "mongoose";
-import { EventModels, HackathonModel, Member, SigninModal, SignupModal } from "../workers/model";
+import { EventModels, HackathonModel, Member, SigninModal, SignupModal, Talk } from "../workers/model";
 import { createToken } from "../workers/auth";
 
 
@@ -60,7 +60,7 @@ const userRegisteration = new mongo.Schema<SignupModal>({
     },
     // Autoadded
     hack: {
-        type: [String],
+        type: String,
         require: false
     },
     talk: {
@@ -80,6 +80,48 @@ export const UserRegisters = (st: boolean) => { return User.find( { student: st 
 export const UserRegistersBy = (param: any) => { return User.find({ param }); }
 export const UserRegisterByID = async (id: String) => {
     return await User.findById(id);
+}
+
+export const UserRegistersFindUser = async (id: String) => {
+    const data: SignupModal | any = await User.findById(id);
+    try {
+        if (data.hack) {
+            var hackon: any = await Hackathon.findById(data.hack);
+            const mem = hackon.member;
+            hackon.member = Array();
+            for (const member of mem) {
+                const temp: any = await User.findById(member.info, 'name email');
+                if (member.lead) {temp.lead = member.lead}
+                if (temp) { hackon.member.push(temp) } else { 
+                    return { success: false, message: "Unable to find the user in the team, Please contact developer for support." } 
+                }
+            }
+            console.log(JSON.stringify(hackon));
+            data.hack = hackon;
+        }
+        if (data.talk) {
+            data.talk = await Event.findById(data.talk, '-isEvent');
+        }
+        if (data.event) {
+            var eve = data.event;
+            data.event = Array();
+            eve.map(async (id: string) => {
+                var event: any = await Event.findById(id, '-isEvent');
+                const part = event.event.participant;
+                event.event.participant = Array();
+                for (const participant of part) {
+                    var temp: any = await User.findById(participant.info, 'name email');
+                    if (participant.lead) { temp.lead = participant.lead }
+                    event.event.participant.push(temp);
+                }
+                data.event.push(event);
+            });
+        }
+        return { success: true, data: data }
+    } catch (e) {
+        console.log(e);
+        return { success: false, message: '' }
+    }
 }
 
 export const UserRegistersGetIDByMail = async (mail: string) => {
@@ -203,21 +245,28 @@ export const EventRegisterByID = async (id: String) => {
     return await Event.findById(id);
 }
 
+export const EventRegisterFindDetailsByID = async (id: String) => {
+    return await Event.findById(id);
+}
+
 export const EventRegister = async (id: string, data: any) => {
-    try {
-        for (const participant of data.event.participant) {
-            const rs = await UserRegistersGetIDByMail(participant.info);
-            if (!rs.success) { return rs; }
-            participant.info = rs.id;
-        }
-        if (data.isEvent) { data.verify = false; data.event.participant.push({ info: id, lead: true }); }      
+    try { 
+        if (data.isEvent) { 
+            data.event.participant.map((member: Member) => { if(!(User.findOne({ email: member.info }))){return { success: false, message: `The ${member.info} is not registered. Check your Email ID or Confirm whether the participant is registered in the platform.` } } } );
+            for (const participant of data.event.participant) {
+                const rs = await UserRegistersGetIDByMail(participant.info);
+                if (!rs.success) { return rs; }
+                participant.info = rs.id;
+            }
+            data.verify = false; data.event.participant.push({ info: id, lead: true }); 
+        }      
         const event = new Event(data);
         const info = await event.save();
         if (data.isEvent) {
             var ids = data.event.participant.map((participant: Member) => participant.info);
             await User.updateMany(
                 { _id: { $in: ids } },
-                { $addToSet: { event: info._id } }
+                { $addToSet: {event: info._id} }
             );
         } else {
             await User.updateOne(
@@ -373,16 +422,21 @@ export const HackathonRegisters = async () => { return await Hackathon.find(); }
 export const HackathonRegistersBy = async (param: any) => { return await Hackathon.find({ param }); }
 export const HackathonRegisterByID = async (id: string) => { return await Hackathon.find({ _id: new mongo.Types.ObjectId(id) }); }
 
+export const HackathonRegisterFindDetailsByID = async (id: string) => {
+
+}
+
 export const HackathonRegister = async (id: string, data: any) => {
     try {
+        data.member.map((member: Member) => { if(!(User.findOne({ email: member.info }))){return { success: false, message: `The ${member.info} is not registered. Check your Email ID or Confirm whether the participant is registered in the platform.` } } } );
         data.verify = false;
         var rs, lead;
-        for (var i=0; i<data.member.length; i++) {
-            rs = await UserRegistersGetIDByMail(data.member[i].info);
+        for (const member of data.member) {
+            rs = await UserRegistersGetIDByMail(member.info);
             if (!rs.success){
                 return rs
             }
-            data.member[i].info = rs.id;
+            member.info = rs.id;
         }
         data.member.push({ info: id, lead: true })
         const hackathon = new Hackathon(data);
@@ -393,21 +447,15 @@ export const HackathonRegister = async (id: string, data: any) => {
         }
         await User.updateMany(
             { mail: { $in: mails } },
-            { $set: { hack: {
-                team: info._id.toString()
-            } } }
+            { $set: { hack: info._id.toString() } }
         );
         await User.updateOne(
             { mail: lead },
-            { $set: { hack: {
-                team: info._id.toString(),
-                lead: true
-            } } }
+            { $set: { hack: info._id.toString() } }
         );
         return { success: true, id: info._id.toString() }
     } catch (e) {
         console.log(e);
-        
         return { success: false, message: 'The data is invalid.' }
     }
 }

@@ -94,7 +94,7 @@ export interface SignupModal {
     course?: string,
     year?: number,
     // Auto added
-    hack?: Array<string>,
+    hack?: string,
     talk?: string,
     event?: Array<string>
 }

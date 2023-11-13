@@ -1,5 +1,5 @@
 import express from "express";
-import { UserRegisterByID, hackathonRegisterGetLeadEmail, EventRegisterByID, HackathonRegisterByID, EventRegister, HackathonRegister, EventQRAdder, HackathonQRAdder } from "../db/sankalpUser";
+import { UserRegistersFindUser, HackathonRegisterFindDetailsByID, UserRegisterByID, hackathonRegisterGetLeadEmail, EventRegisterFindDetailsByID, EventRegister, HackathonRegister, EventQRAdder, HackathonQRAdder } from "../db/sankalpUser";
 import { EventModels, HackathonModel, Member } from "../workers/model";
 import { qrCreator, formID } from "../workers/qrcode";
 import { encrypt } from "workers/crypt";
@@ -62,10 +62,12 @@ router.get("/info/:info", verifyToken, async(req, res) => {
         var info = req.params.info;
         var register;
         try {
-            if (info === 'et') { // Event & Talk registration
-                register = await EventRegisterByID(req.body.id);
+            if(info === 'u') {
+                register = await UserRegistersFindUser(req.body.id);
+            } else if (info === 'et') { // Event & Talk registration
+                register = await EventRegisterFindDetailsByID(req.body.id);
             } else if (info === 'h') { // Hackathon registration
-                register = await HackathonRegisterByID(req.body.id);
+                register = await HackathonRegisterFindDetailsByID(req.body.id);
             } else {
                 res.status(500).json({ success: false, message: "Check your info params." })
                 return
@@ -77,7 +79,7 @@ router.get("/info/:info", verifyToken, async(req, res) => {
             res.status(500).json({ success: false, message: 'No info on this ID.' })
             return
         }
-        res.status(200).json({ success: true, result: register })
+        res.status(200).json({ success: true, register })
     } catch (e) {
         res.status(500).json({ success: false, message: e.message })
     }
