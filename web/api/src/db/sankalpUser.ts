@@ -83,49 +83,55 @@ export const UserRegisterByID = async (id: String) => {
 }
 
 export const UserRegistersFindUser = async (id: String) => {
-    const data: SignupModal | any = await User.findById(id);
+    var data: any = await User.findById(id).select("-_id -__v");
     try {
+        var temp: any;
         if (data.hack) {
             var hackon: any = await Hackathon.findById(data.hack);
+            data.hacks = {}
             const mem = hackon.member;
             hackon.member = Array();
             for (const member of mem) {
-                const temp: any = await User.findById(member.info, 'name email');
+                temp= await User.findById(member.info).select('name email');
                 if (member.lead) {temp.lead = member.lead}
                 if (temp) { hackon.member.push(temp) } else { 
                     return { success: false, message: "Unable to find the user in the team, Please contact developer for support." } 
                 }
+                hackon.member.push(temp);
             }
-            console.log(JSON.stringify(hackon));
             data.hack = hackon;
+            console.log('Hack: data.hack-'+typeof data.hack);
         }
         if (data.talk) {
-            data.talk = await Event.findById(data.talk, '-isEvent');
+            data.talk = await Event.findById(data.talk).select('-_id -isEvent');
         }
         if (data.event) {
             var eve = data.event;
             data.event = Array();
-            eve.map(async (id: string) => {
-                var event: any = await Event.findById(id, '-isEvent');
+            for(const idx of eve) {
+                var event: any = await Event.findById(idx).select('-_id -isEvent');
                 const part = event.event.participant;
                 event.event.participant = Array();
                 for (const participant of part) {
-                    var temp: any = await User.findById(participant.info, 'name email');
+                    temp = await User.findById(participant.info).select('name email');
                     if (participant.lead) { temp.lead = participant.lead }
                     event.event.participant.push(temp);
                 }
                 data.event.push(event);
-            });
+            }
+
         }
         return { success: true, data: data }
     } catch (e) {
         console.log(e);
-        return { success: false, message: '' }
+        return { success: false, message: `Error: ${e.message}` }
     }
 }
 
 export const UserRegistersGetIDByMail = async (mail: string) => {
-    if (await User.findOne({ email: mail })) {
+    if ((await User.findOne({ email: mail })).hack) {
+        return { success: false, message: `The ${mail} is already in a hackathin team.` }
+    } else if (await User.findOne({ email: mail })) {
         return { success: true, id: (await User.findOne({ email: mail }))._id.toString() }
     } else {
         return { success: false, message: "Check your Email id. The user may not have registered" }
@@ -190,7 +196,8 @@ const eventRegistration = new mongo.Schema<EventModels>({
             verify: {
                 type: Boolean,
                 default: false
-            }
+            },
+            _id: false
         }],
         require: false
     },
@@ -203,10 +210,11 @@ const eventRegistration = new mongo.Schema<EventModels>({
             participant: {
                 type: [{
                     info: { type: String, require: false },
-                    lead: { type: Boolean, require: false }
+                    lead: { type: Boolean, require: false },
+                    _id: false
                 }],
                 require: false
-            }
+            },
         },
         required: false
     },
@@ -390,7 +398,8 @@ const hackathonRegistration = new mongo.Schema({
             lead: {
                 type: Boolean,
                 require: false
-            }
+            },
+            _id: false
         }],
         require: true
     },
@@ -428,9 +437,11 @@ export const HackathonRegisterFindDetailsByID = async (id: string) => {
 
 export const HackathonRegister = async (id: string, data: any) => {
     try {
-        data.member.map((member: Member) => { if(!(User.findOne({ email: member.info }))){return { success: false, message: `The ${member.info} is not registered. Check your Email ID or Confirm whether the participant is registered in the platform.` } } } );
+        data.member.map((member: Member) => { 
+            if(!(User.findOne({ email: member.info }))){return { success: false, message: `The ${member.info} is not registered. Check your Email ID or Confirm whether the participant is registered in the platform.` } } 
+        } );
         data.verify = false;
-        var rs, lead;
+        var rs;
         for (const member of data.member) {
             rs = await UserRegistersGetIDByMail(member.info);
             if (!rs.success){
@@ -441,16 +452,16 @@ export const HackathonRegister = async (id: string, data: any) => {
         data.member.push({ info: id, lead: true })
         const hackathon = new Hackathon(data);
         const info = await hackathon.save();
-        var mails = Array()
-        for (var i=0; i< (data.member).length; i++) {
-            data.member[i].lead?lead=(await User.findOne({_id: id})).email:mails.push(data.member[i].info);
+        var ids = Array()
+        for (const member of data.member) {
+           member.lead?{}:ids.push(member.info);
         }
         await User.updateMany(
-            { mail: { $in: mails } },
+            { _id: { $in: ids } },
             { $set: { hack: info._id.toString() } }
         );
         await User.updateOne(
-            { mail: lead },
+            { _id: id },
             { $set: { hack: info._id.toString() } }
         );
         return { success: true, id: info._id.toString() }

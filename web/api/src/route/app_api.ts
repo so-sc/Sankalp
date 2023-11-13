@@ -79,7 +79,7 @@ router.get("/info/:info", verifyToken, async(req, res) => {
             res.status(500).json({ success: false, message: 'No info on this ID.' })
             return
         }
-        res.status(200).json({ success: true, register })
+        res.status(200).json(register)
     } catch (e) {
         res.status(500).json({ success: false, message: e.message })
     }
