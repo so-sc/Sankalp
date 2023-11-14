@@ -4,6 +4,7 @@ import { H1 } from "@/components/ui/typography"
 import UserDisplay from "@/components/user-display"
 import { ESPORTS, MAIN_EVENT_NAME, TALKS, genders } from "@/lib/constants"
 import { SignUp, Step, UserProfile } from "@/lib/types"
+import { useRouter } from "next/navigation"
 import { Dispatch, SetStateAction, useState } from "react"
 import { TbCaretLeftFilled, TbLoader2 } from "react-icons/tb"
 
@@ -19,6 +20,7 @@ export default function RegistrationDisplay({
   const { user, event } = registrationData
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter()
 
   async function handleRegistration() {
     setIsLoading(true)
@@ -61,7 +63,9 @@ export default function RegistrationDisplay({
 
       const data = await response.json()
       console.log(data)
-      if (!data.success) {
+      if (data.success) {
+        router.push("/?state=login")
+      } else {
         setError(data.message)
       }
     } catch (error) {

@@ -97,268 +97,278 @@ export default function HackathonRegistration({
   }
 
   return (
-    <div className="mt-2">
-      <Notification variant="info" className="my-4">
-        <p>
-          Only Team leader has to register for the hackathon. The rest of the
-          team need not register again. <br />
-          Make sure your members are registered to Sankalp before creating team
-          for hackathon, so we can autofetch their details. Because we value
-          your time :)
-        </p>
+    <div className="mt-4">
+      <Notification variant="info" className="flex flex-col">
+        Hackathon registrations opening soon... Stay tuned Themes Available:
+        {THEMES.map((theme) => theme + ", ")}
+        Till then form a team of 2-4 members and you will be shining soon.
       </Notification>
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onTeamRegister)}
-          className="flex flex-col gap-2"
-        >
-          <FormField
-            control={form.control}
-            name="teamName"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input type="text" placeholder="Team Name" {...field} />
-                </FormControl>
-                {form.formState.errors.teamName?.message && (
-                  <p className="text-red-500">
-                    {form.formState.errors.teamName?.message}
-                  </p>
-                )}
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="totalMembers"
-            render={({ field }) => (
-              <div>
-                <FormItem className="flex items-center">
-                  <FormLabel className="basis-40">Total Members:</FormLabel>
-                  <FormControl>
-                    <Select
-                      onValueChange={(value) => field.onChange(Number(value))}
-                      defaultValue={field.value.toString()}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Total Members" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {Array.from(Array(MAX_MEMBERS - 1).keys()).map(
-                          (_, i) => (
-                            <SelectItem value={`${i + MIN_MEMBERS}`} key={i}>
-                              {i + MIN_MEMBERS} Members
-                            </SelectItem>
-                          )
-                        )}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                </FormItem>
-                {form.formState.errors.totalMembers?.message && (
-                  <p className="text-red-500">
-                    {form.formState.errors.totalMembers?.message}
-                  </p>
-                )}
-              </div>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="teamTheme"
-            render={({ field }) => (
-              <div>
-                <FormItem className="flex items-center">
-                  <FormLabel className="basis-40">Theme:</FormLabel>
-                  <FormControl>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value.toString()}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Project Theme" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {THEMES.map((theme, i) => (
-                          <SelectItem value={theme} key={theme}>
-                            {theme}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                </FormItem>
-                {form.formState.errors.teamTheme?.message && (
-                  <p className="text-red-500">
-                    {form.formState.errors.teamTheme?.message}
-                  </p>
-                )}
-              </div>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="teamStatement"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Textarea
-                    placeholder="Describe your problem statement (maximum 250 characters)"
-                    {...field}
-                    rows={4}
-                    className="resize-none"
-                  />
-                </FormControl>
-                {form.formState.errors.teamStatement?.message && (
-                  <p className="text-red-500">
-                    {form.formState.errors.teamStatement?.message}
-                  </p>
-                )}
-              </FormItem>
-            )}
-          />
-          <p className="my-4 text-center text-xl">Team Member Details</p>
-          <div>
-            <p className="mb-2">Team Leader</p>
-            <div className="flex flex-col gap-2">
-              <FormField
-                control={form.control}
-                name="leader.name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        type="text"
-                        placeholder="Team leader name"
-                        readOnly
-                        {...field}
-                        value={leader.name}
-                        className="read-only:bg-foreground/10"
-                      />
-                    </FormControl>
-                    {form.formState.errors.leader?.name?.message && (
-                      <p className="text-red-500">
-                        {form.formState.errors.leader?.name?.message}
-                      </p>
-                    )}
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="leader.email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        type="text"
-                        placeholder="Team leader email ID"
-                        readOnly
-                        {...field}
-                        value={leader.email}
-                        className="read-only:bg-foreground/10"
-                      />
-                    </FormControl>
-                    {form.formState.errors.leader?.email?.message && (
-                      <p className="text-red-500">
-                        {form.formState.errors.leader?.email?.message}
-                      </p>
-                    )}
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="leader.phone"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        type="text"
-                        placeholder="Team leader Phone number"
-                        readOnly
-                        {...field}
-                        value={leader.phone}
-                        className="read-only:bg-foreground/10"
-                      />
-                    </FormControl>
-                    {form.formState.errors.leader?.phone?.message && (
-                      <p className="text-red-500">
-                        {form.formState.errors.leader?.phone?.message}
-                      </p>
-                    )}
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="leader.year"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        type="text"
-                        placeholder="Team leader year of study"
-                        readOnly
-                        {...field}
-                        value={`${numberDisplay[Number(leader.year) - 1]} year`}
-                        className="read-only:bg-foreground/10"
-                      />
-                    </FormControl>
-                    {form.formState.errors.leader?.phone?.message && (
-                      <p className="text-red-500">
-                        {form.formState.errors.leader?.phone?.message}
-                      </p>
-                    )}
-                  </FormItem>
-                )}
-              />
-            </div>
-            {Array.from(Array(totalMembers - 1).keys()).map((i) => (
-              <>
-                <p className="mt-8 mb-2">Team Member {i + 1}</p>
-                <div className="flex flex-col gap-2">
-                  <FormField
-                    control={form.control}
-                    name={`members.${i}.email`}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Input
-                            type="text"
-                            placeholder={`Team member ${i + 1} email ID`}
-                            {...field}
-                          />
-                        </FormControl>
-                        {form.formState.errors.members &&
-                          form.formState.errors.members[i]?.email?.message && (
-                            <p className="text-red-500">
-                              {form.formState.errors.members[i]?.email?.message}
-                            </p>
-                          )}
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              </>
-            ))}
-          </div>
-          <Button
-            type="submit"
-            disabled={form.formState.isSubmitting}
-            className="w-full flex items-center gap-1"
-          >
-            Confirm Registration
-            {form.formState.isSubmitting && (
-              <TbLoader2 className="animate-spin" />
-            )}
-          </Button>
-        </form>
-      </Form>
     </div>
   )
+
+  // return (
+  //   <div className="mt-2">
+  //     <Notification variant="info" className="my-4">
+  //       <p>
+  //         Only Team leader has to register for the hackathon. The rest of the
+  //         team need not register again. <br />
+  //         Make sure your members are registered to Sankalp before creating team
+  //         for hackathon, so we can autofetch their details. Because we value
+  //         your time :)
+  //       </p>
+  //     </Notification>
+  //     <Form {...form}>
+  //       <form
+  //         onSubmit={form.handleSubmit(onTeamRegister)}
+  //         className="flex flex-col gap-2"
+  //       >
+  //         <FormField
+  //           control={form.control}
+  //           name="teamName"
+  //           render={({ field }) => (
+  //             <FormItem>
+  //               <FormControl>
+  //                 <Input type="text" placeholder="Team Name" {...field} />
+  //               </FormControl>
+  //               {form.formState.errors.teamName?.message && (
+  //                 <p className="text-red-500">
+  //                   {form.formState.errors.teamName?.message}
+  //                 </p>
+  //               )}
+  //             </FormItem>
+  //           )}
+  //         />
+  //         <FormField
+  //           control={form.control}
+  //           name="totalMembers"
+  //           render={({ field }) => (
+  //             <div>
+  //               <FormItem className="flex items-center">
+  //                 <FormLabel className="basis-40">Total Members:</FormLabel>
+  //                 <FormControl>
+  //                   <Select
+  //                     onValueChange={(value) => field.onChange(Number(value))}
+  //                     defaultValue={field.value.toString()}
+  //                   >
+  //                     <FormControl>
+  //                       <SelectTrigger>
+  //                         <SelectValue placeholder="Total Members" />
+  //                       </SelectTrigger>
+  //                     </FormControl>
+  //                     <SelectContent>
+  //                       {Array.from(Array(MAX_MEMBERS - 1).keys()).map(
+  //                         (_, i) => (
+  //                           <SelectItem value={`${i + MIN_MEMBERS}`} key={i}>
+  //                             {i + MIN_MEMBERS} Members
+  //                           </SelectItem>
+  //                         )
+  //                       )}
+  //                     </SelectContent>
+  //                   </Select>
+  //                 </FormControl>
+  //               </FormItem>
+  //               {form.formState.errors.totalMembers?.message && (
+  //                 <p className="text-red-500">
+  //                   {form.formState.errors.totalMembers?.message}
+  //                 </p>
+  //               )}
+  //             </div>
+  //           )}
+  //         />
+  //         <FormField
+  //           control={form.control}
+  //           name="teamTheme"
+  //           render={({ field }) => (
+  //             <div>
+  //               <FormItem className="flex items-center">
+  //                 <FormLabel className="basis-40">Theme:</FormLabel>
+  //                 <FormControl>
+  //                   <Select
+  //                     onValueChange={field.onChange}
+  //                     defaultValue={field.value.toString()}
+  //                   >
+  //                     <FormControl>
+  //                       <SelectTrigger>
+  //                         <SelectValue placeholder="Project Theme" />
+  //                       </SelectTrigger>
+  //                     </FormControl>
+  //                     <SelectContent>
+  //                       {THEMES.map((theme, i) => (
+  //                         <SelectItem value={theme} key={theme}>
+  //                           {theme}
+  //                         </SelectItem>
+  //                       ))}
+  //                     </SelectContent>
+  //                   </Select>
+  //                 </FormControl>
+  //               </FormItem>
+  //               {form.formState.errors.teamTheme?.message && (
+  //                 <p className="text-red-500">
+  //                   {form.formState.errors.teamTheme?.message}
+  //                 </p>
+  //               )}
+  //             </div>
+  //           )}
+  //         />
+  //         <FormField
+  //           control={form.control}
+  //           name="teamStatement"
+  //           render={({ field }) => (
+  //             <FormItem>
+  //               <FormControl>
+  //                 <Textarea
+  //                   placeholder="Describe your problem statement (maximum 250 characters)"
+  //                   {...field}
+  //                   rows={4}
+  //                   className="resize-none"
+  //                 />
+  //               </FormControl>
+  //               {form.formState.errors.teamStatement?.message && (
+  //                 <p className="text-red-500">
+  //                   {form.formState.errors.teamStatement?.message}
+  //                 </p>
+  //               )}
+  //             </FormItem>
+  //           )}
+  //         />
+  //         <p className="my-4 text-center text-xl">Team Member Details</p>
+  //         <div>
+  //           <p className="mb-2">Team Leader</p>
+  //           <div className="flex flex-col gap-2">
+  //             <FormField
+  //               control={form.control}
+  //               name="leader.name"
+  //               render={({ field }) => (
+  //                 <FormItem>
+  //                   <FormControl>
+  //                     <Input
+  //                       type="text"
+  //                       placeholder="Team leader name"
+  //                       readOnly
+  //                       {...field}
+  //                       value={leader.name}
+  //                       className="read-only:bg-foreground/10"
+  //                     />
+  //                   </FormControl>
+  //                   {form.formState.errors.leader?.name?.message && (
+  //                     <p className="text-red-500">
+  //                       {form.formState.errors.leader?.name?.message}
+  //                     </p>
+  //                   )}
+  //                 </FormItem>
+  //               )}
+  //             />
+  //             <FormField
+  //               control={form.control}
+  //               name="leader.email"
+  //               render={({ field }) => (
+  //                 <FormItem>
+  //                   <FormControl>
+  //                     <Input
+  //                       type="text"
+  //                       placeholder="Team leader email ID"
+  //                       readOnly
+  //                       {...field}
+  //                       value={leader.email}
+  //                       className="read-only:bg-foreground/10"
+  //                     />
+  //                   </FormControl>
+  //                   {form.formState.errors.leader?.email?.message && (
+  //                     <p className="text-red-500">
+  //                       {form.formState.errors.leader?.email?.message}
+  //                     </p>
+  //                   )}
+  //                 </FormItem>
+  //               )}
+  //             />
+  //             <FormField
+  //               control={form.control}
+  //               name="leader.phone"
+  //               render={({ field }) => (
+  //                 <FormItem>
+  //                   <FormControl>
+  //                     <Input
+  //                       type="text"
+  //                       placeholder="Team leader Phone number"
+  //                       readOnly
+  //                       {...field}
+  //                       value={leader.phone}
+  //                       className="read-only:bg-foreground/10"
+  //                     />
+  //                   </FormControl>
+  //                   {form.formState.errors.leader?.phone?.message && (
+  //                     <p className="text-red-500">
+  //                       {form.formState.errors.leader?.phone?.message}
+  //                     </p>
+  //                   )}
+  //                 </FormItem>
+  //               )}
+  //             />
+  //             <FormField
+  //               control={form.control}
+  //               name="leader.year"
+  //               render={({ field }) => (
+  //                 <FormItem>
+  //                   <FormControl>
+  //                     <Input
+  //                       type="text"
+  //                       placeholder="Team leader year of study"
+  //                       readOnly
+  //                       {...field}
+  //                       value={`${numberDisplay[Number(leader.year) - 1]} year`}
+  //                       className="read-only:bg-foreground/10"
+  //                     />
+  //                   </FormControl>
+  //                   {form.formState.errors.leader?.phone?.message && (
+  //                     <p className="text-red-500">
+  //                       {form.formState.errors.leader?.phone?.message}
+  //                     </p>
+  //                   )}
+  //                 </FormItem>
+  //               )}
+  //             />
+  //           </div>
+  //           {Array.from(Array(totalMembers - 1).keys()).map((i) => (
+  //             <>
+  //               <p className="mt-8 mb-2">Team Member {i + 1}</p>
+  //               <div className="flex flex-col gap-2">
+  //                 <FormField
+  //                   control={form.control}
+  //                   name={`members.${i}.email`}
+  //                   render={({ field }) => (
+  //                     <FormItem>
+  //                       <FormControl>
+  //                         <Input
+  //                           type="text"
+  //                           placeholder={`Team member ${i + 1} email ID`}
+  //                           {...field}
+  //                         />
+  //                       </FormControl>
+  //                       {form.formState.errors.members &&
+  //                         form.formState.errors.members[i]?.email?.message && (
+  //                           <p className="text-red-500">
+  //                             {form.formState.errors.members[i]?.email?.message}
+  //                           </p>
+  //                         )}
+  //                     </FormItem>
+  //                   )}
+  //                 />
+  //               </div>
+  //             </>
+  //           ))}
+  //         </div>
+  //         <Button
+  //           type="submit"
+  //           disabled={form.formState.isSubmitting}
+  //           className="w-full flex items-center gap-1"
+  //         >
+  //           Confirm Registration
+  //           {form.formState.isSubmitting && (
+  //             <TbLoader2 className="animate-spin" />
+  //           )}
+  //         </Button>
+  //       </form>
+  //     </Form>
+  //   </div>
+  // )
 }

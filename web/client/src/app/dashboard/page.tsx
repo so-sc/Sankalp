@@ -7,7 +7,7 @@ import { hackathonTeam, userProfile } from "@/lib/placeholder"
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 
-async function getUser() {
+export async function getUser() {
   const token = cookies().get("token")?.value
   if (!token) {
     redirect("/")

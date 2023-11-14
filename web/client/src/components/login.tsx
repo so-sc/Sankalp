@@ -39,8 +39,6 @@ export default function Login() {
       id: values.password,
     }
 
-    console.log(signInData)
-
     try {
       setError("")
       const response = await fetch(
