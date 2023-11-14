@@ -79,7 +79,7 @@ export default function HackathonDashboard({ team }: HackathonDashboardProps) {
               </span>{" "}
               on various themes like
             </p>
-            <p className="flex gap-2 justify-center flex-wrap my-2">
+            <p className="flex gap-2 justify-center flex-wrap my-4">
               {THEMES.map((theme) => (
                 <span
                   key={theme}
@@ -91,7 +91,7 @@ export default function HackathonDashboard({ team }: HackathonDashboardProps) {
             </p>
             <div className="flex flex-col gap-2 mt-8">
               <Button asChild className="w-1/2 mx-auto">
-                <Link href="/hackathon">Register for {HACKATHON_NAME}</Link>
+                <Link href="/dashboard">Stay Tuned</Link>
               </Button>
               <Link
                 href={MAIN_EVENT_WEBSITE}

@@ -7,16 +7,23 @@ import { H2 } from "@/components/ui/typography"
 import { loginSchema } from "@/lib/schemas"
 import { LoginUser, SignIn } from "@/lib/types"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { setCookie } from "cookies-next"
+import { getCookie, setCookie } from "cookies-next"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { TbLoader2 } from "react-icons/tb"
 
 export default function Login() {
   const router = useRouter()
   const [error, setError] = useState("")
+
+  useEffect(() => {
+    const token = getCookie("token")
+    if (token) {
+      router.push("/dashboard")
+    }
+  })
 
   const form = useForm<LoginUser>({
     resolver: zodResolver(loginSchema),
@@ -32,6 +39,8 @@ export default function Login() {
       id: values.password,
     }
 
+    console.log(signInData)
+
     try {
       setError("")
       const response = await fetch(
@@ -45,12 +54,9 @@ export default function Login() {
         }
       )
       const data = await response.json()
-      console.log(data)
 
       if (data.success) {
-        setCookie("token", data.token, {
-          secure: process.env.NEXT_PUBLIC_NODE_ENV === "production",
-        })
+        setCookie("token", data.token)
         router.push("/dashboard")
       } else {
         setError(data.message)

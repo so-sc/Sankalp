@@ -6,8 +6,10 @@ import UserRegistration from "@/components/registration/user-registration"
 import { H1 } from "@/components/ui/typography"
 import { MAIN_EVENT_NAME } from "@/lib/constants"
 import { Step, UserProfile } from "@/lib/types"
+import { getCookie } from "cookies-next"
 import Link from "next/link"
-import { Dispatch, SetStateAction, useState } from "react"
+import { useRouter } from "next/navigation"
+import { Dispatch, SetStateAction, useEffect, useState } from "react"
 
 export interface CommonRegistrationProps {
   setRegistrationData: Dispatch<SetStateAction<UserProfile>>
@@ -15,6 +17,14 @@ export interface CommonRegistrationProps {
 }
 
 export default function Register() {
+  const router = useRouter()
+  useEffect(() => {
+    const token = getCookie("token")
+    if (token) {
+      router.push("/dashboard")
+    }
+  })
+
   const [registrationData, setRegistrationData] = useState<UserProfile>({
     user: {
       name: "",

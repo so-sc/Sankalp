@@ -47,3 +47,59 @@ export type HackathonRegistration = {
   memNo: number
   members: Member[]
 }
+
+export interface UserApiResponse {
+  success: boolean
+  data: Data
+}
+
+export type UserDashboardProfile = UserApiResponse["data"]
+
+export interface Data {
+  name: string
+  email: string
+  gender: number
+  verify: boolean
+  PhNo: string
+  college?: string
+  branch?: string
+  course?: string
+  year?: number
+  company?: string
+  designation?: string
+  hacks?: Hacks
+  talks?: Talks
+  events?: EventElement[]
+}
+
+export interface EventElement {
+  verify: boolean
+  qrId: string
+  event: EventEvent
+}
+
+export interface EventEvent {
+  eve: number
+  participant: Member[]
+}
+
+export interface Hacks {
+  name: string
+  theme: number
+  themeDesc: string
+  verify: boolean
+  member: Member[]
+}
+
+export interface Talks {
+  talk: Talk[]
+  verify: boolean
+  createdAt: Date
+  updatedAt: Date
+  qrId: string
+}
+
+export interface Talk {
+  id: number
+  verify: boolean
+}

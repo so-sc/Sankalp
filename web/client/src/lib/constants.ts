@@ -22,7 +22,7 @@ export const ESPORTS = ["Ludo 1v1v1v1", "Candy Crush Saga"]
 // Hackathon registration
 export const MIN_MEMBERS = 2 // Including the leader
 export const MAX_MEMBERS = 4 // Including the leader
-export const THEMES = ["Company 1", "Company 2", "Open Theme"] as const
+export const THEMES = ["Company Specific", "Open Theme"] as const
 
 export const HACKATHON_NAME = "Codeblaze"
 
