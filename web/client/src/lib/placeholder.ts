@@ -23,10 +23,9 @@ export const userProfile: UserProfile = {
 export const hackathonTeam: HackathonTeam = {
   teamName: "Rudra",
   totalMembers: 3,
-  teamTheme: "Agriculture",
+  teamTheme: "Company Specific",
   teamStatement:
     "Our problem statement focuses on plant health and disease recognition using AI.",
-  teamCollege: "Sahyadri College of Engineering and Management",
   leader: {
     name: userProfile.user.name,
     email: userProfile.user.email,
@@ -38,16 +37,10 @@ export const hackathonTeam: HackathonTeam = {
   },
   members: [
     {
-      name: "Akkil MG",
       email: "akkil@gmail.com",
-      phone: "7894561230",
-      year: "3",
     },
     {
-      name: "Srujan Rai",
       email: "srujan@gmail.com",
-      phone: "4567891230",
-      year: "2",
     },
   ],
 }

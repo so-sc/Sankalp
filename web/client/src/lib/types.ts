@@ -7,6 +7,9 @@ import {
 } from "@/lib/schemas"
 import { z } from "zod"
 
+// Utility Types
+type AddNewProperty<T, K extends string, V> = T & { [P in K]: V }
+
 export type SearchParams = { [key: string]: string | string[] | undefined }
 export type FormState = "login" | "register"
 
@@ -102,4 +105,20 @@ export interface Talks {
 export interface Talk {
   id: number
   verify: boolean
+}
+
+export interface HackathonAPIResponse {
+  success: boolean
+  data: HackathonData
+}
+
+export type HackathonDashboard = HackathonAPIResponse["data"]
+
+export interface HackathonData {
+  name: string
+  theme: string
+  themeDesc: string
+  verify: boolean
+  leader: AddNewProperty<Leader, "college", string>
+  members: AddNewProperty<Leader, "college", string>[] // Schema will be Same as leader only
 }

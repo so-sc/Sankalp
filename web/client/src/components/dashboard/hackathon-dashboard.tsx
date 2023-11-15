@@ -8,12 +8,16 @@ import {
   THEMES,
   numberDisplay,
 } from "@/lib/constants"
-import { HackathonTeam } from "@/lib/types"
+import {
+  HackathonAPIResponse,
+  HackathonDashboard,
+  HackathonTeam,
+} from "@/lib/types"
 import Link from "next/link"
 import { TbExternalLink } from "react-icons/tb"
 
 interface HackathonDashboardProps {
-  team: HackathonTeam | null
+  team: HackathonDashboard | null
 }
 
 export default function HackathonDashboard({ team }: HackathonDashboardProps) {
@@ -23,14 +27,11 @@ export default function HackathonDashboard({ team }: HackathonDashboardProps) {
         <div className="px-4 mt-4">
           <div>
             <div className="mb-4">
-              <p className="text-xl font-bold text-center">
-                Team {team.teamName}
-              </p>
-              <p className="text-center">{team.teamCollege}</p>
+              <p className="text-xl font-bold text-center">Team {team.name}</p>
+              <p className="text-center">{team.leader.college}</p>
             </div>
             <p>
-              <span className="font-bold">{team.teamTheme}</span>:{" "}
-              {team.teamStatement}
+              <span className="font-bold">{team.theme}</span>: {team.themeDesc}
             </p>
           </div>
           <div className="flex flex-col">
@@ -42,6 +43,7 @@ export default function HackathonDashboard({ team }: HackathonDashboardProps) {
               <p>Email: {team.leader.email}</p>
               <p>Phone no.: {team.leader.phone}</p>
               <p>Year: {numberDisplay[team.leader.year]} year</p>
+              <p>College: {team.leader.college}</p>
             </div>
           </div>
           {team.members.map((member, i) => (
@@ -54,6 +56,7 @@ export default function HackathonDashboard({ team }: HackathonDashboardProps) {
                 <p>Email: {member.email}</p>
                 <p>Phone no.: {member.phone}</p>
                 <p>Year: {numberDisplay[member.year]} year</p>
+                <p>College: {member.college}</p>
               </div>
             </div>
           ))}
