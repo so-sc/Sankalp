@@ -5,15 +5,25 @@ import { Form, FormControl, FormField, FormItem } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { H2 } from "@/components/ui/typography"
 import { loginSchema } from "@/lib/schemas"
-import { LoginUser } from "@/lib/types"
+import { LoginUser, SignIn } from "@/lib/types"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { getCookie, setCookie } from "cookies-next"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { TbLoader2 } from "react-icons/tb"
 
 export default function Login() {
   const router = useRouter()
+  const [error, setError] = useState("")
+
+  useEffect(() => {
+    const token = getCookie("token")
+    if (token) {
+      router.push("/dashboard")
+    }
+  })
 
   const form = useForm<LoginUser>({
     resolver: zodResolver(loginSchema),
@@ -24,8 +34,34 @@ export default function Login() {
   })
 
   async function onLogin(values: LoginUser) {
-    console.log(values)
-    router.push("/dashboard")
+    const signInData: SignIn = {
+      email: values.email,
+      id: values.password,
+    }
+
+    try {
+      setError("")
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/signin`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(signInData),
+        }
+      )
+      const data = await response.json()
+
+      if (data.success) {
+        setCookie("token", data.token)
+        router.push("/dashboard")
+      } else {
+        setError(data.message)
+      }
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (
@@ -81,6 +117,7 @@ export default function Login() {
             {form.formState.isLoading && <TbLoader2 className="animate-spin" />}
           </Button>
         </form>
+        {error && <p className="text-red-500 text-center mt-2">{error}</p>}
       </Form>
       <div>
         <p className="text-center mt-4">

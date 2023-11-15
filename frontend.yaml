@@ -1,0 +1,11 @@
+runtime: nodejs
+service: frontend
+env: flexible
+resources:
+  cpu: 1
+  memory_gb: 2
+handlers:
+  - url: /.*
+    static_files: web/client/build
+    upload: web/client/build
+    secure: always

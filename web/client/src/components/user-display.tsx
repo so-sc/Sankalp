@@ -1,12 +1,12 @@
 import { numberDisplay } from "@/lib/constants"
-import { User } from "@/lib/types"
+import { User, UserDashboardProfile } from "@/lib/types"
 
 interface UserDisplayProps {
   user: User
 }
 
 export default function UserDisplay({ user }: UserDisplayProps) {
-  return (
+  return user ? (
     <>
       <p className="text-center mb-2 bg-foreground/10 px-2 py-2">
         Attendee Details
@@ -16,6 +16,9 @@ export default function UserDisplay({ user }: UserDisplayProps) {
       </p>
       <p className="py-1 border-b border-b-foreground/10">
         Email: <span className="font-bold">{user.email}</span>
+      </p>
+      <p className="py-1 border-b border-b-foreground/10">
+        Phone: <span className="font-bold">{user.phone}</span>
       </p>
       <p className="py-1 border-b border-b-foreground/10">
         Gender:{" "}
@@ -55,5 +58,9 @@ export default function UserDisplay({ user }: UserDisplayProps) {
         <p className="text-center text-red-500">Please select a role</p>
       )}
     </>
+  ) : (
+    <p className="text-red-500 text-center">
+      Unable to fetch User Profile. Please try again later
+    </p>
   )
 }

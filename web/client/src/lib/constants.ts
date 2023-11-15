@@ -2,6 +2,7 @@ export const MAIN_EVENT_NAME = "Codeblaze"
 export const MAIN_EVENT_WEBSITE = "https://codeblaze.sosc.org.in"
 
 export const numberDisplay = ["1st", "2nd", "3rd", "4th", "5th"]
+export const genders = ["male", "female", "non-binary", "other"] as const
 
 // Events
 export const TOTAL_TALKS = 6
@@ -21,12 +22,33 @@ export const ESPORTS = ["Ludo 1v1v1v1", "Candy Crush Saga"]
 // Hackathon registration
 export const MIN_MEMBERS = 2 // Including the leader
 export const MAX_MEMBERS = 4 // Including the leader
-export const THEMES = [
-  "Healthcare",
-  "Education",
-  "Agriculture",
-  "Environment",
-  "Finance",
-] as const
+export const THEMES = ["Company Specific", "Open Theme"] as const
 
-export const HACKATHON_NAME = "Aavruti"
+export const HACKATHON_NAME = "Codeblaze"
+
+export const EVENTS = [
+  {
+    name: "CodeQuest",
+    actualName: "Competitive Coding",
+    members: 2,
+    link: "",
+  },
+  {
+    name: "UI Battles",
+    actualName: "Web Design",
+    members: 2,
+    link: "",
+  },
+  {
+    name: "DeCode",
+    actualName: "Ethical Hacking",
+    member: 2,
+    link: "",
+  },
+  {
+    name: "DeCode",
+    actualName: "Ethical Hacking",
+    member: 2,
+    link: "",
+  },
+]

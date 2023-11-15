@@ -2,8 +2,9 @@ import { Button } from "@/components/ui/button"
 import Notification from "@/components/ui/notification"
 import { H1 } from "@/components/ui/typography"
 import UserDisplay from "@/components/user-display"
-import { ESPORTS, MAIN_EVENT_NAME, TALKS } from "@/lib/constants"
-import { Step, UserProfile } from "@/lib/types"
+import { ESPORTS, MAIN_EVENT_NAME, TALKS, genders } from "@/lib/constants"
+import { SignUp, Step, UserProfile } from "@/lib/types"
+import { useRouter } from "next/navigation"
 import { Dispatch, SetStateAction, useState } from "react"
 import { TbCaretLeftFilled, TbLoader2 } from "react-icons/tb"
 
@@ -17,12 +18,61 @@ export default function RegistrationDisplay({
   setStep,
 }: RegistrationDisplayProps) {
   const { user, event } = registrationData
+  const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter()
 
-  function handleRegistration() {
+  async function handleRegistration() {
     setIsLoading(true)
-    console.log(registrationData)
-    setIsLoading(false)
+    // Some helper variables
+
+    const signUpData: SignUp = {
+      name: registrationData.user.name,
+      email: registrationData.user.email,
+      gender:
+        genders.findIndex((gender) => gender === registrationData.user.gender) +
+        1, // Hate you Akkil for taking gender as number and using 1 indexing
+      PhNo: registrationData.user.phone,
+      student: registrationData.user.role.role === "student",
+    }
+
+    if (registrationData.user.role.role === "student") {
+      signUpData.college = registrationData.user.role.college
+      signUpData.course = registrationData.user.role.course
+      signUpData.branch = registrationData.user.role.branch
+      signUpData.year = Number(registrationData.user.role.yearOfStudy)
+
+      // If it is employee
+    } else if (registrationData.user.role.role === "employee") {
+      signUpData.company = registrationData.user.role.company
+      signUpData.designation = registrationData.user.role.designation
+    }
+
+    try {
+      setError("")
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/signup`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(signUpData),
+        }
+      )
+
+      const data = await response.json()
+      console.log(data)
+      if (data.success) {
+        router.push("/?state=login")
+      } else {
+        setError(data.message)
+      }
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -78,10 +128,11 @@ export default function RegistrationDisplay({
           </div> */}
         </div>
       </div>
+      {error && <p className="text-red-500 text-center mt-2">{error}</p>}
       <Notification variant="info" className="mt-2">
         <p>
-          Please double check your email. QR Code will be sent to you via mail,
-          that will be your entry pass to the event.
+          Please double check your email. A unique ID will be sent to your email
+          which is password to your dashboard.
         </p>
       </Notification>
       <Button

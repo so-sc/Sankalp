@@ -8,12 +8,16 @@ import {
   THEMES,
   numberDisplay,
 } from "@/lib/constants"
-import { HackathonTeam } from "@/lib/types"
+import {
+  HackathonAPIResponse,
+  HackathonDashboard,
+  HackathonTeam,
+} from "@/lib/types"
 import Link from "next/link"
 import { TbExternalLink } from "react-icons/tb"
 
 interface HackathonDashboardProps {
-  team: HackathonTeam | null
+  team: HackathonDashboard | null
 }
 
 export default function HackathonDashboard({ team }: HackathonDashboardProps) {
@@ -23,14 +27,11 @@ export default function HackathonDashboard({ team }: HackathonDashboardProps) {
         <div className="px-4 mt-4">
           <div>
             <div className="mb-4">
-              <p className="text-xl font-bold text-center">
-                Team {team.teamName}
-              </p>
-              <p className="text-center">{team.teamCollege}</p>
+              <p className="text-xl font-bold text-center">Team {team.name}</p>
+              <p className="text-center">{team.leader.college}</p>
             </div>
             <p>
-              <span className="font-bold">{team.teamTheme}</span>:{" "}
-              {team.teamStatement}
+              <span className="font-bold">{team.theme}</span>: {team.themeDesc}
             </p>
           </div>
           <div className="flex flex-col">
@@ -42,6 +43,7 @@ export default function HackathonDashboard({ team }: HackathonDashboardProps) {
               <p>Email: {team.leader.email}</p>
               <p>Phone no.: {team.leader.phone}</p>
               <p>Year: {numberDisplay[team.leader.year]} year</p>
+              <p>College: {team.leader.college}</p>
             </div>
           </div>
           {team.members.map((member, i) => (
@@ -54,6 +56,7 @@ export default function HackathonDashboard({ team }: HackathonDashboardProps) {
                 <p>Email: {member.email}</p>
                 <p>Phone no.: {member.phone}</p>
                 <p>Year: {numberDisplay[member.year]} year</p>
+                <p>College: {member.college}</p>
               </div>
             </div>
           ))}
@@ -79,7 +82,7 @@ export default function HackathonDashboard({ team }: HackathonDashboardProps) {
               </span>{" "}
               on various themes like
             </p>
-            <p className="flex gap-2 justify-center flex-wrap my-2">
+            <p className="flex gap-2 justify-center flex-wrap my-4">
               {THEMES.map((theme) => (
                 <span
                   key={theme}
@@ -91,7 +94,7 @@ export default function HackathonDashboard({ team }: HackathonDashboardProps) {
             </p>
             <div className="flex flex-col gap-2 mt-8">
               <Button asChild className="w-1/2 mx-auto">
-                <Link href="/hackathon">Register for {HACKATHON_NAME}</Link>
+                <Link href="/dashboard">Stay Tuned</Link>
               </Button>
               <Link
                 href={MAIN_EVENT_WEBSITE}

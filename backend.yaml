@@ -1,0 +1,10 @@
+runtime: nodejs
+service: backend
+env: flexible
+resources:
+  cpu: 2
+  memory_gb: 4
+handlers:
+  - url: /.*
+    script: web/api/src/server.ts
+    secure: always
