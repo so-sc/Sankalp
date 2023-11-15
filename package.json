@@ -1,12 +1,10 @@
 {
-    "name": "sankalp",
-    "version": "0.0.1",
-    "scripts": {
-        "start": "concurrently \"npm run client\" \"npm run api\"",
-        "client": "cd web/client && pnpm i && pnpm dev",
-        "api": "cd web/api && pnpm i && pnpm start"
-    },
-    "dependencies": {
-        "next": "13.5.4"
-    }
+  "name": "sankalp",
+  "version": "1.0.0",
+  "description": "Sankalp is a user-friendly registration form application. This intuitive and efficient tool streamlines the registration process, allowing individuals to easily sign up for SOSC events and hackathons. With Sankalp SOSC can collect essential participant information seamlessly, ensuring a smoother and more organized registration experience for both users and administrators.",
+  "main": "index.js",
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
