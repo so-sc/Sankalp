@@ -82,6 +82,10 @@ export const UserRegisterByID = async (id: String) => {
     return await User.findById(id);
 }
 
+export const UserRegisterByMail = (email: string) => {
+    return User.findOne({ email: email })
+}
+
 export const UserRegistersFindUser = async (id: String) => {
     var res: any = await User.findById(id).select("-_id -__v");
     var data: UserResponseModal = {

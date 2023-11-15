@@ -1,6 +1,8 @@
 
 
 import nodemailer from 'nodemailer';
+import fs from 'fs';
+import { EventNameModel, TalkNameModel, HackathonNameModel } from './model';
 
 require('dotenv').config();
 
@@ -14,9 +16,18 @@ const transporter = nodemailer.createTransport({
 });
 
 
-export const sendUserVerifyMail = async (domain: string, mail: string, id: string) => {
-  const preview = `${domain}/verify/${id}`
+export const sendUserVerifyMail = async (domain: string, mail: string, id: string, name: string) => {
   try {
+    const replacements = {
+      '${name}': name,
+      '${id}': id,
+      '${verify}': `${domain}/verify/${id}`
+    };
+    let html = fs.readFileSync('./src/workers/template/user_registration.html', 'utf8');
+    for (const [key, value] of Object.entries(replacements)) {
+      html = html.replace(key, value);
+    }    
+
      const result = await transporter.sendMail({
       from: process.env.EMAIL,
       to: mail,
@@ -25,38 +36,7 @@ export const sendUserVerifyMail = async (domain: string, mail: string, id: strin
           from: `SOSC ${process.env.EMAIL}`,
           to: `${mail}`
       },
-      html: `<!DOCTYPE html>
-          <html lang="en">
-          <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css">
-          </head>
-          <body>
-            <section class="mx-auto max-w-2xl bg-white px-6 py-8">
-              <header>
-                <a href="https://www.sosc.org.in/">
-                  <img class="h-7 w-auto sm:h-8" src="https://www.sosc.org.in/static/cc29da5173348add81ab2ba5a58c9471/6ef15/logo_grad.webp" alt="" />
-                </a>
-              </header>
-              <main class="mt-8">
-                <h2 class="mt-6 text-gray-700">Hi attendee,</h2>
-                <p class="mt-2 leading-loose text-gray-600">We’re glad to have you onboard on Sankalp! Your authorisation id is <code>${id}</code>, to signin to your account you need authorisation id <span class="text-red-500">(The authorisation id is not revokable, so never share the id details. The event team will never ask for the id at any circumstances)</span>. Lets share an enriching experience together. Thank you for being a part of our SOSC family.</p>
-                <p class="mt-2 text-gray-600">
-                  Thank you, <br />
-                  SOSC team
-                </p>
-                <a href="${preview}">
-                  <button class="mt-8 transform rounded-lg bg-green-600 px-6 py-2 text-sm font-medium capitalize tracking-wider text-white transition-colors duration-300 hover:bg-green-500 focus:outline-none focus:ring focus:ring-green-200 focus:ring-opacity-80">Verify</button>
-                </a>
-              </main>
-              <footer class="mt-8">
-                <p class="text-gray-500">This email was sent to <a href="mailto:${mail}" class="text-green-600 hover:underline" target="_blank">${mail}</a>. If you have any questions or require further information, please don't hesitate to contact us at <a href="mailto:${process.env.EMAIL}" class="text-green-600 hover:underline">${process.env.EMAIL}</a>.</p>
-                <p class="mt-3 flex items-center justify-center text-gray-500">© 2023 SOSC. All Rights Reserved.</p>
-              </footer>
-            </section>
-          </body>
-          </html>`
+      html: String(html),
     });
     if (!result) {
       console.error('Error sending email');
@@ -70,68 +50,54 @@ export const sendUserVerifyMail = async (domain: string, mail: string, id: strin
 }
 
 
-export const sendCopyMail = async (domain: string, eve: string, mail: string, qrId: string) => {
-  const preview = `${domain}/preview/${qrId}`
+export const sendCopyMail = async (domain: string, event: number, eve: any, email: string, name: string, qrId: string) => {
+  // name or eventDate or eventVenue or email or qrDL
   try {
+    var eventDate, eventVenue, eventName: string;
+    if (event===2) {
+      eventName = HackathonNameModel.name + " - Hackathon";
+      eventDate = HackathonNameModel.date;
+      eventVenue = HackathonNameModel.venue;
+    } else if (event===0) { 
+        eventName = EventNameModel[`${eve}`].name;
+        eventDate = EventNameModel[`${eve}`].date;
+        eventVenue = EventNameModel[`${eve}`].venue;
+    } else {
+        for (const et of eve) {
+          eventName = eventName+", "+TalkNameModel[`${et}`].name;
+          eventDate = eventDate+", "+TalkNameModel[`${et}`].date;
+          eventVenue = eventVenue+", "+TalkNameModel[`${et}`].venue;
+        }
+    }
+    var html = `${fs.readFileSync('./src/workers/template/event_registration.html', 'utf8')}`;
+    var qrDL: string = `${qrId}`;
+    const replacements = {
+      '${name}': name,
+      '${email}': email,
+      '${eventName}': eventName,
+      '${eventDate}': eventDate,
+      '${eventVenue}': eventVenue,
+      '${qrDL}': `${qrDL}`
+    };
+    for (const [key, value] of Object.entries(replacements)) {
+      html = html.replace(key, value);
+    }
     const result = await transporter.sendMail({
-        from: process.env.EMAIL,
-        to: mail,
-        subject: `SOSC: You have registered ${eve} successfully`,
-        envelope: {
-            from: `SOSC ${process.env.EMAIL}`,
-            to: `${mail}`
-        },
-        html: `
-          <!DOCTYPE html>
-          <html lang="en">
-          <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css">
-          </head>
-          <body>
-            <section class="mx-auto max-w-2xl bg-white px-6 py-8">
-              <header>
-                <a href="https://www.sosc.org.in/">
-                  <img class="h-7 w-auto sm:h-8" src="https://www.sosc.org.in/static/cc29da5173348add81ab2ba5a58c9471/6ef15/logo_grad.webp" alt="" />
-                </a>
-              </header>
-            
-              <main class="mt-8">
-                <div class="flex items-center justify-center">
-                  <img class="w-50 items-center justify-center rounded-lg md:w-72" src="https://qr.heimanbotz.workers.dev/download/${qrId}" alt="QR Code" />
-                </div>
-            
-                <h2 class="mt-6 text-gray-700">Hi attendee,</h2>
-            
-                <p class="mt-2 leading-loose text-gray-600">We’re glad to have you ${eve} onboard! Lets share an enriching experience together. Thank you for being a part of our ${eve}.</p>
-
-                <p class="mt-2 text-gray-600">
-                  Thank you, <br />
-                  SOSC team
-                </p>
-            
-                <a href="${preview}">
-                  <button class="mt-8 transform rounded-lg bg-green-600 px-6 py-2 text-sm font-medium capitalize tracking-wider text-white transition-colors duration-300 hover:bg-green-500 focus:outline-none focus:ring focus:ring-green-200 focus:ring-opacity-80">Preview</button>
-                </a>
-              </main>
-            
-              <footer class="mt-8">
-                <p class="text-gray-500">This email was sent to <a href="mailto:${mail}" class="text-green-600 hover:underline" target="_blank">${mail}</a>. If you have any questions or require further information, please don't hesitate to contact us at <a href="mailto:${process.env.EMAIL}" class="text-green-600 hover:underline">${process.env.EMAIL}</a> .</p>
-            
-                <p class="mt-3 flex items-center justify-center text-gray-500">© 2023 SOSC. All Rights Reserved.</p>
-              </footer>
-            </section>
-          </body>
-          </html>
-        `,
-      });
-      if (!result) {
-        console.error('Error sending email');
-        return { success: false, message: `Error: Error sending email` }
-      } else {
-        return { success: true, message: result.response }
-      }
+          from: process.env.EMAIL,
+          to: email,
+          subject: `SOSC: You have registered ${eve} successfully`,
+          envelope: {
+              from: `SOSC ${process.env.EMAIL}`,
+              to: `${email}`
+          },
+          html: html
+        });
+        if (!result) {
+          console.error('Error sending email');
+          return { success: false, message: `Error: Error sending email` }
+        } else {
+          return { success: true, message: result.response }
+        }
   } catch (e) {
     return { success: false, message: `Error: ${e.message}` }
   }
@@ -204,4 +170,3 @@ export const sendVerifyMail = async (mail: string, event: string) => {
     return { success: false, message: `Error: ${e.message}` }
   }
 }
-

@@ -20,7 +20,7 @@ router.post("/signup", async(req, res) => {
         data.verify = false;
         var result = await UserRegister(data);
         if (result.success) {
-            var rs = await sendUserVerifyMail(`${req.protocol}://${req.hostname}`, data.email, result.id);
+            var rs = await sendUserVerifyMail(`${req.protocol}://${req.hostname}`, data.email, result.id, data.name);
             if (rs.success) {
                 res.status(200).json({ success: true, id: result.id })
             } else {

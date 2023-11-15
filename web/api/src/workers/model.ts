@@ -1,21 +1,78 @@
 
-
-export const EventNameModel = {
-    1: "Event 1",
-    2: "Event 2",
-    3: "Event 3",
-    4: "Event 4",
-    5: "Event 5",
-    6: "Event 6",
+interface NameModel {
+    [key: string]: { name: string, date: string; venue: string };
+  }
+  
+export const EventNameModel: NameModel = {
+    1: {
+        name: "",
+        date: "",
+        venue: ""
+    },
+    2: {
+        name: "",
+        date: "",
+        venue: ""
+    },
+    3: {
+        name: "",
+        date: "",
+        venue: ""
+    },
+    4: {
+        name: "",
+        date: "",
+        venue: ""
+    },
+    5: {
+        name: "",
+        date: "",
+        venue: ""
+    },
+    6: {
+        name: "",
+        date: "",
+        venue: ""
+    },
 }
 
-export const TalkNameModel = {
-    1: "Talk 1",
-    2: "Talk 2",
-    3: "Talk 3",
-    4: "Talk 4",
-    5: "Talk 5",
-    6: "Talk 6",
+export const TalkNameModel: NameModel = {
+    1: {
+        name: "",
+        date: "",
+        venue: ""
+    },
+    2: {
+        name: "",
+        date: "",
+        venue: ""
+    },
+    3: {
+        name: "",
+        date: "",
+        venue: ""
+    },
+    4: {
+        name: "",
+        date: "",
+        venue: ""
+    },
+    5: {
+        name: "",
+        date: "",
+        venue: ""
+    },
+    6: {
+        name: "",
+        date: "",
+        venue: ""
+    },
+}
+
+export const HackathonNameModel = {
+    name: "",
+    date: "",
+    venue: "Sahyadri College of Engineering & Management"
 }
 
 export const YearModel = {
@@ -77,7 +134,6 @@ export interface HackathonModel {
 
 
 // Authentication interface
-
 export interface SignupModal {
     name: string,
     email: string,

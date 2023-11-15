@@ -1,5 +1,5 @@
 import express from "express";
-import { UserRegistersFindUser, HackathonRegisterFindDetailsByID, UserRegisterByID, hackathonRegisterGetLeadEmail, EventRegisterFindDetailsByID, EventRegister, HackathonRegister, EventQRAdder, HackathonQRAdder } from "../db/sankalpUser";
+import { UserRegisterByMail, UserRegistersFindUser, HackathonRegisterFindDetailsByID, UserRegisterByID, hackathonRegisterGetLeadEmail, EventRegisterFindDetailsByID, EventRegister, HackathonRegister, EventQRAdder, HackathonQRAdder } from "../db/sankalpUser";
 import { EventModels, HackathonModel, Member } from "../workers/model";
 import { qrCreator, formID } from "../workers/qrcode";
 import { encrypt } from "workers/crypt";
@@ -37,13 +37,21 @@ router.post("/registration/:info", verifyToken, async(req, res) => {
             return
         }
         if (info==='e' || info==='t') { await EventQRAdder(register.id, dt.id) } else { await HackathonQRAdder(register.id, dt.id); }
-        const qr: { [key: string]: string } = {'e': "Event", 't': "Talk",'h': "Hackathon"};
+        const qr: any =  {'e': 0, 't': 1, 'h': 2 };
         const mail = (info==='e' || info == 't')? (await UserRegisterByID(id))?.email : await hackathonRegisterGetLeadEmail(register.id);
         if (!mail) {
             res.status(500).json({ success: false, message: "Issue with fetching the Email ID." })
             return
         }
-        var rs = await sendCopyMail(`${req.protocol}://${req.hostname}`, qr[info], mail, dt.id);
+        var name;
+        if (info==='h') {
+            name=data.name;
+        } else {
+            for (const participant of data.event.participant) { 
+                (participant.lead)? name=UserRegisterByMail(participant.info): {}
+            }
+        }
+        var rs = await sendCopyMail(`${req.protocol}://${req.hostname}`, qr[info], (info==='h')? null: data.event.eve, mail, name, dt.id);
         if (!rs['success']===true) {
             console.log("Mailed failed");
             res.status(500).json({ success: false, message: rs.message });
