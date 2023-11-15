@@ -14,13 +14,16 @@ export async function getUser() {
   }
   console.log(token)
   // u means user
-  const response = await fetch("http://localhost:7000/api/app/info/u", {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    cache: "no-cache",
-  })
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/app/info/u`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      cache: "no-cache",
+    }
+  )
   return response.json()
 }
 
