@@ -1,8 +1,10 @@
 
 
 import express from "express";
+import jwt from "jsonwebtoken";
 import { verifyToken } from "../workers/auth";
-import { UserRegister, UserRegistersVerifyByID, UserSigninChecker } from "../db/sankalpUser"; 
+import { decrypt } from "../workers/crypt";
+import { UserRegisterByID, UserRegister, UserRegistersVerifyByID, UserSigninChecker } from "../db/sankalpUser"; 
 import { SigninModal, SignupModal } from "../workers/model";
 import { sendUserVerifyMail } from "../workers/mail";
 
@@ -51,6 +53,29 @@ router.post("/signin", async(req, res) => {
         }
     } catch (e) {
         res.status(500).json({ success: false, message: e.message })
+    }
+});
+
+
+router.get("/token-checker", async(req, res) => {
+    try {
+        if (!(req.header('Authorization'))) {
+            return { success: false, message: 'You need to add authorization in header.' }
+        }
+        const token = req.header('Authorization')?.split(' ')[1];
+        if (!token) {
+            return res.status(401).json({ success: false, message: 'Authentication failed.' });
+        }
+        const decoded = jwt.verify(token, process.env.KEY) as { id: string };
+        if (!decoded.id) {
+            return res.status(401).json({ success: false, message: 'Authentication failed. ID not found through token.' });
+        }
+        if (!(await UserRegisterByID(await decrypt(decoded.id)))) {
+            return res.status(401).json({ success: false, message: `ID ${await decrypt(decoded.id)} is not available on database.` });
+        }
+        return res.status(401).json({ success: true });
+    } catch (e) {
+        return res.status(401).json({ success: false, message: `Error: ${e.message}` });
     }
 });
 
