@@ -27,7 +27,9 @@ app.use(express.json())
 // app.use(compression());
 // app.use(cookieParser());
 
-app.use(cors());
+app.use(cors({
+    origin: ['*']
+}));
 app.use(bodyParser.json());
 
 const server = http.createServer(app);

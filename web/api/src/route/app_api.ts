@@ -1,5 +1,5 @@
 import express from "express";
-import { UserRegisterByMail, UserRegistersFindUser, HackathonRegisterFindDetailsByID, UserRegisterByID, hackathonRegisterGetLeadEmail, EventRegisterFindDetailsByID, EventRegister, HackathonRegister, EventQRAdder, HackathonQRAdder } from "../db/sankalpUser";
+import { UserRegisterGetInfoByMail, UserRegisterByMail, UserRegistersFindUser, HackathonRegisterFindDetailsByID, UserRegisterByID, hackathonRegisterGetLeadEmail, EventRegisterFindDetailsByID, EventRegister, HackathonRegister, EventQRAdder, HackathonQRAdder } from "../db/sankalpUser";
 import { EventModels, HackathonModel, Member } from "../workers/model";
 import { qrCreator, formID } from "../workers/qrcode";
 import { encrypt } from "workers/crypt";
@@ -63,6 +63,23 @@ router.post("/registration/:info", verifyToken, async(req, res) => {
     }
 });
 
+
+// Get info for form info
+router.get("/form-info-helper/:info", async(req, res) => {
+    try {
+        var info = req.params.info;
+        var data = req.body;
+        let result;
+        if (info==='email') {
+            result = await UserRegisterGetInfoByMail(data.email);
+        };
+        res.status(200).json(result);
+    } catch (e) {
+        console.log(e);
+        
+        res.status(500).json({ success: false, message: e.message })
+    }
+});
 
 // Get info of talk or event or hackathon
 router.get("/info/:info", verifyToken, async(req, res) => {

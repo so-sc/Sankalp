@@ -86,6 +86,23 @@ export const UserRegisterByMail = (email: string) => {
     return User.findOne({ email: email })
 }
 
+export const UserRegisterGetInfoByMail = async (email: string) => {
+    try {
+        let data: any = await User.findOne({ email: email }).select("name PhNo company designation college branch course year hack -_id");
+        if (!data) {
+            return { success: false, message: 'Check the provided email.' }
+        }
+        if (data.hack) {
+            return { success: false, message: 'Already in a team.' }
+        }
+        delete data.hack;
+        return { success: true, data: data }
+    } catch (e) {
+        console.log(`Error: ${e.message}`);
+        return { success: false, message: 'Some error in fetching the data.' }
+    }
+}
+
 export const UserRegistersFindUser = async (id: String) => {
     var res: any = await User.findById(id).select("-_id -__v");
     var data: UserResponseModal = {

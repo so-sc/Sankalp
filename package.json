@@ -7,7 +7,7 @@
         "client": "cd web/client && pnpm i && pnpm dev",
         "api": "cd web/api && pnpm i && pnpm start"
     },
-    "keywords": [""],
+    "keywords": ["sosc", "sankalp", "form"],
     "author": "Akkil M G, Deveesh Shetty & SOSC",
     "license": "ISC"
 }
