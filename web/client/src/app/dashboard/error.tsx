@@ -24,7 +24,7 @@ export default function ErrorPage({
   return (
     <div className="text-center my-16">
       <H1 className="my-4">Error fetching the data</H1>
-      <H3>{error.message ?? "Error logging in, please try again"}</H3>
+      <H3>Error logging in, please try again</H3>
     </div>
   )
 }
