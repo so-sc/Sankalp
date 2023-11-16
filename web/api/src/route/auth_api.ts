@@ -59,6 +59,16 @@ router.post("/signin", async(req, res) => {
 
 router.get("/token-checker", async(req, res) => {
     try {
+        if (req.body.token) {
+            const decoded = jwt.verify(req.body.token, process.env.KEY) as { id: string };
+            if (!decoded.id) {
+                return res.status(401).json({ success: false, message: 'Authentication failed. ID not found through token.' });
+            }
+            if (!(await UserRegisterByID(await decrypt(decoded.id)))) {
+                return res.status(401).json({ success: false, message: `ID ${await decrypt(decoded.id)} is not available on database.` });
+            }
+            return res.status(401).json({ success: true });
+        }
         if (!(req.header('Authorization'))) {
             return { success: false, message: 'You need to add authorization in header.' }
         }
