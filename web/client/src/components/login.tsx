@@ -39,7 +39,8 @@ export default function Login() {
       id: values.password,
     }
 
-    console.log(form.formState.isLoading)
+    console.log("Loading: " + form.formState.isLoading)
+    console.log(signInData)
 
     try {
       setError("")
@@ -102,7 +103,7 @@ export default function Login() {
                 <FormControl>
                   <Input
                     type="password"
-                    placeholder="Password (Registration ID which you got in mail)"
+                    placeholder="Password (Authorization ID which you got in mail)"
                     {...field}
                   />
                 </FormControl>

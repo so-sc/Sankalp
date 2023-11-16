@@ -3,7 +3,6 @@ import UserDashboard from "@/components/dashboard/user-dashboard"
 import Logout from "@/components/logout"
 import { H1, H2 } from "@/components/ui/typography"
 import { HACKATHON_NAME, MAIN_EVENT_NAME } from "@/lib/constants"
-import { hackathonTeam, userProfile } from "@/lib/placeholder"
 import { revalidatePath } from "next/cache"
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
@@ -13,6 +12,22 @@ export async function getUser() {
   if (!token) {
     redirect("/")
   }
+
+  const isTokenValidRes = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/token-checker`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  )
+
+  const isTokenValid = await isTokenValidRes.json()
+
+  if (!isTokenValid.success) {
+    throw new Error("Authorization failed, please login and try again.")
+  }
+
   console.log(token)
   // u means user
   const response = await fetch(

@@ -1,14 +1,14 @@
 // 
 
+import bodyParser from 'body-parser';
+import compression from 'compression';
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
 import express from 'express';
 import http from 'http';
-import bodyParser from 'body-parser';
-import cookieParser from 'cookie-parser';
-import compression from 'compression';
-import cors from 'cors';
 import mongo from 'mongoose';
-import { App } from "./route/app_api";
 import { Admin } from "./route/admin_api";
+import { App } from "./route/app_api";
 import { Auth } from './route/auth_api';
 require('dotenv').config();
 
