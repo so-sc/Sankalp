@@ -28,8 +28,11 @@ app.use(express.json())
 // app.use(cookieParser());
 
 app.use(cors({
-    origin: '*' // ['http://localhost:3000', '']
+    origin: ['http://localhost:3000', 'http://sankalp.sosc.org.in/']
 }));
+
+app.set('trust proxy', true);
+
 app.use(bodyParser.json());
 
 const server = http.createServer(app);

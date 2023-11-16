@@ -3,6 +3,7 @@ interface NameModel {
     [key: string]: { name: string, date: string; venue: string };
   }
   
+// Keys start from 1 guys sadly deveesh believes this is an array. May key value pair be with you..
 export const EventNameModel: NameModel = {
     1: {
         name: "",
@@ -25,11 +26,6 @@ export const EventNameModel: NameModel = {
         venue: ""
     },
     5: {
-        name: "",
-        date: "",
-        venue: ""
-    },
-    6: {
         name: "",
         date: "",
         venue: ""
