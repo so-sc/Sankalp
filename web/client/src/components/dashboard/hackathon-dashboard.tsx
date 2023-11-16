@@ -12,26 +12,31 @@ import {
   HackathonAPIResponse,
   HackathonDashboard,
   HackathonTeam,
+  UserDashboardProfile,
 } from "@/lib/types"
 import Link from "next/link"
 import { TbExternalLink } from "react-icons/tb"
 
 interface HackathonDashboardProps {
-  team: HackathonDashboard | null
+  user: UserDashboardProfile | null
 }
 
-export default function HackathonDashboard({ team }: HackathonDashboardProps) {
+export default function HackathonDashboard({ user }: HackathonDashboardProps) {
+  console.log(user)
   return (
     <div>
-      {team !== null ? (
+      {user?.hacks !== null ? (
         <div className="px-4 mt-4">
           <div>
             <div className="mb-4">
-              <p className="text-xl font-bold text-center">Team {team.name}</p>
-              <p className="text-center">{team.leader.college}</p>
+              <p className="text-xl font-bold text-center">
+                Team {user?.hacks?.name}
+              </p>
+              <p className="text-center">{user?.college}</p>
             </div>
             <p>
-              <span className="font-bold">{team.theme}</span>: {team.themeDesc}
+              <span className="font-bold">{THEMES[user?.hacks?.theme!]}</span>:{" "}
+              {user?.hacks?.themeDesc}
             </p>
           </div>
           <div className="flex flex-col">
@@ -39,24 +44,18 @@ export default function HackathonDashboard({ team }: HackathonDashboardProps) {
               Leader
             </p>
             <div className="flex flex-col gap-1">
-              <p>Name: {team.leader.name}</p>
-              <p>Email: {team.leader.email}</p>
-              <p>Phone no.: {team.leader.phone}</p>
-              <p>Year: {numberDisplay[team.leader.year]} year</p>
-              <p>College: {team.leader.college}</p>
+              <p>Name: {user?.name}</p>
+              <p>Email: {user?.email}</p>
             </div>
           </div>
-          {team.members.map((member, i) => (
-            <div className="flex flex-col" key={member.name}>
+          {user?.hacks?.member.map((member, i) => (
+            <div className="flex flex-col" key={member.email}>
               <p className="text-center mx-auto my-4 bg-foreground/10 w-2/5 rounded-lg py-1">
                 Member {i + 1}
               </p>
               <div className="flex flex-col gap-1">
                 <p>Name: {member.name}</p>
                 <p>Email: {member.email}</p>
-                <p>Phone no.: {member.phone}</p>
-                <p>Year: {numberDisplay[member.year]} year</p>
-                <p>College: {member.college}</p>
               </div>
             </div>
           ))}

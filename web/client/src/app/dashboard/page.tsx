@@ -46,7 +46,6 @@ export async function getUser() {
 
 export default async function DashboardPage() {
   const user = await getUser()
-  console.log(user)
 
   return (
     <main className="container mx-auto px-8 lg:px-20 xl:px-24 py-12">
@@ -64,7 +63,7 @@ export default async function DashboardPage() {
             <p className="text-center bg-foreground/10 px-2 py-2">
               Hackathon - {HACKATHON_NAME}
             </p>
-            <HackathonDashboard team={null} />
+            <HackathonDashboard user={user.data} />
           </div>
         </div>
       </>

@@ -94,7 +94,7 @@ export interface Hacks {
   theme: number
   themeDesc: string
   verify: boolean
-  member: Member[]
+  member: AddNewProperty<Member, "name", string>[]
 }
 
 export interface Talks {
