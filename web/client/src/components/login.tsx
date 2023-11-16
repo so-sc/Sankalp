@@ -7,7 +7,7 @@ import { H2 } from "@/components/ui/typography"
 import { loginSchema } from "@/lib/schemas"
 import { LoginUser, SignIn } from "@/lib/types"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { getCookie, setCookie } from "cookies-next"
+import { deleteCookie, getCookie, setCookie } from "cookies-next"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
@@ -39,6 +39,8 @@ export default function Login() {
       id: values.password,
     }
 
+    console.log(form.formState.isLoading)
+
     try {
       setError("")
       const response = await fetch(
@@ -53,14 +55,18 @@ export default function Login() {
       )
       const data = await response.json()
 
+      console.log(data)
       if (data.success) {
-        setCookie("token", data.token)
+        setCookie("token", data.token, {
+          expires: new Date(Date.now() + 60 * 60 * 24 * 1000),
+        })
         router.push("/dashboard")
       } else {
         setError(data.message)
       }
     } catch (error) {
       console.log(error)
+      deleteCookie("token")
     }
   }
 
