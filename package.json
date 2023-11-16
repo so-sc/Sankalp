@@ -14,5 +14,8 @@
     ""
   ],
   "author": "Akkil M G, Deveesh Shetty & SOSC",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  }
 }
