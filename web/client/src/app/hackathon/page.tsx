@@ -5,6 +5,7 @@ import { userProfile } from "@/lib/placeholder"
 
 export default async function HackathonPage() {
   const user = await getUser()
+
   // Fetch user data from API
   const userData = {
     name: userProfile.user.name,

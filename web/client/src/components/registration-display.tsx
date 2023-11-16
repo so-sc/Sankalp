@@ -62,7 +62,6 @@ export default function RegistrationDisplay({
       )
 
       const data = await response.json()
-      console.log(data)
       if (data.success) {
         router.push("/?state=login")
       } else {

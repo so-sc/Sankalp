@@ -94,7 +94,7 @@ export default function HackathonDashboard({ team }: HackathonDashboardProps) {
             </p>
             <div className="flex flex-col gap-2 mt-8">
               <Button asChild className="w-1/2 mx-auto">
-                <Link href="/dashboard">Stay Tuned</Link>
+                <Link href="/hackathon">Register Now</Link>
               </Button>
               <Link
                 href={MAIN_EVENT_WEBSITE}

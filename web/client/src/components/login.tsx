@@ -39,8 +39,6 @@ export default function Login() {
       id: values.password,
     }
 
-    console.log("Loading: " + form.formState.isLoading)
-    console.log(signInData)
 
     try {
       setError("")
@@ -56,7 +54,6 @@ export default function Login() {
       )
       const data = await response.json()
 
-      console.log(data)
       if (data.success) {
         setCookie("token", data.token, {
           expires: new Date(Date.now() + 60 * 60 * 24 * 1000),

@@ -2,6 +2,7 @@
 
 import { H1, H3 } from "@/components/ui/typography"
 import { deleteCookie } from "cookies-next"
+import Link from "next/link"
 import { redirect } from "next/navigation"
 import { useEffect } from "react"
 
@@ -25,6 +26,9 @@ export default function ErrorPage({
     <div className="text-center my-16">
       <H1 className="my-4">Error fetching the data</H1>
       <H3>Error logging in, please try again</H3>
+      <p>
+        Click here to go back to <Link href="/?state=login">Login</Link> page
+      </p>
     </div>
   )
 }
