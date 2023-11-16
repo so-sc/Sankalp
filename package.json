@@ -1,36 +1,19 @@
 {
-<<<<<<< HEAD
     "name": "sankalp",
     "version": "0.0.1",
     "description": "Sankalp is a user-friendly registration form application. This intuitive and efficient tool streamlines the registration process, allowing individuals to easily sign up for SOSC events and hackathons. With Sankalp SOSC can collect essential participant information seamlessly, ensuring a smoother and more organized registration experience for both users and administrators.",
     "scripts": {
         "start": "concurrently \"npm run client\" \"npm run api\"",
         "client": "cd web/client && pnpm i && pnpm dev",
-        "api": "cd web/api && pnpm i && pnpm start"
+        "api": "cd web/api && pnpm i && pnpm start",
+        "build-client": "cd web/client && next build",
+        "build-api": "cd web/api && tsc",
+        "build": "concurrently \"npm run build-client\" \"npm run build-api\""
     },
     "keywords": ["sosc", "sankalp", "form"],
     "author": "Akkil M G, Deveesh Shetty & SOSC",
-    "license": "ISC"
+    "license": "ISC",
+    "dependencies": {
+        "concurrently": "^8.2.2"
+    }
 }
-=======
-  "name": "sankalp",
-  "version": "0.0.1",
-  "description": "Sankalp is a user-friendly registration form application. This intuitive and efficient tool streamlines the registration process, allowing individuals to easily sign up for SOSC events and hackathons. With Sankalp SOSC can collect essential participant information seamlessly, ensuring a smoother and more organized registration experience for both users and administrators.",
-  "scripts": {
-    "start": "concurrently \"npm run client\" \"npm run api\"",
-    "client": "cd web/client && pnpm i && pnpm dev",
-    "api": "cd web/api && pnpm i && pnpm start",
-    "build-client": "cd web/client && next build",
-    "build-api": "cd web/api && tsc",
-    "build": "concurrently \"npm run build-client\" \"npm run build-api\""
-  },
-  "keywords": [
-    ""
-  ],
-  "author": "Akkil M G, Deveesh Shetty & SOSC",
-  "license": "ISC",
-  "dependencies": {
-    "concurrently": "^8.2.2"
-  }
-}
->>>>>>> 948ca119d76771ed9d33103e38eb74fe6e0c8016
