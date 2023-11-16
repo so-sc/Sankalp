@@ -70,8 +70,8 @@ export const TalkNameModel: NameModel = {
 }
 
 export const HackathonNameModel = {
-    name: "",
-    date: "",
+    name: "Codeblaze",
+    date: "8th December 2023",
     venue: "Sahyadri College of Engineering & Management"
 }
 
