@@ -43,12 +43,15 @@ export type SignIn = {
   id: string
 }
 
+export type HackathonMemberAPI = {
+  info: string
+}
+
 export type HackathonRegistration = {
   name: string
-  theme: string
+  theme: number
   themeDesc: string
-  memNo: number
-  members: Member[]
+  member: HackathonMemberAPI[]
 }
 
 export interface UserApiResponse {
@@ -91,7 +94,7 @@ export interface Hacks {
   theme: number
   themeDesc: string
   verify: boolean
-  member: Member[]
+  member: AddNewProperty<Member, "name", string>[]
 }
 
 export interface Talks {

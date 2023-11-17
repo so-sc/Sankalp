@@ -5,11 +5,10 @@ import https from 'https';
 import fs from 'fs';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
-import compression from 'compression';
 import cors from 'cors';
 import mongo from 'mongoose';
-import { App } from "./route/app_api";
 import { Admin } from "./route/admin_api";
+import { App } from "./route/app_api";
 import { Auth } from './route/auth_api';
 require('dotenv').config();
 

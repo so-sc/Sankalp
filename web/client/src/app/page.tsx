@@ -9,8 +9,28 @@ interface HomePageProps {
   searchParams: SearchParams
 }
 
-export default function HomePage({ searchParams }: HomePageProps) {
+async function fetchServerStatus() {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}`)
+  return await response.json()
+}
+
+export default async function HomePage({ searchParams }: HomePageProps) {
   const state = (searchParams.state as FormState) || "register"
+  const serverStatus = await fetchServerStatus()
+
+  if (!serverStatus.success) {
+    return (
+      <main>
+        <div className="text-center my-16">
+          <H1 className="my-4">We are currently under maintainance!</H1>
+          <p className="text-2xl">
+            Please try again later, you can contact us at sosc@sahyadri.edu.in
+          </p>
+        </div>
+      </main>
+    )
+  }
+
   return (
     <main className="container mx-auto px-8 lg:px-20 xl:px-24 py-12">
       {state === "login" ? (
