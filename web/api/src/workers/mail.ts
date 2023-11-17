@@ -26,7 +26,7 @@ export const sendUserVerifyMail = async (mail: string, id: string, name: string)
     let html = fs.readFileSync('./src/workers/template/user_registration.html', 'utf8');
     for (const [key, value] of Object.entries(replacements)) {
       const regex = new RegExp(`\\${key}`, 'g');
-      html = html.replaceAll(regex, value);
+      html = html.replace(regex, value);
     }    
 
      const result = await transporter.sendMail({
@@ -82,7 +82,7 @@ export const sendCopyMail = async (event: number, eve: any, email: string, name:
     };
     for (const [key, value] of Object.entries(replacements)) {
       const regex = new RegExp(`\\${key}`, 'g');
-      html = html.replaceAll(regex, value);
+      html = html.replace(regex, value);
     }
     const result = await transporter.sendMail({
           from: process.env.EMAIL,
