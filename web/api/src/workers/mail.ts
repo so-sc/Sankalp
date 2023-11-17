@@ -25,7 +25,7 @@ export const sendUserVerifyMail = async (mail: string, id: string, name: string)
     };
     let html = fs.readFileSync('./src/workers/template/user_registration.html', 'utf8');
     for (const [key, value] of Object.entries(replacements)) {
-      html = html.replace(key, value);
+      html = html.replaceAll(key, value);
     }    
 
      const result = await transporter.sendMail({
@@ -80,7 +80,7 @@ export const sendCopyMail = async (event: number, eve: any, email: string, name:
       '${qrDL}': `${qrDL}`
     };
     for (const [key, value] of Object.entries(replacements)) {
-      html = html.replace(key, value);
+      html = html.replaceAll(key, value);
     }
     const result = await transporter.sendMail({
           from: process.env.EMAIL,
