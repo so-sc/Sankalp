@@ -17,6 +17,7 @@ import { TbLoader2 } from "react-icons/tb"
 export default function Login() {
   const router = useRouter()
   const [error, setError] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     const token = getCookie("token")
@@ -39,8 +40,8 @@ export default function Login() {
       id: values.password,
     }
 
-
     try {
+      setIsLoading(true)
       setError("")
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/signin`,
@@ -65,6 +66,8 @@ export default function Login() {
     } catch (error) {
       console.log(error)
       deleteCookie("token")
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -115,10 +118,10 @@ export default function Login() {
           <Button
             type="submit"
             className="mt-4 flex items-center gap-2"
-            disabled={form.formState.isLoading}
+            disabled={isLoading}
           >
             Login
-            {form.formState.isLoading && <TbLoader2 className="animate-spin" />}
+            {isLoading && <TbLoader2 className="animate-spin" />}
           </Button>
         </form>
         {error && <p className="text-red-500 text-center mt-2">{error}</p>}

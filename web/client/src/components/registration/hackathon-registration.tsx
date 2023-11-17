@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { H3 } from "@/components/ui/typography"
+import { useToast } from "@/components/ui/use-toast"
 import {
   MAX_MEMBERS,
   MIN_MEMBERS,
@@ -47,14 +48,19 @@ interface HackathonRegistrationProps {
 export default function HackathonRegistration({
   leader,
 }: HackathonRegistrationProps) {
+  const { toast } = useToast()
   const [error, setError] = useState("")
   const router = useRouter()
   useEffect(() => {
     const token = getCookie("token")
     if (!token) {
       router.push("/?state=login")
+      toast({
+        title: "Please login to continue",
+        variant: "destructive",
+      })
     }
-  }, [router])
+  }, [router, toast])
 
   const form = useForm<HackathonTeam>({
     resolver: zodResolver(teamSchema),
@@ -93,9 +99,6 @@ export default function HackathonRegistration({
       theme: THEMES.findIndex((theme) => theme === finalValues.teamTheme) + 1,
       themeDesc: finalValues.teamStatement,
       member: [
-        {
-          info: finalValues.leader.email,
-        },
         ...finalValues.members.map((member) => ({
           info: member.email,
         })),

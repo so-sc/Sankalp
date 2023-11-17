@@ -27,7 +27,10 @@ export default function ErrorPage({
       <H1 className="my-4">Error fetching the data</H1>
       <H3>Error logging in, please try again</H3>
       <p>
-        Click here to go back to <Link href="/?state=login">Login</Link> page
+        <Link href="/?state=login" className="underline mt-4">
+          Click here
+        </Link>{" "}
+        to go back to Login page
       </p>
     </div>
   )
