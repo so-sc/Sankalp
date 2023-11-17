@@ -10,8 +10,13 @@ interface HomePageProps {
 }
 
 async function fetchServerStatus() {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}`)
-  return await response.json()
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}`)
+    return await response.json()
+  } catch (error) {
+    console.log(error)
+    return {serverStatus: {success: false}}
+  }
 }
 
 export default async function HomePage({ searchParams }: HomePageProps) {
