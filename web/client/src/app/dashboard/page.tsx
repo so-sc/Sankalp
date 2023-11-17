@@ -38,8 +38,8 @@ export async function getUser() {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
-        'Access-Control-Allow-Origin', 'https://sankalp.sosc.org.in',
-        'Access-Control-Allow-Credentials', 'true'
+        'Access-Control-Allow-Origin': 'https://sankalp.sosc.org.in',
+        'Access-Control-Allow-Credentials': 'true'
       },
       cache: "no-store",
     }
