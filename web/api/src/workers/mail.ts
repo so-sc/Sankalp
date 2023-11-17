@@ -80,7 +80,8 @@ export const sendCopyMail = async (event: number, eve: any, email: string, name:
       '${qrDL}': `${qrDL}`
     };
     for (const [key, value] of Object.entries(replacements)) {
-      html = html.replaceAll(key, value);
+      const regex = new RegExp(`\\${key}`, 'g');
+      html = html.replaceAll(regex, value);
     }
     const result = await transporter.sendMail({
           from: process.env.EMAIL,
