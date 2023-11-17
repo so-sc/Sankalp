@@ -30,7 +30,7 @@ app.use(cors({
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', process.env.DOMAIN);
     res.header('Access-Control-Allow-Methods', 'GET, HEAD, PUT, PATCH, POST, DELETE'); 
-    res.header('Access-Control-Allow Headers', 'Content-Type'); 
+    res.header('Access-Control-Allow Headers', 'Content-Type, Origin, X-Requested-With, Content-Type, Accept, Authorization'); 
     next();
 });
 
