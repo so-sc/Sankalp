@@ -482,7 +482,7 @@ export const HackathonRegisterFindDetailsByID = async (id: string) => {
 
 export const HackathonRegister = async (id: string, data: any) => {
     try {
-        if (data.member.length>=1 && data.member.length<=3) {
+        if (data.member.length<1 && data.member.length>3) {
             return { success: false, message: 'The size of an hackathon team should be strictly 2-4.' }
         }
         data.member.map((member: Member) => { 
