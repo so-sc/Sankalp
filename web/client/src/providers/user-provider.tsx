@@ -32,6 +32,8 @@ export default function UserProvider({ children }: UserProviderProps) {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${access_token}`,
+          'Access-Control-Allow-Origin', 'https://sankalp.sosc.org.in',
+          'Access-Control-Allow-Credentials', 'true'
         },
         cache: "no-store",
       }
