@@ -14,8 +14,6 @@ async function fetchServerStatus() {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}`, {
       headers: {
         "Content-Type": "application/json",
-        'Access-Control-Allow-Origin': 'https://sankalp.sosc.org.in',
-        'Access-Control-Allow-Credentials': 'true'
       }
     })
     return await response.json()

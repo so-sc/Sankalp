@@ -49,8 +49,6 @@ export default function Login() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            'Access-Control-Allow-Origin': 'https://sankalp.sosc.org.in',
-            'Access-Control-Allow-Credentials': 'true'
           },
           body: JSON.stringify(signInData),
         }
