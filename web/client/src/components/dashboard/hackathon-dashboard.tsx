@@ -25,7 +25,7 @@ export default function HackathonDashboard({ user }: HackathonDashboardProps) {
   console.log(user)
   return (
     <div>
-      {user?.hacks !== null ? (
+      {user?.hacks ? (
         <div className="px-4 mt-4">
           <div>
             <div className="mb-4">
@@ -38,15 +38,6 @@ export default function HackathonDashboard({ user }: HackathonDashboardProps) {
               <span className="font-bold">{THEMES[user?.hacks?.theme!]}</span>:{" "}
               {user?.hacks?.themeDesc}
             </p>
-          </div>
-          <div className="flex flex-col">
-            <p className="text-center mx-auto my-4 bg-foreground/10 w-2/5 rounded-lg py-1">
-              Leader
-            </p>
-            <div className="flex flex-col gap-1">
-              <p>Name: {user?.name}</p>
-              <p>Email: {user?.email}</p>
-            </div>
           </div>
           {user?.hacks?.member.map((member, i) => (
             <div className="flex flex-col" key={member.email}>
