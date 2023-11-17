@@ -9,14 +9,14 @@ interface HomePageProps {
   searchParams: SearchParams
 }
 
-export async function getServerStatus() {
+async function fetchServerStatus() {
   const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}`)
   return await response.json()
 }
 
 export default async function HomePage({ searchParams }: HomePageProps) {
   const state = (searchParams.state as FormState) || "register"
-  const serverStatus = await getServerStatus()
+  const serverStatus = await fetchServerStatus()
 
   if (!serverStatus.success) {
     return (
