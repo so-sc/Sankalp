@@ -495,8 +495,11 @@ export const HackathonRegister = async (id: string, data: any) => {
             if (!rs.success){
                 return rs
             }
+            if (rs.id===id) {
+                return { success: false, message: 'You cannot add yourself as member. As your alread making a team.' }
+            }
             if ((await User.findOne({ email: member.info })).hack) {
-                return { success: false, message: `The ${member.info} is already in a hackathin team.` }
+                return { success: false, message: `The ${member.info} is already in a hackathon team.` }
             } 
             member.info = rs.id;
         }
