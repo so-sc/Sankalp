@@ -117,8 +117,8 @@ export default function HackathonRegistration({
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
-            'Access-Control-Allow-Origin', 'https://sankalp.sosc.org.in',
-            'Access-Control-Allow-Credentials', 'true'
+            'Access-Control-Allow-Origin': 'https://sankalp.sosc.org.in',
+            'Access-Control-Allow-Credentials': 'true'
           },
           body: JSON.stringify(hackathonTeamData),
         }
