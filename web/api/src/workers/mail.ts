@@ -25,7 +25,8 @@ export const sendUserVerifyMail = async (mail: string, id: string, name: string)
     };
     let html = fs.readFileSync('./src/workers/template/user_registration.html', 'utf8');
     for (const [key, value] of Object.entries(replacements)) {
-      html = html.replaceAll(key, value);
+      const regex = new RegExp(`\\${key}`, 'g');
+      html = html.replaceAll(regex, value);
     }    
 
      const result = await transporter.sendMail({
