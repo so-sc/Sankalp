@@ -1,7 +1,8 @@
 // 
 
 import express from 'express';
-import http from 'http';
+import https from 'https';
+import fs from 'fs';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import compression from 'compression';
@@ -21,27 +22,23 @@ db.on('error', (error: Error) => console.log("Check your mongodb please. There i
 db.on('open', () => console.log("Mongodb is connected."))
 app.use(express.json())
 
-// app.use(cors({
-//     credentials: true
-// }));
-// app.use(compression());
-// app.use(cookieParser());
-
 app.use(cors({
-    origin: ['http://localhost:3000', 'http://sankalp.sosc.org.in/']
+    origin: ['http://localhost:3000', process.env.DOMAIN]
 }));
 
 app.set('trust proxy', true);
 
 app.use(bodyParser.json());
 
-const server = http.createServer(app);
+const privateKey = fs.readFileSync('/etc/letsencrypt/live/sankalp-api.sosc.org.in/privkey.pem', 'utf8');
+const certificate = fs.readFileSync('/etc/letsencrypt/live/sankalp-api.sosc.org.in/fullchain.pem', 'utf8');
 
+const credentials = { key: privateKey, cert: certificate };
+const server = https.createServer(credentials, app);
 
 app.get("/", async(req, res) => {
     res.status(200).json({success: true})
 })
-
 
 // User Interface API routes
 app.use("/api/app", App)
@@ -53,4 +50,4 @@ app.use("/api/admin", Admin)
 app.use("/api/auth", Auth)
 
 
-server.listen(7000, () => console.log("Server running at http://localhost:7000"));
+server.listen(443, () => console.log("Server running at https://sankalp-api.sosc.org.in"));

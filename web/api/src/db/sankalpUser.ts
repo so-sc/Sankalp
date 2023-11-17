@@ -82,7 +82,7 @@ export const UserRegisterByID = async (id: String) => {
     return await User.findById(id);
 }
 
-export const UserRegisterByMail = (email: string) => {
+export const UserRegisterByMail = async (email: string) => {
     return User.findOne({ email: email })
 }
 
@@ -124,7 +124,7 @@ export const UserRegistersFindUser = async (id: String) => {
     try {
         var temp: any;
         if (res.hack) {
-            var hk: any = await Hackathon.findById(res.hack).select("-_id -__v");
+            var hk: any = await Hackathon.findById(res.hack).select("-__v");
             var hackon: any = {
                 name: hk.name,
                 theme: hk.theme,
@@ -132,11 +132,10 @@ export const UserRegistersFindUser = async (id: String) => {
                 verify: hk.verify,
                 qrId: hk.qrId,
             }
-            const mem = hk.member;
             hackon.member = Array();
-            for (const member of mem) {
+            for (const member of hk.member) {
                 temp= await User.findById(member.info).select('name email -_id');
-                if (member.lead) {temp.lead = member.lead}
+                if (member.lead) {hackon.hacklead = true}
                 if (temp) { hackon.member.push(temp) } else { 
                     return { success: false, message: "Unable to find the user in the team, Please contact developer for support." } 
                 }

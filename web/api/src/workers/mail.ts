@@ -16,12 +16,12 @@ const transporter = nodemailer.createTransport({
 });
 
 
-export const sendUserVerifyMail = async (domain: string, mail: string, id: string, name: string) => {
+export const sendUserVerifyMail = async (mail: string, id: string, name: string) => {
   try {
     const replacements = {
       '${name}': name,
       '${id}': id,
-      '${verify}': `${domain}/verify/${id}`
+      '${verify}': `${process.env.DOMAIN}/verify`
     };
     let html = fs.readFileSync('./src/workers/template/user_registration.html', 'utf8');
     for (const [key, value] of Object.entries(replacements)) {
@@ -50,7 +50,7 @@ export const sendUserVerifyMail = async (domain: string, mail: string, id: strin
 }
 
 
-export const sendCopyMail = async (domain: string, event: number, eve: any, email: string, name: string, qrId: string) => {
+export const sendCopyMail = async (event: number, eve: any, email: string, name: string, qrId: string) => {
   // name or eventDate or eventVenue or email or qrDL
   try {
     var eventDate, eventVenue, eventName: string;
@@ -104,7 +104,7 @@ export const sendCopyMail = async (domain: string, event: number, eve: any, emai
 }
 
 export const sendVerifyMail = async (mail: string, event: string) => {
-  const feedback = `/feedback/devhost`
+  const feedback = `${process.env.DOMAIN}/feedback/devhost`
   try {
     const result = await transporter.sendMail({
         from: process.env.EMAIL,

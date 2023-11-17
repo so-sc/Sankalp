@@ -5,7 +5,6 @@ import { qrCreator, formID } from "../workers/qrcode";
 import { encrypt } from "workers/crypt";
 import { sendCopyMail } from "../workers/mail";
 import { verifyToken } from "../workers/auth";
-import Mail from "nodemailer/lib/mailer";
 const router = express.Router();
 
 // --- Form ---
@@ -47,11 +46,12 @@ router.post("/registration/:info", verifyToken, async(req, res) => {
         if (info==='h') {
             name=data.name;
         } else {
-            for (const participant of data.event.participant) { 
-                (participant.lead)? name=UserRegisterByMail(participant.info): {}
-            }
+            // for (const participant of data.event.participant) { 
+            //     (participant.lead)? name=UserRegisterByMail(participant.info): {}
+            // }
+            name=await UserRegisterByMail(data.event.participant[0].info);
         }
-        var rs = await sendCopyMail(`${req.protocol}://${req.hostname}`, qr[info], (info==='h')? null: data.event.eve, mail, name, dt.id);
+        var rs = await sendCopyMail(qr[info], (info==='h')? null: data.event.eve, mail, name, dt.id);
         if (!rs['success']===true) {
             console.log("Mailed failed");
             res.status(500).json({ success: false, message: rs.message });
