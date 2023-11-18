@@ -41,6 +41,9 @@ export default function Navbar() {
             className="font-bold tracking-wider text-xl hover:text-foreground/50"
           >
             Sankalp
+            <span className="text-xs absolute bg-orange-300 px-1 py-0.5 ml-0.5">
+              BETA
+            </span>
           </Link>
         </div>
         <ul className="relative flex flex-col md:flex-row justify-center gap-2 md:gap-8 col-span-4 place-self-center md:bg-foreground/10 w-full h-full py-4 rounded-b-full">
