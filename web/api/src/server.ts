@@ -34,15 +34,21 @@ app.use((req, res, next) => {
     next();
 });
 
-app.set('trust proxy', true);
-
+if (process.env.PRODUCTION) {
+    app.set('trust proxy', true);
+}
 app.use(bodyParser.json());
 
-const privateKey = fs.readFileSync('/etc/letsencrypt/live/sankalp-api.sosc.org.in/privkey.pem', 'utf8');
-const certificate = fs.readFileSync('/etc/letsencrypt/live/sankalp-api.sosc.org.in/fullchain.pem', 'utf8');
-
-const credentials = { key: privateKey, cert: certificate };
-const server = https.createServer(credentials, app);
+var server;
+if (process.env.PRODUCTION==="true") {
+    const privateKey = fs.readFileSync('/etc/letsencrypt/live/sankalp-api.sosc.org.in/privkey.pem', 'utf8');
+    const certificate = fs.readFileSync('/etc/letsencrypt/live/sankalp-api.sosc.org.in/fullchain.pem', 'utf8');
+        
+    const credentials = { key: privateKey, cert: certificate };
+    server = https.createServer(credentials, app);
+} else {
+    server = https.createServer(app);
+}
 
 app.get("/", async(req, res) => {
     res.status(200).json({success: true})
@@ -58,4 +64,4 @@ app.use("/api/admin", Admin)
 app.use("/api/auth", Auth)
 
 
-server.listen(443, () => console.log("Server running at https://sankalp-api.sosc.org.in"));
+server.listen(process.env.PRODUCTION==="true"?443:7000, () => console.log(`Server running at ${process.env.PRODUCTION==="true"?'https://sankalp-api.sosc.org.in': 'http://localhost:7000'}`));

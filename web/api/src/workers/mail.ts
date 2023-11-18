@@ -50,7 +50,6 @@ export const sendUserVerifyMail = async (mail: string, id: string, name: string)
   }
 }
 
-
 export const sendCopyMail = async (event: number, eve: any, email: string, name: string, qrId: string) => {
   // name or eventDate or eventVenue or email or qrDL
   try {
@@ -87,7 +86,7 @@ export const sendCopyMail = async (event: number, eve: any, email: string, name:
     const result = await transporter.sendMail({
           from: process.env.EMAIL,
           to: email,
-          subject: `SOSC: You have registered ${eve} successfully`,
+          subject: `SOSC: You have registered ${eventName} successfully`,
           envelope: {
               from: `SOSC ${process.env.EMAIL}`,
               to: `${email}`
