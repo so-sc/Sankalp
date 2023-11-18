@@ -26,20 +26,28 @@ export default function UserProvider({ children }: UserProviderProps) {
   const [user, setUser] = useState<UserDashboardProfile | null>(null)
 
   async function getUser(access_token: CookieValueTypes) {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/user`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${access_token}`,
-        },
-        cache: "no-store",
-      }
-    )
-    const data = await response.json()
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/app/info/u`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${access_token}`,
+          },
+          cache: "no-store",
+        }
+      )
+      const data = await response.json()
 
-    if (data.success) setUser(data.data)
-    if (data.error) setUser(null)
+      if (data.success) {
+        setUser(data.data)
+      } else {
+        setUser(null)
+      }
+    } catch (error) {
+      console.log(error)
+      setUser(null)
+    }
   }
 
   useEffect(() => {

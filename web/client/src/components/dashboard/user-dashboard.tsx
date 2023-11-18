@@ -1,6 +1,7 @@
 "use client"
 
 import EventRegistration from "@/components/registration/event-registration"
+import Notification from "@/components/ui/notification"
 import UserDisplay from "@/components/user-display"
 import { genders, numberDisplay } from "@/lib/constants"
 import { UserDashboardProfile, UserProfile } from "@/lib/types"
@@ -19,7 +20,7 @@ export default function UserDashboard({ user }: UserDashboardProps) {
   // })
   return (
     <section>
-      <p className="text-center mb-2 bg-foreground/10 px-2 py-2">
+      <p className="text-center mb-2 border-b-2 border-foreground text-lg px-2 py-2">
         Attendee Details
       </p>
       <p className="py-1 border-b border-b-foreground/10">
@@ -68,11 +69,13 @@ export default function UserDashboard({ user }: UserDashboardProps) {
         </>
       )}
       <div>
-        <p className="text-center mt-4 bg-foreground/10 px-2 py-2">
+        <p className="text-center mt-4 border-b-2 border-foreground text-lg px-2 py-2">
           Register for Events
         </p>
-        
-        <p className="text-center text-xl my-4">Opening Soon... Stay Tuned</p>
+
+        <p className="text-center my-4">
+          <Notification variant="info">Opening Soon... Stay Tuned</Notification>
+        </p>
         {/* <EventRegistration
           setRegistrationData={setCurrentData}
           registrationData={currentData}

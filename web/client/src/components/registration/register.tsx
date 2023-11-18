@@ -50,7 +50,12 @@ export default function Register() {
   return (
     <>
       {step === 1 && (
-        <H1 className="lg:text-9xl text-center mb-8">{MAIN_EVENT_NAME}</H1>
+        <div className="mb-8">
+          <H1 className="lg:text-9xl text-center">{MAIN_EVENT_NAME}</H1>
+          <p className="text-center text-lg md:text-2xl font-bold">
+            Register for {MAIN_EVENT_NAME}
+          </p>
+        </div>
       )}
 
       <div className="w-3/4 mx-auto">

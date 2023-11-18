@@ -3,6 +3,7 @@ import UserDashboard from "@/components/dashboard/user-dashboard"
 import Logout from "@/components/logout"
 import { H1, H2 } from "@/components/ui/typography"
 import { HACKATHON_NAME, MAIN_EVENT_NAME } from "@/lib/constants"
+import { getCookie } from "cookies-next"
 import { revalidatePath } from "next/cache"
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
@@ -60,7 +61,7 @@ export default async function DashboardPage() {
         <div className="grid md:grid-cols-2 mt-4 gap-4">
           <UserDashboard user={user.data} />
           <div className="pt-4 mt-8 md:pt-0 md:mt-0">
-            <p className="text-center bg-foreground/10 px-2 py-2">
+            <p className="text-center border-b-2 border-foreground text-lg px-2 py-2">
               Hackathon - {HACKATHON_NAME}
             </p>
             <HackathonDashboard user={user.data} />

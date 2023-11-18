@@ -23,7 +23,7 @@ export default function ErrorPage({
   }, [])
 
   return (
-    <div className="text-center my-16">
+    <div className="text-center my-16 mx-4">
       <H1 className="my-4">Error fetching the data</H1>
       <H3>Error logging in, please try again</H3>
       <p>

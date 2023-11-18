@@ -21,6 +21,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { H3 } from "@/components/ui/typography"
 import { useToast } from "@/components/ui/use-toast"
 import {
+  MAIN_EVENT_WEBSITE,
   MAX_MEMBERS,
   MIN_MEMBERS,
   THEMES,
@@ -85,6 +86,7 @@ export default function HackathonRegistration({
   })
 
   const totalMembers = form.watch("totalMembers")
+  const teamTheme = form.watch("teamTheme")
 
   async function onTeamRegister(values: HackathonTeam) {
     // Fixes the edge case for eg. when the user fills names for 4 members
@@ -124,8 +126,20 @@ export default function HackathonRegistration({
 
       const data = await response.json()
       if (data.success) {
+        toast({
+          title: "Congratulation! Team Registration is successful",
+          description: "Now, plan on the problem statements and enjoy!",
+          variant: "success",
+        })
         router.push("/dashboard")
       } else {
+        toast({
+          title: "Something went wrong",
+          description:
+            data.message ??
+            "Please try again after a while, if it continues contact support.",
+          variant: "destructive",
+        })
         setError(data.message)
       }
     } catch (error) {
@@ -151,17 +165,24 @@ export default function HackathonRegistration({
     )
   }
 
+  if (leader.hacks?.name) {
+    return (
+      <div className="mt-4">
+        <Notification variant="info" className="flex flex-col">
+          You have already formed a team!
+        </Notification>
+        <H3 className="text-center my-4">
+          Go back to{" "}
+          <Link href="/dashboard" className="underline">
+            Dashboard
+          </Link>
+        </H3>
+      </div>
+    )
+  }
+
   return (
     <div className="mt-2">
-      <Notification variant="info" className="my-4">
-        <p>
-          Only Team leader has to register for the hackathon. The rest of the
-          team need not register again. <br />
-          Make sure your members are registered to Sankalp before creating team
-          for hackathon, so we can autofetch their details. Because we value
-          your time :)
-        </p>
-      </Notification>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onTeamRegister)}
@@ -255,6 +276,13 @@ export default function HackathonRegistration({
               </div>
             )}
           />
+          {teamTheme === "Company Specific" && (
+            <Notification variant="success">
+              Company specific themes will be revealed 3 days before the
+              hackathon on our main website, stay tuned! Below fill the
+              statements you would like to work on (opinions)
+            </Notification>
+          )}
           <FormField
             control={form.control}
             name="teamStatement"
@@ -403,10 +431,19 @@ export default function HackathonRegistration({
             ))}
           </div>
           {error && <p className="text-red-500 text-center mt-2">{error}</p>}
+          <Notification variant="info" className="my-4">
+            <p>
+              Only Team leader has to register for the hackathon. The rest of
+              the team need not register again. <br />
+              Make sure your members are registered to Sankalp before creating
+              team for hackathon, so we can autofetch their details. Because we
+              value your time :)
+            </p>
+          </Notification>
           <Button
             type="submit"
             disabled={form.formState.isSubmitting}
-            className="w-full flex items-center gap-1 mt-4"
+            className="w-full flex items-center gap-1"
           >
             Confirm Registration
             {form.formState.isSubmitting && (

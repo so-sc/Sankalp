@@ -6,17 +6,11 @@ import Link from "next/link"
 import { redirect } from "next/navigation"
 import { useEffect } from "react"
 
-type Params = {
-  params: {
-    id: string
-  }
-}
-
-export default function VerifyPage({ params }: Params) {
+export default function VerifyPage() {
   useEffect(() => {
     const redirectTimer = setTimeout(() => {
       redirect("/")
-    }, 5000)
+    }, 3000)
     return () => {
       clearTimeout(redirectTimer)
     }
@@ -25,7 +19,6 @@ export default function VerifyPage({ params }: Params) {
   return (
     <main className="h-96 flex flex-col gap-4 justify-center items-center">
       <H1>Welcome Captain!</H1>
-      {/* <H2>Your account has been verified successfully.</H2> */}
       <H2>
         This page is under maintenance you may need this during the event.
       </H2>
