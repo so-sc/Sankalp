@@ -1,10 +1,11 @@
 import { Button } from "@/components/ui/button"
 import Notification from "@/components/ui/notification"
 import { H1 } from "@/components/ui/typography"
+import { useToast } from "@/components/ui/use-toast"
 import UserDisplay from "@/components/user-display"
 import { ESPORTS, MAIN_EVENT_NAME, TALKS, genders } from "@/lib/constants"
 import { SignUp, Step, UserProfile } from "@/lib/types"
-import { useRouter } from "next/navigation"
+import { redirect, useRouter } from "next/navigation"
 import { Dispatch, SetStateAction, useState } from "react"
 import { TbCaretLeftFilled, TbLoader2 } from "react-icons/tb"
 
@@ -17,6 +18,8 @@ export default function RegistrationDisplay({
   registrationData,
   setStep,
 }: RegistrationDisplayProps) {
+  const { toast } = useToast()
+
   const { user, event } = registrationData
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
@@ -63,6 +66,11 @@ export default function RegistrationDisplay({
 
       const data = await response.json()
       if (data.success) {
+        toast({
+          title: "Congratulation! Registration is successful",
+          description: "Checkout the events and hackathon!",
+          variant: "success",
+        })
         router.push("/?state=login")
       } else {
         setError(data.message)
@@ -83,8 +91,8 @@ export default function RegistrationDisplay({
       >
         <TbCaretLeftFilled /> Prev
       </Button>
-      <H1 className="text-3xl lg:text-4xl text-center my-4">
-        Confirm Registration for {MAIN_EVENT_NAME}
+      <H1 className="text-2xl lg:text-3xl text-center my-4">
+        Confirm your registration to {MAIN_EVENT_NAME}
       </H1>
       <div>
         <div className="flex flex-col gap-4 mt-4">
@@ -130,8 +138,9 @@ export default function RegistrationDisplay({
       {error && <p className="text-red-500 text-center mt-2">{error}</p>}
       <Notification variant="info" className="mt-2">
         <p>
-          Please double check your email. A unique ID will be sent to your email
-          which is password to your dashboard.
+          A verification mail with a unique ID will be sent to your registered
+          mail id. This unique Id will be your password to the dashboard. Double
+          check your mail, and make sure to check your spam folder too!
         </p>
       </Notification>
       <Button

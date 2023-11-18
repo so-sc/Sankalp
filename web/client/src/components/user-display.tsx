@@ -8,7 +8,7 @@ interface UserDisplayProps {
 export default function UserDisplay({ user }: UserDisplayProps) {
   return user ? (
     <>
-      <p className="text-center mb-2 bg-foreground/10 px-2 py-2">
+      <p className="text-center mb-2 border-b-2 border-foreground text-lg px-2 py-2">
         Attendee Details
       </p>
       <p className="py-1 border-b border-b-foreground/10">

@@ -61,8 +61,8 @@ export default function HackathonDashboard({ user }: HackathonDashboardProps) {
           </p>
           <div className="text-center">
             <p>
-              Seems like you didn&apos;t register for {HACKATHON_NAME}, well you
-              are missing out on a lot of fun! Form a{" "}
+              Seems like you didn&apos;t register for {HACKATHON_NAME}. Well,
+              you are missing out on a lot of fun! Form a{" "}
               <span className="underline underline-offset-4">
                 team of {MIN_MEMBERS} - {MAX_MEMBERS} members
               </span>
