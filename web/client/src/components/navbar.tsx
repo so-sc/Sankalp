@@ -2,13 +2,23 @@
 
 import { ModeToggle } from "@/components/ui/mode-toggle"
 import { MAIN_EVENT_NAME, MAIN_EVENT_WEBSITE } from "@/lib/constants"
+import { useUser } from "@/providers/user-provider"
+import { CookieValueTypes, getCookie } from "cookies-next"
 import { ExternalLink } from "lucide-react"
 import Link from "next/link"
-import { useState } from "react"
+import { usePathname } from "next/navigation"
+import { useEffect, useState } from "react"
 import { FaBars } from "react-icons/fa"
 import { TbX } from "react-icons/tb"
 
 export default function Navbar() {
+  const [token, setToken] = useState<CookieValueTypes | null>(null)
+  const path = usePathname()
+  useEffect(() => {
+    const _token = getCookie("token")
+    setToken(_token)
+  }, [path])
+
   const [toggle, setToggle] = useState(false)
   return (
     <>
@@ -37,12 +47,21 @@ export default function Navbar() {
           <Link href="/" className="hover:underline underline-offset-2">
             Register
           </Link>
-          <Link
-            href="/hackathon"
-            className="hover:underline underline-offset-2"
-          >
-            Hackathon
-          </Link>
+          {token ? (
+            <Link
+              href="/hackathon"
+              className="hover:underline underline-offset-2"
+            >
+              Hackathon
+            </Link>
+          ) : (
+            <Link
+              href="/?state=login"
+              className="hover:underline underline-offset-2"
+            >
+              Login
+            </Link>
+          )}
           <Link
             href={MAIN_EVENT_WEBSITE}
             target="_blank"
