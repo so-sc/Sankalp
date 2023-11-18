@@ -124,8 +124,20 @@ export default function HackathonRegistration({
 
       const data = await response.json()
       if (data.success) {
+        toast({
+          title: "Congratulation! Team Registration is successful",
+          description: "Now, plan on the problem statements and enjoy!",
+          variant: "success",
+        })
         router.push("/dashboard")
       } else {
+        toast({
+          title: "Something went wrong",
+          description:
+            data.message ??
+            "Please try again after a while, if it continues contact support.",
+          variant: "destructive",
+        })
         setError(data.message)
       }
     } catch (error) {
@@ -140,6 +152,22 @@ export default function HackathonRegistration({
           Employees are not allowed to participate in the hackathon. But we
           would love to talk and interact with you, reach us out at
           sosc@sahyadri.edu.in
+        </Notification>
+        <H3 className="text-center my-4">
+          Go back to{" "}
+          <Link href="/dashboard" className="underline">
+            Dashboard
+          </Link>
+        </H3>
+      </div>
+    )
+  }
+
+  if (leader.hacks?.name) {
+    return (
+      <div className="mt-4">
+        <Notification variant="info" className="flex flex-col">
+          You have already formed a team!
         </Notification>
         <H3 className="text-center my-4">
           Go back to{" "}
