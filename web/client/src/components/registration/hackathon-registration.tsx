@@ -98,7 +98,7 @@ export default function HackathonRegistration({
 
     const hackathonTeamData: HackathonRegistration = {
       name: finalValues.teamName,
-      theme: THEMES.findIndex((theme) => theme === finalValues.teamTheme) + 1,
+      theme: THEMES.findIndex((theme) => theme === finalValues.teamTheme),
       themeDesc: finalValues.teamStatement,
       member: [
         ...finalValues.members.map((member) => ({
