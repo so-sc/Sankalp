@@ -2,15 +2,17 @@
 
 import express from "express";
 import jwt from "jsonwebtoken";
-import { verifyToken } from "../workers/auth";
+import { verifyToken, adminVerifyToken } from "../workers/auth";
 import { decrypt } from "../workers/crypt";
 import { UserRegisterByID, UserRegister, UserRegistersVerifyByID, UserSigninChecker } from "../db/sankalpUser"; 
-import { SigninModal, SignupModal } from "../workers/model";
+import { AdminRegister, AdminSigninChecker } from "../db/sankalpAdmin";
+import { AdminSiginModel, AdminSigupModel, SigninModal, SignupModal } from "../workers/model";
 import { sendUserVerifyMail } from "../workers/mail";
 
 
 const router = express.Router();
 
+/* ------ User ------- */
 
 // Signup user
 router.post("/signup", async(req, res) => {
@@ -56,7 +58,6 @@ router.post("/signin", async(req, res) => {
     }
 });
 
-
 router.get("/token-checker", async(req, res) => {
     try {
         if (req.body.token) {
@@ -100,6 +101,43 @@ router.post("/verify", verifyToken, async(req, res) => {
             res.status(200).json({ success: true })
         } else {
             res.status(500).json({ success: true, message: result.message })
+        }
+    } catch (e) {
+        res.status(500).json({ success: false, message: e.message })
+    }
+});
+
+
+/* -------- Admin -------- */
+
+// Signup admin
+router.post("/signup-admin", adminVerifyToken, async(req, res) => {
+    try {
+        let id = req.body.id;
+        const data: AdminSigupModel = req.body;
+        const result = await AdminRegister(data);
+        if (result.success) {
+            res.status(200).json({ success: true, id: id })
+        } else {
+            res.status(500).json({ success: false, message: result.message })
+        }
+    } catch (e) {
+        res.status(500).json({ success: false, message: e.message })
+    }
+});
+
+// Signin admin
+router.post("/signin-admin", async(req, res) => {
+    try {
+        if (req.header('Authorization')) {
+            res.status(500).json({ success: false, message: "An active session exists." })
+        }
+        const data: AdminSiginModel = req.body;
+        const result = await AdminSigninChecker(data);
+        if (result.success) {
+            res.status(200).json({ success: true, token: result.token })
+        } else {
+            res.status(500).json({ success: false, message: result.message })
         }
     } catch (e) {
         res.status(500).json({ success: false, message: e.message })

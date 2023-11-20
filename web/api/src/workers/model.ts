@@ -163,6 +163,7 @@ export interface AdminSigupModel {
     email: string,
     isVolunter: boolean,
     volunter: {
+        hack: boolean,
         events: Array<number>
     }
 }

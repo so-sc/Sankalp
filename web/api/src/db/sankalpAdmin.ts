@@ -1,7 +1,8 @@
 
 
 import mongo from "mongoose";
-import { AdminSigupModel } from "../workers/model";
+import { AdminSigupModel, AdminSiginModel } from "../workers/model";
+import { createToken } from "../workers/auth";
 
 const adminAuth = new mongo.Schema<AdminSigupModel>({
     username: {
@@ -20,6 +21,7 @@ const adminAuth = new mongo.Schema<AdminSigupModel>({
     },
     volunter: {
         type: {
+            hack: Boolean,
             events: [Number]
         },
         require: false
@@ -44,12 +46,32 @@ export const AdminRegister = async (data: any) => {
     try {
         const admin = new AdminData(data);
         const info = await admin.save();
-        return { success: true }
+        return { success: true, id: info._id }
     } catch (e) {
-        return { success: false, message: '' }
+        return { success: false, message: 'Check you data.' }
     }
 }
 
+export const AdminSigninChecker = async (data: AdminSiginModel) => {
+    try {
+        var result = await AdminData.findOne({ _id: data.id, username: data.username });
+        if (result) {
+            var rs = await createToken(data.id);
+            if (rs.success) {
+                return { success: true, token: rs.token };
+            } else {
+                return { success: false, message: rs.message }
+            }
+        } else {
+            return { success: false, message: "Attendee not found." }
+        }
+    } catch (e) {
+        return { success: false, message: 'The ID is invalid.' }
+    }
+}
+
+
+/* -------- Feedback ------- */
 const feedbackData = new mongo.Schema({
     id: {
         type: String,

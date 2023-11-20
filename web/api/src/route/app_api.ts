@@ -76,7 +76,6 @@ router.get("/form-info-helper/:info", async(req, res) => {
         res.status(200).json(result);
     } catch (e) {
         console.log(e);
-        
         res.status(500).json({ success: false, message: e.message })
     }
 });

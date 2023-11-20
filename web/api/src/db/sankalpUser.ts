@@ -480,6 +480,18 @@ export const HackathonRegisterFindDetailsByID = async (id: string) => {
 
 }
 
+
+export const HackathonRegistersDetails = async () => {
+    try {
+        let data = await Hackathon.find();
+        return { success: true }
+    } catch (e) {
+        console.log(e);
+        return { success: false, message: e.message}
+    }
+}
+
+
 export const HackathonRegister = async (id: string, data: any) => {
     try {
         if (data.member.length<1 && data.member.length>3) {

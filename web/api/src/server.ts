@@ -1,8 +1,9 @@
 // 
 
 import express from 'express';
-import https from 'https';
 import fs from 'fs';
+import https from 'https';
+import http from 'http';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import mongo from 'mongoose';
@@ -10,6 +11,7 @@ import { Admin } from "./route/admin_api";
 import { App } from "./route/app_api";
 import { Auth } from './route/auth_api';
 require('dotenv').config();
+
 
 const app = express();
 
@@ -20,19 +22,21 @@ db.on('error', (error: Error) => console.log("Check your mongodb please. There i
 db.on('open', () => console.log("Mongodb is connected."))
 app.use(express.json())
 
-app.use(cors({
-    origin: '*', // process.env.DOMAIN,
-    methods: 'GET, HEAD, PUT, PATCH, POST, DELETE',
-    credentials: true,
-    allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization', 'Access-Control-Allow-Origin', 'Access-Control-Allow-Methods', 'Access-Control-Allow-Headers'],
-}));
+if (process.env.PRODUCTION) {
+    app.use(cors({
+        origin: '*', // process.env.DOMAIN,
+        methods: 'GET, HEAD, PUT, PATCH, POST, DELETE',
+        credentials: true,
+        allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization', 'Access-Control-Allow-Origin', 'Access-Control-Allow-Methods', 'Access-Control-Allow-Headers'],
+    }));
 
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*'); //process.env.DOMAIN);
-    res.header('Access-Control-Allow-Methods', 'GET, HEAD, PUT, PATCH, POST, DELETE'); 
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Origin, X-Requested-With, Content-Type, Accept, Authorization, Access-Control-Allow-Origin, Access-Control-Allow-Methods, Access-Control-Allow-Headers'); 
-    next();
-});
+    app.use((req, res, next) => {
+        res.header('Access-Control-Allow-Origin', '*'); //process.env.DOMAIN);
+        res.header('Access-Control-Allow-Methods', 'GET, HEAD, PUT, PATCH, POST, DELETE'); 
+        res.header('Access-Control-Allow-Headers', 'Content-Type, Origin, X-Requested-With, Content-Type, Accept, Authorization, Access-Control-Allow-Origin, Access-Control-Allow-Methods, Access-Control-Allow-Headers'); 
+        next();
+    });
+}
 
 if (process.env.PRODUCTION) {
     app.set('trust proxy', true);
@@ -47,7 +51,7 @@ if (process.env.PRODUCTION==="true") {
     const credentials = { key: privateKey, cert: certificate };
     server = https.createServer(credentials, app);
 } else {
-    server = https.createServer(app);
+    server = http.createServer(app);
 }
 
 app.get("/", async(req, res) => {
@@ -64,4 +68,4 @@ app.use("/api/admin", Admin)
 app.use("/api/auth", Auth)
 
 
-server.listen(process.env.PRODUCTION==="true"?443:7000, () => console.log(`Server running at ${process.env.PRODUCTION==="true"?'https://sankalp-api.sosc.org.in': 'http://localhost:7000'}`));
+server.listen((process.env.PRODUCTION==="true")?443:7000, () => console.log(`Server running at ${(process.env.PRODUCTION==="true")?'https://sankalp-api.sosc.org.in': 'http://localhost:7000'}`));
