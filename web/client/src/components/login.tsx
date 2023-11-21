@@ -1,30 +1,30 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { H2 } from "@/components/ui/typography"
-import { loginSchema } from "@/lib/schemas"
-import { LoginUser, SignIn } from "@/lib/types"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { deleteCookie, getCookie, setCookie } from "cookies-next"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
-import { useForm } from "react-hook-form"
-import { TbLoader2 } from "react-icons/tb"
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { H2 } from "@/components/ui/typography";
+import { loginSchema } from "@/lib/schemas";
+import { LoginUser, SignIn } from "@/lib/types";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { deleteCookie, getCookie, setCookie } from "cookies-next";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { TbLoader2 } from "react-icons/tb";
 
 export default function Login() {
-  const router = useRouter()
-  const [error, setError] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter();
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const token = getCookie("token")
+    const token = getCookie("token");
     if (token) {
-      router.push("/dashboard")
+      router.push("/dashboard");
     }
-  })
+  });
 
   const form = useForm<LoginUser>({
     resolver: zodResolver(loginSchema),
@@ -32,17 +32,17 @@ export default function Login() {
       email: "",
       password: "",
     },
-  })
+  });
 
   async function onLogin(values: LoginUser) {
     const signInData: SignIn = {
       email: values.email,
       id: values.password,
-    }
+    };
 
     try {
-      setIsLoading(true)
-      setError("")
+      setIsLoading(true);
+      setError("");
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/signin`,
         {
@@ -52,28 +52,32 @@ export default function Login() {
           },
           body: JSON.stringify(signInData),
         }
-      )
-      const data = await response.json()
+      );
+      const data = await response.json();
 
       if (data.success) {
         setCookie("token", data.token, {
           expires: new Date(Date.now() + 60 * 60 * 24 * 1000),
-        })
-        router.push("/dashboard")
+        });
+        router.push("/dashboard");
       } else {
-        setError(data.message)
+        setError(data.message);
       }
     } catch (error) {
-      console.log(error)
-      deleteCookie("token")
+      console.log(error);
+      deleteCookie("token");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   }
 
   return (
-    <div className="w-3/4 mx-auto">
-      <H2 className="text-center mb-4">Login to Dashboard</H2>
+    <div className="max-w-3xl mx-auto">
+      <div className="mb-8">
+        <p className="text-center mt-5 text-lg md:text-2xl font-bold">
+          Login to Dashboard
+        </p>
+      </div>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onLogin)}
@@ -128,15 +132,15 @@ export default function Login() {
       </Form>
       <div>
         <p className="text-center mt-4">
-          Yet to Register?{" "}
+          Yet to register?{" "}
           <Link
             href={`?${new URLSearchParams({ state: "register" })}`}
-            className="underline underline-offset-2"
+            className="underline underline-offset-2 hover:underline-offset-4"
           >
             Register Here
           </Link>
         </p>
       </div>
     </div>
-  )
+  );
 }

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import TalksRegistration from "@/components/registration/talks-registration"
 import Notification from "@/components/ui/notification"
@@ -9,7 +9,7 @@ import { ExternalLink } from "lucide-react"
 import Link from "next/link"
 
 interface UserDashboardProps {
-  user: UserDashboardProfile
+  user: UserDashboardProfile;
 }
 
 export default function UserDashboard({ user }: UserDashboardProps) {
@@ -27,21 +27,21 @@ export default function UserDashboard({ user }: UserDashboardProps) {
 
   return (
     <section>
-      <p className="text-center mb-2 border-b-2 border-foreground text-lg px-2 py-2">
-        Attendee Details
+      <p className="mb-2 border-b-2 font-semibold border-foreground text-lg py-2">
+        Your Details
       </p>
-      <p className="py-1 border-b border-b-foreground/10">
-        Name: <span className="font-bold">{user.name}</span>
+      <p className="py-2 border-b border-b-foreground/10">
+        Name: <span>{user.name}</span>
       </p>
-      <p className="py-1 border-b border-b-foreground/10">
-        Email: <span className="font-bold">{user.email}</span>
+      <p className="py-2 border-b border-b-foreground/10">
+        Email: <span>{user.email}</span>
       </p>
-      <p className="py-1 border-b border-b-foreground/10">
-        Phone: <span className="font-bold">{user.PhNo}</span>
+      <p className="py-2 border-b border-b-foreground/10">
+        Phone: <span>{user.PhNo}</span>
       </p>
-      <p className="py-1 border-b border-b-foreground/10">
+      <p className="py-2 border-b border-b-foreground/10">
         Gender:{" "}
-        <span className="font-bold">
+        <span>
           {/* Some stuff to make first letter capital OCD kicks in */}
           {genders[user.gender - 1][0].toUpperCase() +
             genders[user.gender - 1].slice(1)}
@@ -49,29 +49,27 @@ export default function UserDashboard({ user }: UserDashboardProps) {
       </p>
       {user.college ? (
         <>
-          <p className="py-1 border-b border-b-foreground/10">
-            College: <span className="font-bold">{user.college}</span>
+          <p className="py-2 border-b border-b-foreground/10">
+            College: <span>{user.college}</span>
           </p>
-          <p className="py-1 border-b border-b-foreground/10">
-            Course: <span className="font-bold">{user.course}</span>
+          <p className="py-2 border-b border-b-foreground/10">
+            Course: <span>{user.course}</span>
           </p>
-          <p className="py-1 border-b border-b-foreground/10">
-            Branch: <span className="font-bold">{user.branch}</span>
+          <p className="py-2 border-b border-b-foreground/10">
+            Branch: <span>{user.branch}</span>
           </p>
-          <p className="py-1">
+          <p className="py-2">
             Year of Study:{" "}
-            <span className="font-bold">
-              {numberDisplay[Number(user.year) - 1]} year
-            </span>
+            <span>{numberDisplay[Number(user.year) - 1]} year</span>
           </p>
         </>
       ) : (
         <>
-          <p className="py-1 border-b border-b-foreground/10">
-            Company: <span className="font-bold">{user.company}</span>
+          <p className="py-2 border-b border-b-foreground/10">
+            Company: <span>{user.company}</span>
           </p>
-          <p className="py-1">
-            Designation: <span className="font-bold">{user.designation}</span>
+          <p className="py-2">
+            Designation: <span>{user.designation}</span>
           </p>
         </>
       )}
@@ -120,5 +118,5 @@ export default function UserDashboard({ user }: UserDashboardProps) {
           isUpdation
         /> */}
     </section>
-  )
+  );
 }

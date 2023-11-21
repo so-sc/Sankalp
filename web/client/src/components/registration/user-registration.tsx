@@ -1,26 +1,26 @@
-import { CommonRegistrationProps } from "@/components/registration/register"
-import { Button } from "@/components/ui/button"
+import { CommonRegistrationProps } from "@/components/registration/register";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { userSchema } from "@/lib/schemas"
-import { Step, User, UserProfile } from "@/lib/types"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { TbCaretRightFilled } from "react-icons/tb"
+} from "@/components/ui/select";
+import { userSchema } from "@/lib/schemas";
+import { Step, User, UserProfile } from "@/lib/types";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { TbCaretRightFilled } from "react-icons/tb";
 
 export default function UserRegistration({
   setRegistrationData,
@@ -41,13 +41,13 @@ export default function UserRegistration({
         branch: "",
       },
     },
-  })
+  });
 
-  const userRole = form.watch("role.role")
+  const userRole = form.watch("role.role");
 
   function onNextStep(values: User) {
-    setRegistrationData((prev: UserProfile) => ({ ...prev, user: values }))
-    setStep!((prev: Step) => (prev + 1) as Step)
+    setRegistrationData((prev: UserProfile) => ({ ...prev, user: values }));
+    setStep!((prev: Step) => (prev + 1) as Step);
   }
   return (
     <Form {...form}>
@@ -319,5 +319,5 @@ export default function UserRegistration({
         </Button>
       </form>
     </Form>
-  )
+  );
 }

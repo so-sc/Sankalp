@@ -1,8 +1,8 @@
-import Footer from "@/components/footer"
-import Navbar from "@/components/navbar"
-import { ThemeProvider } from "@/components/theme-provider"
-import type { Metadata } from "next"
-import { Inter } from "next/font/google"
+import Footer from "@/components/footer";
+import Navbar from "@/components/navbar";
+import { ThemeProvider } from "@/components/theme-provider";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 
 import { Toaster } from "@/components/ui/toaster"
 import { siteConfig } from "@/config/site"
@@ -10,7 +10,7 @@ import { MAIN_EVENT_NAME } from "@/lib/constants"
 import UserProvider from "@/providers/user-provider"
 import "./globals.css"
 
-const inter = Inter({ subsets: ["latin"] })
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: {
@@ -75,7 +75,7 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="en">
@@ -95,5 +95,5 @@ export default function RootLayout({
         {/* </UserProvider> */}
       </body>
     </html>
-  )
+  );
 }
