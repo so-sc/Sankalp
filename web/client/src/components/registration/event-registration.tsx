@@ -1,5 +1,4 @@
 "use client"
-// This is the one we made for talks registration for DevHost
 
 import { CommonRegistrationProps } from "@/components/registration/register"
 import { Button } from "@/components/ui/button"
@@ -21,6 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { H3 } from "@/components/ui/typography"
+import { useToast } from "@/components/ui/use-toast"
 import {
   ESPORTS,
   EVENTS_DETAILS,
@@ -38,7 +38,10 @@ import {
   UserProfile,
 } from "@/lib/types"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { getCookie } from "cookies-next"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 import {
   TbCaretLeftFilled,
@@ -55,6 +58,10 @@ export default function EventRegistration({
   eventId,
   user,
 }: EventRegistrationProps) {
+  const [error, setError] = useState("")
+  const { toast } = useToast()
+  const router = useRouter()
+
   const event = EVENTS_DETAILS[eventId]
 
   const form = useForm<EventForm>({
@@ -72,8 +79,6 @@ export default function EventRegistration({
   const totalMembers = form.watch("totalMembers")
 
   async function onRegister(values: EventForm) {
-    // setRegistrationData((prev: UserProfile) => ({ ...prev, event: values }))
-
     const finalValues = {
       ...values,
       members: values.members?.slice(0, totalMembers! - 1),
@@ -92,6 +97,44 @@ export default function EventRegistration({
           : [],
       },
     }
+
+    try {
+      setError("")
+      const token = getCookie("token")
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/app/registration/e`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(eventData),
+        }
+      )
+      const data = await response.json()
+      console.log(data)
+      if (data.success) {
+        toast({
+          title: `Congratulation! Your Registration for ${event.name} is successful`,
+          description: "See you on the event day!",
+          variant: "success",
+        })
+        router.push("/dashboard")
+      } else {
+        toast({
+          title: "Something went wrong",
+          description:
+            data.message ??
+            "Please try again after a while, if it continues contact support.",
+          variant: "destructive",
+        })
+        setError(data.message)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+
     console.log(eventData)
   }
 
@@ -306,6 +349,8 @@ export default function EventRegistration({
             </div>
           )}
 
+          {error && <p className="text-red-500 text-center mt-2">{error}</p>}
+
           {!!event.message && (
             <Notification variant="info" className="mt-2">
               {event.message}
@@ -314,10 +359,12 @@ export default function EventRegistration({
           <Button
             type="submit"
             className="mt-4 w-full flex items-center gap-1"
-            disabled={form.formState.isLoading}
+            disabled={form.formState.isSubmitting}
           >
             Register for {event.name}
-            {form.formState.isLoading && <TbLoader2 className="animate-spin" />}
+            {form.formState.isSubmitting && (
+              <TbLoader2 className="animate-spin" />
+            )}
           </Button>
         </div>
       </form>
