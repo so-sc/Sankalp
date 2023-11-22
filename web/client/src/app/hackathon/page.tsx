@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 }
 
 export default async function HackathonPage() {
-  const user = await getUser();
+  const user = await getUser()
 
   // Fetch user data from API
   const userData = {
@@ -22,7 +22,7 @@ export default async function HackathonPage() {
       userProfile.user.role.role === "student"
         ? userProfile.user.role.yearOfStudy
         : "2", // Hope this case won't come, anyways its placeholder :`)
-  };
+  }
   return (
     <main className="container max-w-5xl mx-auto px-8 lg:px-20 xl:px-24 py-12">
       <h2 className="mt-3 tracking-wide text-3xl font-bold">
@@ -35,5 +35,5 @@ export default async function HackathonPage() {
         <HackathonRegistration leader={user.data} />
       </div>
     </main>
-  );
+  )
 }

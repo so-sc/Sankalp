@@ -15,9 +15,9 @@ export const metadata: Metadata = {
 }
 
 export async function getUser() {
-  const token = cookies().get("token")?.value;
+  const token = cookies().get("token")?.value
   if (!token) {
-    redirect("/");
+    redirect("/")
   }
 
   const isTokenValidRes = await fetch(  
@@ -27,12 +27,12 @@ export async function getUser() {
         Authorization: `Bearer ${token}`,
       },
     }
-  );
+  )
 
-  const isTokenValid = await isTokenValidRes.json();
+  const isTokenValid = await isTokenValidRes.json()
 
   if (!isTokenValid.success) {
-    throw new Error("Authorization failed, please login and try again.");
+    throw new Error("Authorization failed, please login and try again.")
   }
 
   // u means user
@@ -45,13 +45,13 @@ export async function getUser() {
       },
       cache: "no-store",
     }
-  );
-  revalidatePath("/dashboard");
-  return response.json();
+  )
+  revalidatePath("/dashboard")
+  return response.json()
 }
 
 export default async function DashboardPage() {
-  const user = await getUser();
+  const user = await getUser()
 
   return (
     <main className="container mx-auto px-8 lg:px-20 xl:px-24 py-10 md:py-24 flex flex-col justify-center">
@@ -76,5 +76,5 @@ export default async function DashboardPage() {
         </div>
       </>
     </main>
-  );
+  )
 }

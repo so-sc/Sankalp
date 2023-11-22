@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import TalksRegistration from "@/components/registration/talks-registration"
 import Notification from "@/components/ui/notification"
@@ -9,7 +9,7 @@ import { ExternalLink } from "lucide-react"
 import Link from "next/link"
 
 interface UserDashboardProps {
-  user: UserDashboardProfile;
+  user: UserDashboardProfile
 }
 
 export default function UserDashboard({ user }: UserDashboardProps) {
@@ -118,5 +118,5 @@ export default function UserDashboard({ user }: UserDashboardProps) {
           isUpdation
         /> */}
     </section>
-  );
+  )
 }

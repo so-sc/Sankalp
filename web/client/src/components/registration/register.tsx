@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import RegistrationDisplay from "@/components/registration-display"
 import TalksRegistration from "@/components/registration/talks-registration"
@@ -12,18 +12,18 @@ import { useRouter } from "next/navigation"
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
 
 export interface CommonRegistrationProps {
-  setRegistrationData: Dispatch<SetStateAction<UserProfile>>;
-  setStep?: Dispatch<SetStateAction<Step>>;
+  setRegistrationData: Dispatch<SetStateAction<UserProfile>>
+  setStep?: Dispatch<SetStateAction<Step>>
 }
 
 export default function Register() {
-  const router = useRouter();
+  const router = useRouter()
   useEffect(() => {
-    const token = getCookie("token");
+    const token = getCookie("token")
     if (token) {
-      router.push("/dashboard");
+      router.push("/dashboard")
     }
-  });
+  })
 
   const [registrationData, setRegistrationData] = useState<UserProfile>({
     user: {
@@ -43,9 +43,9 @@ export default function Register() {
       talks: [false, false, false, false, false, false],
       esports: [false, false],
     },
-  });
+  })
 
-  const [step, setStep] = useState<Step>(1);
+  const [step, setStep] = useState<Step>(1)
 
   return (
     <div className="py-20">
@@ -94,5 +94,5 @@ export default function Register() {
         )}
       </div>
     </div>
-  );
+  )
 }
