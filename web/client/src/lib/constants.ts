@@ -32,8 +32,8 @@ export const HACKATHON_NAME = "Codeblaze"
 // 2. Open Source Fiesta
 // 3. Blind Bytes
 // 4. The Pitchers
-// 5. The Wolf of Dalal Street
-// 6. Tech-maze
+// 5. Tech-maze
+// 6. The Wolf of Dalal Street
 
 export const EVENTS_DETAILS = [
   {
