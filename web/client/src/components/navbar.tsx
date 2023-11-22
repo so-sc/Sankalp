@@ -41,7 +41,7 @@ export default function Navbar() {
             className="font-bold tracking-wider text-xl hover:text-foreground/50"
           >
             Sankalp
-            <span className="text-xs absolute bg-orange-300 px-1 py-0.5 ml-0.5">
+            <span className="text-xs absolute bg-orange-300 text-black px-1 py-0.5 ml-0.5">
               BETA
             </span>
           </Link>

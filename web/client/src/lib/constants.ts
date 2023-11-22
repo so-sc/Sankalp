@@ -26,29 +26,53 @@ export const THEMES = ["Company Specific", "Open Theme"] as const
 
 export const HACKATHON_NAME = "Codeblaze"
 
-export const EVENTS = [
-  {
-    name: "CodeQuest",
-    actualName: "Competitive Coding",
-    members: 2,
-    link: "",
-  },
-  {
-    name: "UI Battles",
-    actualName: "Web Design",
-    members: 2,
-    link: "",
-  },
+export const EVENTS_DETAILS = [
   {
     name: "DeCode",
     actualName: "Ethical Hacking",
-    member: 2,
-    link: "",
+    minMember: 2,
+    maxMember: 2,
+    message: "Bring your own laptop to the event",
+    link: "/decode",
   },
   {
-    name: "DeCode",
+    name: "Tech-maze",
+    actualName: "Escape Room",
+    minMember: 2,
+    maxMember: 2,
+    message: "Intermediary knowledge on prograamming.",
+    link: "/tech-maze",
+  },
+  {
+    name: "Blind Bytes",
     actualName: "Ethical Hacking",
-    member: 2,
-    link: "",
+    minMember: 2,
+    maxMember: 2,
+    link: "/blind-bytes",
+  },
+  {
+    name: "The Pitchers",
+    actualName: "Startup Pitch",
+    minMember: 2,
+    maxMember: 4,
+    link: "/the-pitchers",
+  },
+  {
+    name: "The Wolf of Dalal Street",
+    actualName: "Stock market trading",
+    message: "This is an online event",
+    minMember: 1,
+    maxMember: 1,
+    link: "/trading",
+  },
+  {
+    name: "Open Source Fiesta",
+    actualName: "Open Source Contributions",
+    message: "This is an online event",
+    minMember: 1,
+    maxMember: 1,
+    link: "/open-source",
   },
 ]
+
+export const EVENTS_PATHS = EVENTS_DETAILS.map((event) => event.link)
