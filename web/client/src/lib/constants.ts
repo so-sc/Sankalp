@@ -41,7 +41,7 @@ export const EVENTS_DETAILS = [
     actualName: "Ethical Hacking",
     minMember: 2,
     maxMember: 2,
-    message: "Bring your own laptop to the event",
+    message: "Prerequisite: Bring your own laptop to the event",
     link: "/decode",
   },
   {
@@ -49,7 +49,6 @@ export const EVENTS_DETAILS = [
     actualName: "Escape Room",
     minMember: 2,
     maxMember: 2,
-    message: "Intermediary knowledge on prograamming.",
     link: "/tech-maze",
   },
   {
@@ -57,6 +56,7 @@ export const EVENTS_DETAILS = [
     actualName: "Ethical Hacking",
     minMember: 2,
     maxMember: 2,
+    message: "Prerequisite: Have intermediary knowledge on programming.",
     link: "/blind-bytes",
   },
   {
@@ -80,7 +80,7 @@ export const EVENTS_DETAILS = [
     message: "This is an online event",
     minMember: 1,
     maxMember: 1,
-    link: "/open-source",
+    link: "/open-source-fiesta",
   },
 ]
 

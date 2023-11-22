@@ -31,6 +31,7 @@ export const eventSchema = z.object({
   email: z.string().email(),
   phone: z.string().length(10),
   college: z.string().min(3),
+  totalMembers: z.number().optional(),
   members: z.array(memberSchema).optional(),
 })
 

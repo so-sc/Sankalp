@@ -13,6 +13,13 @@ import {
 import { Input } from "@/components/ui/input"
 import Notification from "@/components/ui/notification"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { H3 } from "@/components/ui/typography"
 import {
   ESPORTS,
@@ -57,16 +64,19 @@ export default function EventRegistration({
       email: user.email,
       phone: user.PhNo,
       college: user.college,
+      totalMembers: event.minMember,
       members: [],
     },
   })
+
+  const totalMembers = form.watch("totalMembers")
 
   async function onRegister(values: EventForm) {
     // setRegistrationData((prev: UserProfile) => ({ ...prev, event: values }))
 
     const finalValues = {
       ...values,
-      members: values.members?.slice(0, event.maxMember - 1),
+      members: values.members?.slice(0, totalMembers! - 1),
     }
 
     const eventData: EventRegistrationData = {
@@ -202,6 +212,48 @@ export default function EventRegistration({
               )}
             />
           </div>
+          {event.minMember !== event.maxMember && (
+            <FormField
+              control={form.control}
+              name="totalMembers"
+              render={({ field }) => (
+                <div>
+                  <FormItem className="flex items-center">
+                    <FormLabel className="basis-40">Total Members:</FormLabel>
+                    <FormControl>
+                      <Select
+                        onValueChange={(value) => field.onChange(Number(value))}
+                        defaultValue={field?.value?.toString()}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Total Members" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {Array.from(Array(event.maxMember - 1).keys()).map(
+                            (_, i) => (
+                              <SelectItem
+                                value={`${i + event.minMember}`}
+                                key={i}
+                              >
+                                {i + event.minMember} Members
+                              </SelectItem>
+                            )
+                          )}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                  </FormItem>
+                  {form.formState.errors.totalMembers?.message && (
+                    <p className="text-red-500">
+                      {form.formState.errors.totalMembers?.message}
+                    </p>
+                  )}
+                </div>
+              )}
+            />
+          )}
           {event.maxMember === 1 ? (
             <div>
               <p className="text-center font-bold text-lg mb-2">
@@ -209,7 +261,7 @@ export default function EventRegistration({
               </p>
             </div>
           ) : (
-            <div className="flex flex-col gap-2 my-8">
+            <div className="flex flex-col gap-2">
               <p className="text-center font-bold text-lg mb-2">
                 Form a team of{" "}
                 {event.minMember === event.maxMember
@@ -218,7 +270,7 @@ export default function EventRegistration({
                 members (including you)
               </p>
               <div>
-                {Array.from(Array(event.maxMember - 1).keys()).map((i) => (
+                {Array.from(Array(totalMembers! - 1).keys()).map((i) => (
                   <>
                     <p className="mt-8 mb-2">Team Member {i + 1}</p>
                     <div className="flex flex-col gap-2">
@@ -255,7 +307,9 @@ export default function EventRegistration({
           )}
 
           {!!event.message && (
-            <Notification variant="info">{event.message}</Notification>
+            <Notification variant="info" className="mt-2">
+              {event.message}
+            </Notification>
           )}
           <Button
             type="submit"
