@@ -312,6 +312,13 @@ export const EventRegister = async (id: string, data: any) => {
             }
             data.verify = false; data.event.participant.push({ info: id, lead: true }); 
         }      
+        data.event.participant.map((member: Member) => { 
+            let user: any = User.findOne({ email: member.info });
+            user.event.map((event: string) => {
+                if(Event.find({ _id: { $in: event }, 'event.type.eve': data.eve})){
+                return { success: false, message: `The ${member.info} is already in a event. Opt someone else.` } 
+            } } ) 
+        } );
         const event = new Event(data);
         const info = await event.save();
         if (data.isEvent) {
