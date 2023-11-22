@@ -121,16 +121,16 @@
 //   )
 // }
 
-import Link from "next/link";
-const githubLink = "https://github.com/so-sc";
-const linkedinLink = "https://linkedin.com/company/sosc-sahyadri";
-const instagramLink = "https://instagram.com/sosc.sahyadri";
-const facebookLink = "https://m.facebook.com/profile.php?id=100073345130252";
-const twitterLink = "https://twitter.com/sahyadri_osc";
-const youtubeLink = "https://www.youtube.com/channel/UCk8nlSMwUT-jhEtamMF-V-w";
-const discordLink = "https://discord.gg/hHYfMRydAK";
+import Link from "next/link"
+const githubLink = "https://github.com/so-sc"
+const linkedinLink = "https://linkedin.com/company/sosc-sahyadri"
+const instagramLink = "https://instagram.com/sosc.sahyadri"
+const facebookLink = "https://m.facebook.com/profile.php?id=100073345130252"
+const twitterLink = "https://twitter.com/sahyadri_osc"
+const youtubeLink = "https://www.youtube.com/channel/UCk8nlSMwUT-jhEtamMF-V-w"
+const discordLink = "https://discord.gg/hHYfMRydAK"
 
-const communityGuidelines = "https://github.com/so-sc/code-of-conduct";
+const communityGuidelines = "https://github.com/so-sc/code-of-conduct"
 
 const Footer = () => {
   return (
@@ -280,7 +280,7 @@ const Footer = () => {
         </div>
       </footer>
     </div>
-  );
-};
+  )
+}
 
-export default Footer;
+export default Footer

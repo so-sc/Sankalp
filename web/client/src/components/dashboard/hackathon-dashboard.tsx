@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button";
-import Notification from "@/components/ui/notification";
+import { Button } from "@/components/ui/button"
+import Notification from "@/components/ui/notification"
 import {
   HACKATHON_NAME,
   MAIN_EVENT_WEBSITE,
@@ -7,22 +7,22 @@ import {
   MIN_MEMBERS,
   THEMES,
   numberDisplay,
-} from "@/lib/constants";
+} from "@/lib/constants"
 import {
   HackathonAPIResponse,
   HackathonDashboard,
   HackathonTeam,
   UserDashboardProfile,
-} from "@/lib/types";
-import Link from "next/link";
-import { TbExternalLink } from "react-icons/tb";
+} from "@/lib/types"
+import Link from "next/link"
+import { TbExternalLink } from "react-icons/tb"
 
 interface HackathonDashboardProps {
-  user: UserDashboardProfile | null;
+  user: UserDashboardProfile | null
 }
 
 export default function HackathonDashboard({ user }: HackathonDashboardProps) {
-  console.log(user);
+  console.log(user)
   return (
     <div>
       {user?.hacks ? (
@@ -98,5 +98,5 @@ export default function HackathonDashboard({ user }: HackathonDashboardProps) {
         </div>
       )}
     </div>
-  );
+  )
 }

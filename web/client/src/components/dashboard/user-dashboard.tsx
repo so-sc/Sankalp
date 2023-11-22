@@ -1,13 +1,13 @@
-"use client";
+"use client"
 
-import EventRegistration from "@/components/registration/event-registration";
-import Notification from "@/components/ui/notification";
-import UserDisplay from "@/components/user-display";
-import { genders, numberDisplay } from "@/lib/constants";
-import { UserDashboardProfile, UserProfile } from "@/lib/types";
+import EventRegistration from "@/components/registration/event-registration"
+import Notification from "@/components/ui/notification"
+import UserDisplay from "@/components/user-display"
+import { genders, numberDisplay } from "@/lib/constants"
+import { UserDashboardProfile, UserProfile } from "@/lib/types"
 
 interface UserDashboardProps {
-  user: UserDashboardProfile;
+  user: UserDashboardProfile
 }
 
 export default function UserDashboard({ user }: UserDashboardProps) {
@@ -80,5 +80,5 @@ export default function UserDashboard({ user }: UserDashboardProps) {
         /> */}
       </div>
     </section>
-  );
+  )
 }

@@ -1,26 +1,26 @@
-"use client";
+"use client"
 
-import { ModeToggle } from "@/components/ui/mode-toggle";
-import { MAIN_EVENT_NAME, MAIN_EVENT_WEBSITE } from "@/lib/constants";
-import { useUser } from "@/providers/user-provider";
-import { CookieValueTypes, getCookie } from "cookies-next";
-import { ExternalLink } from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
-import { FaBars } from "react-icons/fa";
-import { TbX } from "react-icons/tb";
-import { Menu, X } from "lucide-react";
+import { ModeToggle } from "@/components/ui/mode-toggle"
+import { MAIN_EVENT_NAME, MAIN_EVENT_WEBSITE } from "@/lib/constants"
+import { useUser } from "@/providers/user-provider"
+import { CookieValueTypes, getCookie } from "cookies-next"
+import { ExternalLink } from "lucide-react"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { useEffect, useState } from "react"
+import { FaBars } from "react-icons/fa"
+import { TbX } from "react-icons/tb"
+import { Menu, X } from "lucide-react"
 
 export default function Navbar() {
-  const [token, setToken] = useState<CookieValueTypes | null>(null);
-  const path = usePathname();
+  const [token, setToken] = useState<CookieValueTypes | null>(null)
+  const path = usePathname()
   useEffect(() => {
-    const _token = getCookie("token");
-    setToken(_token);
-  }, [path]);
+    const _token = getCookie("token")
+    setToken(_token)
+  }, [path])
 
-  const [toggle, setToggle] = useState(false);
+  const [toggle, setToggle] = useState(false)
   return (
     <>
       <div
@@ -79,5 +79,5 @@ export default function Navbar() {
         </div>
       </nav>
     </>
-  );
+  )
 }

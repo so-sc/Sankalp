@@ -1,67 +1,67 @@
-"use client";
+"use client"
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import Notification from "@/components/ui/notification";
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import Notification from "@/components/ui/notification"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { H3 } from "@/components/ui/typography";
-import { useToast } from "@/components/ui/use-toast";
+} from "@/components/ui/select"
+import { Textarea } from "@/components/ui/textarea"
+import { H3 } from "@/components/ui/typography"
+import { useToast } from "@/components/ui/use-toast"
 import {
   MAIN_EVENT_WEBSITE,
   MAX_MEMBERS,
   MIN_MEMBERS,
   THEMES,
   numberDisplay,
-} from "@/lib/constants";
-import { teamSchema } from "@/lib/schemas";
+} from "@/lib/constants"
+import { teamSchema } from "@/lib/schemas"
 import {
   HackathonRegistration,
   HackathonTeam,
   Leader,
   UserDashboardProfile,
-} from "@/lib/types";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { getCookie } from "cookies-next";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { TbLoader2 } from "react-icons/tb";
+} from "@/lib/types"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { getCookie } from "cookies-next"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
+import { useForm } from "react-hook-form"
+import { TbLoader2 } from "react-icons/tb"
 
 interface HackathonRegistrationProps {
-  leader: UserDashboardProfile;
+  leader: UserDashboardProfile
 }
 
 export default function HackathonRegistration({
   leader,
 }: HackathonRegistrationProps) {
-  const { toast } = useToast();
-  const [error, setError] = useState("");
-  const router = useRouter();
+  const { toast } = useToast()
+  const [error, setError] = useState("")
+  const router = useRouter()
   useEffect(() => {
-    const token = getCookie("token");
+    const token = getCookie("token")
     if (!token) {
-      router.push("/?state=login");
+      router.push("/?state=login")
       toast({
         title: "Please login to continue",
         variant: "destructive",
-      });
+      })
     }
-  }, [router, toast]);
+  }, [router, toast])
 
   const form = useForm<HackathonTeam>({
     resolver: zodResolver(teamSchema),
@@ -83,10 +83,10 @@ export default function HackathonRegistration({
         },
       ],
     },
-  });
+  })
 
-  const totalMembers = form.watch("totalMembers");
-  const teamTheme = form.watch("teamTheme");
+  const totalMembers = form.watch("totalMembers")
+  const teamTheme = form.watch("teamTheme")
 
   async function onTeamRegister(values: HackathonTeam) {
     // Fixes the edge case for eg. when the user fills names for 4 members
@@ -94,7 +94,7 @@ export default function HackathonRegistration({
     const finalValues = {
       ...values,
       members: values.members.slice(0, totalMembers - 1),
-    };
+    }
 
     const hackathonTeamData: HackathonRegistration = {
       name: finalValues.teamName,
@@ -105,13 +105,13 @@ export default function HackathonRegistration({
           info: member.email,
         })),
       ],
-    };
+    }
 
-    console.log(hackathonTeamData);
+    console.log(hackathonTeamData)
 
     try {
-      const token = getCookie("token");
-      setError("");
+      const token = getCookie("token")
+      setError("")
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/app/registration/h`,
         {
@@ -122,16 +122,16 @@ export default function HackathonRegistration({
           },
           body: JSON.stringify(hackathonTeamData),
         }
-      );
+      )
 
-      const data = await response.json();
+      const data = await response.json()
       if (data.success) {
         toast({
           title: "Congratulation! Team Registration is successful",
           description: "Now, plan on the problem statements and enjoy!",
           variant: "success",
-        });
-        router.push("/dashboard");
+        })
+        router.push("/dashboard")
       } else {
         toast({
           title: "Something went wrong",
@@ -139,11 +139,11 @@ export default function HackathonRegistration({
             data.message ??
             "Please try again after a while, if it continues contact support.",
           variant: "destructive",
-        });
-        setError(data.message);
+        })
+        setError(data.message)
       }
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
   }
 
@@ -162,7 +162,7 @@ export default function HackathonRegistration({
           </Link>
         </H3>
       </div>
-    );
+    )
   }
 
   if (leader.hacks?.name) {
@@ -178,7 +178,7 @@ export default function HackathonRegistration({
           </Link>
         </H3>
       </div>
-    );
+    )
   }
 
   return (
@@ -453,5 +453,5 @@ export default function HackathonRegistration({
         </form>
       </Form>
     </div>
-  );
+  )
 }

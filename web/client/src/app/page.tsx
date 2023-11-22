@@ -1,12 +1,12 @@
-import Login from "@/components/login";
-import Register from "@/components/registration/register";
-import { H1 } from "@/components/ui/typography";
-import { MAIN_EVENT_NAME } from "@/lib/constants";
-import { FormState, SearchParams } from "@/lib/types";
-import Link from "next/link";
+import Login from "@/components/login"
+import Register from "@/components/registration/register"
+import { H1 } from "@/components/ui/typography"
+import { MAIN_EVENT_NAME } from "@/lib/constants"
+import { FormState, SearchParams } from "@/lib/types"
+import Link from "next/link"
 
 interface HomePageProps {
-  searchParams: SearchParams;
+  searchParams: SearchParams
 }
 
 async function fetchServerStatus() {
@@ -15,17 +15,17 @@ async function fetchServerStatus() {
       headers: {
         "Content-Type": "application/json",
       },
-    });
-    return await response.json();
+    })
+    return await response.json()
   } catch (error) {
-    console.log(error);
-    return { serverStatus: { success: false } };
+    console.log(error)
+    return { serverStatus: { success: false } }
   }
 }
 
 export default async function HomePage({ searchParams }: HomePageProps) {
-  const state = (searchParams.state as FormState) || "register";
-  const serverStatus = await fetchServerStatus();
+  const state = (searchParams.state as FormState) || "register"
+  const serverStatus = await fetchServerStatus()
 
   if (!serverStatus.success) {
     return (
@@ -37,7 +37,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
           </p>
         </div>
       </main>
-    );
+    )
   }
 
   return (
@@ -66,5 +66,5 @@ export default async function HomePage({ searchParams }: HomePageProps) {
         </div>
       )}
     </main>
-  );
+  )
 }
