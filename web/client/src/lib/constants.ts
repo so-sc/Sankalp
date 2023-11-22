@@ -26,6 +26,15 @@ export const THEMES = ["Company Specific", "Open Theme"] as const
 
 export const HACKATHON_NAME = "Codeblaze"
 
+// Event: Codeblaze
+// Event order should be same always - don't change
+// 1. DeCode
+// 2. Tech-maze
+// 3. Blind Bytes
+// 4. The Pitchers
+// 5. The Wolf of Dalal Street
+// 6. Open Source Fiesta
+
 export const EVENTS_DETAILS = [
   {
     name: "DeCode",

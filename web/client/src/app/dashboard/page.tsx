@@ -29,7 +29,6 @@ export async function getUser() {
     throw new Error("Authorization failed, please login and try again.")
   }
 
-  console.log(token)
   // u means user
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/app/info/u`,

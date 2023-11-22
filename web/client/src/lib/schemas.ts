@@ -8,7 +8,8 @@ import {
 } from "@/lib/constants"
 import { z } from "zod"
 
-export const eventSchema = z.object({
+// This is for Devhost and is Old which we created long ago
+export const talksSchema = z.object({
   talks: z
     .boolean()
     .array()
@@ -19,6 +20,18 @@ export const eventSchema = z.object({
     .array()
     .length(TOTAL_ESPORTS)
     .default(Array(TOTAL_ESPORTS).fill(false)),
+})
+
+export const memberSchema = z.object({
+  email: z.string().email(),
+})
+
+export const eventSchema = z.object({
+  name: z.string().min(3).max(50),
+  email: z.string().email(),
+  phone: z.string().length(10),
+  college: z.string().min(3),
+  members: z.array(memberSchema).optional(),
 })
 
 export const studentSchema = z.object({
@@ -45,16 +58,12 @@ export const userSchema = z.object({
 
 export const registrationSchema = z.object({
   user: userSchema,
-  event: eventSchema,
+  event: talksSchema,
 })
 
 export const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8).max(24),
-})
-
-export const memberSchema = z.object({
-  email: z.string().email(),
 })
 
 export const leaderSchema = z.object({

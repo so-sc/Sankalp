@@ -1,6 +1,6 @@
 "use client"
 
-import EventRegistration from "@/components/registration/event-registration"
+import TalksRegistration from "@/components/registration/talks-registration"
 import Notification from "@/components/ui/notification"
 import UserDisplay from "@/components/user-display"
 import { genders, numberDisplay } from "@/lib/constants"
@@ -76,7 +76,7 @@ export default function UserDashboard({ user }: UserDashboardProps) {
         <p className="text-center my-4">
           <Notification variant="info">Opening Soon... Stay Tuned</Notification>
         </p>
-        {/* <EventRegistration
+        {/* <TalksRegistration
           setRegistrationData={setCurrentData}
           registrationData={currentData}
           isUpdation

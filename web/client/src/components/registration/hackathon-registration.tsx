@@ -106,9 +106,7 @@ export default function HackathonRegistration({
         })),
       ],
     }
-
-    console.log(hackathonTeamData)
-
+    
     try {
       const token = getCookie("token")
       setError("")
