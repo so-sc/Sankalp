@@ -1,5 +1,5 @@
 import express from "express";
-import { UserRegisterGetInfoByMail, UserRegisterByMail, UserRegistersFindUser, HackathonRegisterFindDetailsByID, UserRegisterByID, hackathonRegisterGetLeadEmail, EventRegisterFindDetailsByID, EventRegister, HackathonRegister, EventQRAdder, HackathonQRAdder } from "../db/sankalpUser";
+import { Event, UserRegisterGetInfoByMail, UserRegisterByMail, UserRegistersFindUser, HackathonRegisterFindDetailsByID, UserRegisterByID, hackathonRegisterGetLeadEmail, EventRegisterFindDetailsByID, EventRegister, HackathonRegister, EventQRAdder, HackathonQRAdder } from "../db/sankalpUser";
 import { EventModels, HackathonModel, Member } from "../workers/model";
 import { qrCreator, formID } from "../workers/qrcode";
 import { encrypt } from "workers/crypt";
@@ -8,6 +8,7 @@ import { verifyToken } from "../workers/auth";
 const router = express.Router();
 
 // --- Form ---
+
 
 // Registration for talk or event or hackathon
 router.post("/registration/:info", verifyToken, async(req, res) => {

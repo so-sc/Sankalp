@@ -86,6 +86,72 @@ export const UserRegisterByMail = async (email: string) => {
     return await User.findOne({ email: email })
 }
 
+export const UserRegisterGender = async () => {
+    return await User.aggregate([
+        { $group: {
+            _id: "$gender",
+            count: { $sum: 1 }
+        } }
+    ])
+}
+
+export const UserRegisterStudent = async () => {
+    return await User.aggregate([
+        { $group: {
+            _id: "$student",
+            count: { $sum: 1 }
+        } }
+        // {
+        //     $group: {
+        //       _id: "$student",
+        //       count: { $sum: 1 }
+        //     }
+        //   },
+        //   {
+        //     $project: {
+        //       _id: 0,
+        //       student: "$_id",
+        //       count: 1
+        //     }
+        //   }
+    ])
+}
+
+export const UserRegisterYear = async () => {
+    return await User.aggregate([
+        { $match: {
+              year: { $exists: true, $ne: null }
+        } },{ $group: {
+            _id: "$year",
+            count: { $sum: 1 }
+        } }
+    ])
+}
+
+export const UserRegisterCounts = async () => {
+    return await User.aggregate([
+        // { $match: {
+        //     hack: { $exists: true }
+        // } }, 
+        // { $group: {
+        //     _id: null,
+        //     count: { $sum: 1 }
+        // } }
+        { $project: {
+            hackCount: [{ $match: {
+                    hack: { $exists: true, $ne: null }
+                } },{ $sum: 1 }],
+            eventCount: [{ $match: {
+                    year: { $exists: true, $ne: null }
+                } },{ $sum: 1 }],
+            talkCount: [{ $match: {
+                    year: { $exists: true, $ne: null }
+                } },{ $sum: 1 }]
+        } }
+    ])
+}
+
+
 export const UserRegisterGetInfoByMail = async (email: string) => {
     try {
         let data: any = await User.findOne({ email: email }).select("name PhNo company designation college branch course year hack -_id");
@@ -304,21 +370,27 @@ export const EventRegisterFindDetailsByID = async (id: String) => {
 export const EventRegister = async (id: string, data: any) => {
     try { 
         if (data.isEvent) { 
-            data.event.participant.map((member: Member) => { if(!(User.findOne({ email: member.info }))){return { success: false, message: `The ${member.info} is not registered. Check your Email ID or Confirm whether the participant is registered in the platform.` } } } );
+            data.event.participant.map((member: Member) => { 
+                if(!(User.findOne({ email: member.info }))){return { success: false, message: `The ${member.info} is not registered. Check your Email ID or Confirm whether the participant is registered in the platform.` } } 
+            } );
+            data.event.participant.push({ info: (await User.findOne({_id: id})).email, lead: true });
+            for (const member of data.event.participant) {
+                let user = await User.findOne({ email: member.info });
+                if (user.event) {
+                    for (const event of user.event) {
+                        const foundEvent = await Event.findOne({ _id: event, 'event.type.eve': data.eve });
+                        if (foundEvent && foundEvent.isEvent) {
+                            return { success: false, message: `The ${member.info} is already in an event. Opt someone else.` };
+                        }
+                    }
+                }
+            }
             for (const participant of data.event.participant) {
                 const rs = await UserRegistersGetIDByMail(participant.info);
                 if (!rs.success) { return rs; }
                 participant.info = rs.id;
             }
-            data.event.participant.map(async (member: Member) => { 
-                let user: any = await User.findOne({ _id: member.info });
-                if (user.event) {
-                    user.event.map(async (event: string) => {
-                    if(await Event.find({ _id: { $in: event }, 'event.type.eve': data.eve})){
-                    return { success: false, message: `The ${member.info} is already in a event. Opt someone else.` } 
-                } } ) }
-            } );
-            data.verify = false; data.event.participant.push({ info: id, lead: true }); 
+            data.verify = false; 
         } 
         const event = new Event(data);
         const info = await event.save();
