@@ -88,7 +88,7 @@ export interface EventElement {
 
 export interface EventEvent {
   eve: number
-  participant: Member[]
+  participant: AddNewProperty<Member, "name", string>[]
 }
 
 export interface Hacks {

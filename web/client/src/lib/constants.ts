@@ -29,11 +29,11 @@ export const HACKATHON_NAME = "Codeblaze"
 // Event: Codeblaze
 // Event order should be same always - don't change
 // 1. DeCode
-// 2. Tech-maze
+// 2. Open Source Fiesta
 // 3. Blind Bytes
 // 4. The Pitchers
 // 5. The Wolf of Dalal Street
-// 6. Open Source Fiesta
+// 6. Tech-maze
 
 export const EVENTS_DETAILS = [
   {
@@ -45,11 +45,12 @@ export const EVENTS_DETAILS = [
     link: "/decode",
   },
   {
-    name: "Tech-maze",
-    actualName: "Escape Room",
-    minMember: 2,
-    maxMember: 2,
-    link: "/tech-maze",
+    name: "Open Source Fiesta",
+    actualName: "Open Source Contributions",
+    message: "This is an online event",
+    minMember: 1,
+    maxMember: 1,
+    link: "/open-source-fiesta",
   },
   {
     name: "Blind Bytes",
@@ -67,20 +68,19 @@ export const EVENTS_DETAILS = [
     link: "/the-pitchers",
   },
   {
+    name: "Tech-maze",
+    actualName: "Escape Room",
+    minMember: 2,
+    maxMember: 2,
+    link: "/tech-maze",
+  },
+  {
     name: "The Wolf of Dalal Street",
     actualName: "Stock market trading",
     message: "This is an online event",
     minMember: 1,
     maxMember: 1,
     link: "/trading",
-  },
-  {
-    name: "Open Source Fiesta",
-    actualName: "Open Source Contributions",
-    message: "This is an online event",
-    minMember: 1,
-    maxMember: 1,
-    link: "/open-source-fiesta",
   },
 ]
 
