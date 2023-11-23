@@ -83,7 +83,7 @@ export const UserRegisterByID = async (id: String) => {
 }
 
 export const UserRegisterByMail = async (email: string) => {
-    return User.findOne({ email: email })
+    return await User.findOne({ email: email })
 }
 
 export const UserRegisterGetInfoByMail = async (email: string) => {
@@ -310,15 +310,16 @@ export const EventRegister = async (id: string, data: any) => {
                 if (!rs.success) { return rs; }
                 participant.info = rs.id;
             }
+            data.event.participant.map(async (member: Member) => { 
+                let user: any = await User.findOne({ _id: member.info });
+                if (user.event) {
+                    user.event.map(async (event: string) => {
+                    if(await Event.find({ _id: { $in: event }, 'event.type.eve': data.eve})){
+                    return { success: false, message: `The ${member.info} is already in a event. Opt someone else.` } 
+                } } ) }
+            } );
             data.verify = false; data.event.participant.push({ info: id, lead: true }); 
-        }      
-        data.event.participant.map((member: Member) => { 
-            let user: any = User.findOne({ email: member.info });
-            user.event.map((event: string) => {
-                if(Event.find({ _id: { $in: event }, 'event.type.eve': data.eve})){
-                return { success: false, message: `The ${member.info} is already in a event. Opt someone else.` } 
-            } } ) 
-        } );
+        } 
         const event = new Event(data);
         const info = await event.save();
         if (data.isEvent) {

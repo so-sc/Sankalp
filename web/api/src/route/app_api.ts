@@ -49,7 +49,7 @@ router.post("/registration/:info", verifyToken, async(req, res) => {
             // for (const participant of data.event.participant) { 
             //     (participant.lead)? name=UserRegisterByMail(participant.info): {}
             // }
-            name=await UserRegisterByMail(data.event.participant[0].info);
+            name=(await UserRegisterByID(id)).name;
         }
         var rs = await sendCopyMail(qr[info], (info==='h')? null: data.event.eve, mail, name, dt.id);
         if (!rs['success']===true) {
