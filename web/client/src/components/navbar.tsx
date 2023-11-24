@@ -39,7 +39,7 @@ export default function Navbar() {
         <div className="flex pt-3 items-center h-full md:place-self-start">
           <Link
             href="/"
-            className="font-bold tracking-wider text-xl hover:text-foreground/50"
+            className="font-bold tracking-wider text-xl hover:text-foreground/50 transition-colors"
           >
             Sankalp
             <span className="text-xs absolute bg-orange-300 text-black rounded-full px-2 py-0.5 ml-0.5">

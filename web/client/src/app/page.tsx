@@ -43,7 +43,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   return (
     <main className="container mx-auto px-8 lg:px-20 xl:px-24 py-12">
       {state === "login" ? (
-        <div className="py-20">
+        <div className="md:py-10 py-20">
           <H1 className="lg:text-8xl md:text-6xl text-5xl text-center">
             {MAIN_EVENT_NAME}
           </H1>

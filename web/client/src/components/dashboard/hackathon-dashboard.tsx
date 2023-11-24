@@ -26,7 +26,7 @@ export default function HackathonDashboard({ user }: HackathonDashboardProps) {
   return (
     <div>
       {user?.hacks ? (
-        <div className="px-4 mt-4">
+        <div className="mt-4">
           <div>
             <div className="mb-4">
               <p className="text-xl font-bold text-center">
@@ -41,8 +41,8 @@ export default function HackathonDashboard({ user }: HackathonDashboardProps) {
           </div>
           {user?.hacks?.member.map((member, i) => (
             <div className="flex flex-col" key={member.email}>
-              <p className="text-center mx-auto my-4 bg-foreground/10 w-2/5 rounded-lg py-1">
-                Member {i + 1}
+              <p className="text-center mx-auto my-4 bg-foreground/10 w-full rounded-lg py-1">
+                Team Member {i + 1}
               </p>
               <div className="flex flex-col gap-1">
                 <p>Name: {member.name}</p>
@@ -50,7 +50,7 @@ export default function HackathonDashboard({ user }: HackathonDashboardProps) {
               </div>
             </div>
           ))}
-          <Notification variant="success" className="my-8">
+          <Notification variant="success" className="my-5">
             <p>Great team! All the best folks with ❤️ SOSC</p>
           </Notification>
         </div>
@@ -82,14 +82,14 @@ export default function HackathonDashboard({ user }: HackathonDashboardProps) {
                 </span>
               ))}
             </p>
-            <div className="flex flex-col gap-4 mt-5">
+            <div className="flex w-full items-center flex-col gap-4 mt-5">
               <Button asChild className="w-1/2 mx-auto">
                 <Link href="/hackathon">Register Now</Link>
               </Button>
               <Link
                 href={MAIN_EVENT_WEBSITE}
                 target="_blank"
-                className="flex items-center gap-2 justify-center text-sm text-foreground/70 hover:text-foreground hover:underline underline-offset-4 transition-colors"
+                className="flex items-center gap-2 w-fit justify-center text-sm text-foreground/70 hover:text-foreground hover:underline underline-offset-4 transition-colors"
               >
                 Read more about {HACKATHON_NAME} <TbExternalLink />
               </Link>
