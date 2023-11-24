@@ -49,9 +49,11 @@ export default async function EventPage({
   }
 
   return (
-    <main className="container my-8">
-      <H1>Register for {EVENTS_DETAILS[eventId].name}</H1>
-      <H2 className="mt-3">Welcome {user.data.name}!</H2>
+    <main className="container max-w-5xl mx-auto px-8 lg:px-20 xl:px-24 py-12">
+      <h1 className="mt-3 tracking-wide text-3xl font-bold">
+        Register for {EVENTS_DETAILS[eventId].name}
+      </h1>
+      <h2 className="text-2xl mt-4 font-light">Welcome {user.data.name}!</h2>
       <EventRegistration eventId={eventId} user={user.data} />
     </main>
   )
