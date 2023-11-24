@@ -120,8 +120,9 @@
 //     </footer>
 //   )
 // }
-
+import SOSCLogo from "@/assets/sosc-logo"
 import Link from "next/link"
+const websiteLink = "https://www.sosc.org.in/"
 const githubLink = "https://github.com/so-sc"
 const linkedinLink = "https://linkedin.com/company/sosc-sahyadri"
 const instagramLink = "https://instagram.com/sosc.sahyadri"
@@ -135,7 +136,7 @@ const communityGuidelines = "https://github.com/so-sc/code-of-conduct"
 const Footer = () => {
   return (
     <div className="">
-      <footer className="body-font font-poppinsR bg-foreground/10 md:pt-20 tracking-wider">
+      <footer className="body-font font-poppinsR bg-foreground/10 md:pt-14 tracking-wider">
         <div className="flex md:items-center lg:items-start md:flex-row md:flex-nowrap flex-wrap flex-col">
           <div className="flex flex-grow font-semibold dark:font-normal md:pl-20 mb-10 mx-6 md:mt-0 mt-10 ">
             <div className="lg:w-1/2 md:w-1/2 w-full px-4">
@@ -204,7 +205,7 @@ const Footer = () => {
             </div>
           </div>
           <div className="md:w-1/3 font-semibold dark:font-normal flex-shrink-0 mx-10">
-            <svg
+            {/* <svg
               width="67.248604"
               height="18.71397"
               className="text-primary"
@@ -247,10 +248,18 @@ const Footer = () => {
                   />
                 </clipPath>
               </defs>
-            </svg>
-            <p className="font-poppinsSB pt-8">
-              Sahyadri Open-Source Community
-            </p>
+            </svg> */}
+            <Link href={websiteLink} className="w-fit" target="_blank">
+              <div className="relative h-10 aspect-video">
+                <SOSCLogo />
+              </div>
+            </Link>
+            <Link href={websiteLink} target="_blank">
+              <p className="font-semibold hover:underline w-fit hover:underline-offset-4 mt-3 text-lg">
+                Sahyadri Open-Source Community
+              </p>
+            </Link>
+
             <p className="py-2">
               Sahyadri College of Engineering and Management, Adyar, Mangalore -
               575007 IN

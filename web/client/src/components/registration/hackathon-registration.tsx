@@ -165,16 +165,19 @@ export default function HackathonRegistration({
 
   if (leader.hacks?.name) {
     return (
-      <div className="mt-4">
+      <div className="mt-5">
         <Notification variant="info" className="flex flex-col">
           You have already formed a team!
         </Notification>
-        <H3 className="text-center my-4">
+        <h3 className="text-center text-xl mt-10">
           Go back to{" "}
-          <Link href="/dashboard" className="underline">
+          <Link
+            href="/dashboard"
+            className="underline font-bold underline-offset-2 hover:underline-offset-4 tracking-wide"
+          >
             Dashboard
           </Link>
-        </H3>
+        </h3>
       </div>
     )
   }

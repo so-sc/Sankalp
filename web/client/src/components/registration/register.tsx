@@ -48,7 +48,7 @@ export default function Register() {
   const [step, setStep] = useState<Step>(1)
 
   return (
-    <div className="py-20">
+    <div className="md:py-10 py-20">
       {step === 1 && (
         <div className="mb-8">
           <H1 className="lg:text-8xl md:text-6xl text-5xl text-center">

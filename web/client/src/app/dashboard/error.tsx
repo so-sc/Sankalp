@@ -23,11 +23,14 @@ export default function ErrorPage({
   }, [])
 
   return (
-    <div className="text-center my-16 mx-4">
+    <div className="text-center my-40 mx-4">
       <H1 className="my-4">Error fetching the data</H1>
       <H3>Error logging in, please try again</H3>
-      <p>
-        <Link href="/?state=login" className="underline mt-4">
+      <p className="mt-3">
+        <Link
+          href="/?state=login"
+          className="underline underline-offset-2 hover:underline-offset-4 mt-4"
+        >
           Click here
         </Link>{" "}
         to go back to Login page
