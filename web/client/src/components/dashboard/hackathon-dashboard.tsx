@@ -111,7 +111,7 @@ export default function HackathonDashboard({ user }: HackathonDashboardProps) {
               className="hover:underline underline-offset-2"
             >
               {/* No need of / again before it is there in the link value */}
-              <Link href={`/events${event.link}`} target="_blank">
+              <Link href={`/events${event.link}`}>
                 <span className="font-bold">{event.name}</span>:{" "}
                 {event.actualName}
               </Link>

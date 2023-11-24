@@ -20,7 +20,7 @@ export async function getUser() {
     redirect("/")
   }
 
-  const isTokenValidRes = await fetch(
+  const isTokenValidRes = await fetch(  
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/token-checker`,
     {
       headers: {

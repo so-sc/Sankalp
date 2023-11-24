@@ -92,7 +92,7 @@ export default function UserDashboard({ user }: UserDashboardProps) {
               >
                 <Link
                   href={`/qrcode/${event.qrId}?event=${
-                    EVENTS_DETAILS[event.event.eve + 1].name
+                    EVENTS_DETAILS[event.event.eve - 1].name
                   }`}
                   target="_blank"
                   className="flex gap-1 font-bold hover:underline underline-offset-2 items-center"
