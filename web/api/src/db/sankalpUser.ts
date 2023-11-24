@@ -101,19 +101,6 @@ export const UserRegisterStudent = async () => {
             _id: "$student",
             count: { $sum: 1 }
         } }
-        // {
-        //     $group: {
-        //       _id: "$student",
-        //       count: { $sum: 1 }
-        //     }
-        //   },
-        //   {
-        //     $project: {
-        //       _id: 0,
-        //       student: "$_id",
-        //       count: 1
-        //     }
-        //   }
     ])
 }
 
@@ -130,23 +117,19 @@ export const UserRegisterYear = async () => {
 
 export const UserRegisterCounts = async () => {
     return await User.aggregate([
-        // { $match: {
-        //     hack: { $exists: true }
-        // } }, 
-        // { $group: {
-        //     _id: null,
-        //     count: { $sum: 1 }
-        // } }
-        { $project: {
-            hackCount: [{ $match: {
-                    hack: { $exists: true, $ne: null }
-                } },{ $sum: 1 }],
-            eventCount: [{ $match: {
-                    year: { $exists: true, $ne: null }
-                } },{ $sum: 1 }],
-            talkCount: [{ $match: {
-                    year: { $exists: true, $ne: null }
-                } },{ $sum: 1 }]
+        { $facet: {
+            hack: [
+                { $match: { hack: { $exists: true, $ne: null } } },
+                { $count: "count" }
+            ],
+            event: [
+                { $match: { event: { $exists: true, $ne: null } } },
+                { $count: "count" }
+            ],
+            talk: [
+                { $match: { talk: { $exists: true, $ne: null } } },
+                { $count: "count" }
+            ]
         } }
     ])
 }
@@ -200,11 +183,13 @@ export const UserRegistersFindUser = async (id: String) => {
             }
             hackon.member = Array();
             for (const member of hk.member) {
-                temp= await User.findById(member.info).select('name email -_id');
-                if (member.lead) {hackon.hacklead = true}
-                if (temp) { hackon.member.push(temp) } else { 
-                    return { success: false, message: "Unable to find the user in the team, Please contact developer for support." } 
-                }
+                try {
+                    temp= await User.findById(member.info).select('name email -_id');
+                    if (member.lead) {hackon.hacklead = true}
+                    if (temp) { hackon.member.push(temp) } else { 
+                        return { success: false, message: "Unable to find the user in the team, Please contact developer for support." } 
+                    }
+                } catch (e) {}
             }
             data.hacks = hackon;
         }
@@ -215,22 +200,24 @@ export const UserRegistersFindUser = async (id: String) => {
             var eve = res.event;
             data.events = Array();
             for(const idx of eve) {
-                var et: any = await Event.findById(idx).select('-_id -isEvent -__v');
-                var event: any = {
-                    verify: et.verify,
-                    qrId: et.qrId,
-                    event: {
-                        eve: et.event.eve
+                try {
+                    var et: any = await Event.findById(idx).select('-_id -isEvent -__v');
+                    var event: any = {
+                        verify: et.verify,
+                        qrId: et.qrId,
+                        event: {
+                            eve: et.event.eve
+                        }
                     }
-                }
-                const part = et.event.participant;
-                event.event.participant = Array();
-                for (const participant of part) {
-                    temp = await User.findById(participant.info).select('name email -_id');
-                    if (participant.lead) { temp.lead = participant.lead }
-                    event.event.participant.push(temp);
-                }
-                data.events.push(event);
+                    const part = et.event.participant;
+                    event.event.participant = Array();
+                    for (const participant of part) {
+                        temp = await User.findById(participant.info).select('name email -_id');
+                        if (participant.lead) { temp.lead = participant.lead }
+                        event.event.participant.push(temp);
+                    }
+                    data.events.push(event);
+                } catch (e) {}
             }
         }
         return { success: true, data: data }
@@ -368,6 +355,7 @@ export const EventRegisterFindDetailsByID = async (id: String) => {
 }
 
 export const EventRegister = async (id: string, data: any) => {
+    let info;
     try { 
         if (data.isEvent) { 
             data.event.participant.map((member: Member) => { 
@@ -378,8 +366,8 @@ export const EventRegister = async (id: string, data: any) => {
                 let user = await User.findOne({ email: member.info });
                 if (user.event) {
                     for (const event of user.event) {
-                        const foundEvent = await Event.findOne({ _id: event, 'event.type.eve': data.eve });
-                        if (foundEvent && foundEvent.isEvent) {
+                        const foundEvent = await Event.findOne({ _id: event, 'event.type.eve': data.event.eve });
+                        if (foundEvent) {
                             return { success: false, message: `The ${member.info} is already in an event. Opt someone else.` };
                         }
                     }
@@ -393,7 +381,7 @@ export const EventRegister = async (id: string, data: any) => {
             data.verify = false; 
         } 
         const event = new Event(data);
-        const info = await event.save();
+        info = await event.save();
         if (data.isEvent) {
             var ids = data.event.participant.map((participant: Member) => participant.info);
             await User.updateMany(
@@ -409,7 +397,10 @@ export const EventRegister = async (id: string, data: any) => {
         return { success: true, id: info._id.toString() }
     } catch (e) {
         console.log(e);
-        return { success: false, message: 'Check the provided fields.' }
+        if (info._id.toString()) {
+            await Event.deleteOne({ _id: info._id.toString() })
+        }
+        return { success: false, message: 'Application failed to register. Do check the provided fields.' }
     }
 }
 
@@ -573,6 +564,7 @@ export const HackathonRegistersDetails = async () => {
 
 
 export const HackathonRegister = async (id: string, data: any) => {
+    let info;
     try {
         if (data.member.length<1 && data.member.length>3) {
             return { success: false, message: 'The size of an hackathon team should be strictly 2-4.' }
@@ -597,7 +589,7 @@ export const HackathonRegister = async (id: string, data: any) => {
         }
         data.member.push({ info: id, lead: true })
         const hackathon = new Hackathon(data);
-        const info = await hackathon.save();
+        info = await hackathon.save();
         var ids = Array()
         for (const member of data.member) {
            member.lead?{}:ids.push(member.info);
@@ -613,6 +605,9 @@ export const HackathonRegister = async (id: string, data: any) => {
         return { success: true, id: info._id.toString() }
     } catch (e) {
         console.log(e);
+        if (info._id.toString()) {
+            await Hackathon.deleteOne({ _id: info._id.toString() })
+        }
         return { success: false, message: 'The data is invalid.' }
     }
 }
