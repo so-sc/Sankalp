@@ -1,6 +1,6 @@
 
 import express from "express";
-import { EventRegisters, HackathonRegistersDetails, EventRegistersVerifyTalk, EventRegistersVerifyEvent, hackathonRegistersVerify } from '../db/sankalpUser';
+import { UserRegisterCounts, UserRegisterYear, UserRegisterStudent, UserRegisterGender, EventRegisters, HackathonRegistersDetails, EventRegistersVerifyTalk, EventRegistersVerifyEvent, hackathonRegistersVerify } from '../db/sankalpUser';
 import { adminVerifyToken } from "../workers/auth";
 
 const router = express.Router();
@@ -92,9 +92,9 @@ router.get("/get-feedback", async(req, res) => {
 // ----------------- STATISTICS ----------------------
 
 // 
-router.get("/", async(req, res) => {
+router.get("/statistics/count", async(req, res) => {
     try {
-        return res.status(500).json({ success: false, })
+        return res.status(500).json({ success: true, gender: (await UserRegisterGender()), student: (await UserRegisterStudent()), year: (await UserRegisterYear()), hte: (await UserRegisterCounts()) })
     } catch (e) {
         res.status(500).json({ success: false, message: e.message })
     }

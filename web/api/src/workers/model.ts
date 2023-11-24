@@ -6,29 +6,34 @@ interface NameModel {
 // Keys start from 1 guys sadly deveesh believes this is an array. May key value pair be with you..
 export const EventNameModel: NameModel = {
     1: {
-        name: "",
-        date: "",
-        venue: ""
+        name: "DeCode: Capture the flag",
+        date: "9th December 2023 at 2:00PM to 3:00PM",
+        venue: "Digital Library First Floor"
     },
     2: {
-        name: "",
-        date: "",
-        venue: ""
+        name: "Open Source Fiesta",
+        venue: "Online (Github)",
+        date: "6th to 8th December 2023"
     },
     3: {
-        name: "",
-        date: "",
-        venue: ""
+        name: "BlindByte: Blind coding",
+        venue: "Women Empowerment lab",
+        date: "9th December 2023 at 11:30AM to 01:00PM"
     },
     4: {
-        name: "",
-        date: "",
-        venue: ""
+        name: "The Pitchers",
+        date: "Seminar Hall",
+        venue: "8th December 2023 at 9.30 AM to 10.30AM"
     },
     5: {
-        name: "",
-        date: "",
-        venue: ""
+        name: "TechMaze: Escape Room",
+        venue: "MBA Classrooms",
+        date: "8th December 2023 at 11:30AM to 01:00PM"
+    },
+    6: {
+        name: "The Wolf of Wall Street",
+        venue: "Online (StockGro)",
+        date: "8th December 2023 at 09:00AM to 03:30PM"
     },
 }
 

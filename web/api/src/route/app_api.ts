@@ -1,5 +1,5 @@
 import express from "express";
-import { UserRegisterGetInfoByMail, UserRegisterByMail, UserRegistersFindUser, HackathonRegisterFindDetailsByID, UserRegisterByID, hackathonRegisterGetLeadEmail, EventRegisterFindDetailsByID, EventRegister, HackathonRegister, EventQRAdder, HackathonQRAdder } from "../db/sankalpUser";
+import { Event, UserRegisterGetInfoByMail, UserRegisterByMail, UserRegistersFindUser, HackathonRegisterFindDetailsByID, UserRegisterByID, hackathonRegisterGetLeadEmail, EventRegisterFindDetailsByID, EventRegister, HackathonRegister, EventQRAdder, HackathonQRAdder } from "../db/sankalpUser";
 import { EventModels, HackathonModel, Member } from "../workers/model";
 import { qrCreator, formID } from "../workers/qrcode";
 import { encrypt } from "workers/crypt";
@@ -8,6 +8,7 @@ import { verifyToken } from "../workers/auth";
 const router = express.Router();
 
 // --- Form ---
+
 
 // Registration for talk or event or hackathon
 router.post("/registration/:info", verifyToken, async(req, res) => {
@@ -49,7 +50,7 @@ router.post("/registration/:info", verifyToken, async(req, res) => {
             // for (const participant of data.event.participant) { 
             //     (participant.lead)? name=UserRegisterByMail(participant.info): {}
             // }
-            name=await UserRegisterByMail(data.event.participant[0].info);
+            name=(await UserRegisterByID(id)).name;
         }
         var rs = await sendCopyMail(qr[info], (info==='h')? null: data.event.eve, mail, name, dt.id);
         if (!rs['success']===true) {
