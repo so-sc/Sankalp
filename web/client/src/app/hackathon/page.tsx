@@ -1,7 +1,14 @@
 import { getUser } from "@/app/dashboard/page"
 import HackathonRegistration from "@/components/registration/hackathon-registration"
 import { H1, H2 } from "@/components/ui/typography"
+import { MAIN_EVENT_NAME } from "@/lib/constants"
 import { userProfile } from "@/lib/placeholder"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Hackathon",
+  description: `Register for ${MAIN_EVENT_NAME} hackathon`,
+}
 
 export default async function HackathonPage() {
   const user = await getUser()

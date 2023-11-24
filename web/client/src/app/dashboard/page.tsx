@@ -4,9 +4,15 @@ import Logout from "@/components/logout"
 import { H1, H2 } from "@/components/ui/typography"
 import { HACKATHON_NAME, MAIN_EVENT_NAME } from "@/lib/constants"
 import { getCookie } from "cookies-next"
+import { Metadata } from "next"
 import { revalidatePath } from "next/cache"
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
+
+export const metadata: Metadata = {
+  title: "Dashboard",
+  description: `Dashboard for ${MAIN_EVENT_NAME}, checkout the events available`,
+}
 
 export async function getUser() {
   const token = cookies().get("token")?.value

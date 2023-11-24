@@ -2,8 +2,32 @@ import { getUser } from "@/app/dashboard/page"
 import EventRegistration from "@/components/registration/event-registration"
 import { H1, H2 } from "@/components/ui/typography"
 import { EVENTS_DETAILS, EVENTS_PATHS } from "@/lib/constants"
+import { Metadata, ResolvingMetadata } from "next"
 import { cookies } from "next/headers"
 import { notFound, redirect } from "next/navigation"
+
+interface URLProps {
+  params: { event: string }
+}
+
+export async function generateMetadata(
+  { params }: URLProps,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const { event } = params
+
+  const previousImages = (await parent).openGraph?.images || []
+
+  return {
+    title: event[0].toUpperCase() + event.slice(1),
+    description: `Register for ${
+      EVENTS_DETAILS[EVENTS_PATHS.indexOf(`/${event}`)].name
+    }`,
+    openGraph: {
+      images: [`${event}.jpg`, ...previousImages],
+    },
+  }
+}
 
 export default async function EventPage({
   params,

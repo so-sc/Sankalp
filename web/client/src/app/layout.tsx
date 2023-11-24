@@ -12,15 +12,10 @@ import "./globals.css"
 
 const inter = Inter({ subsets: ["latin"] })
 
-// export const metadata: Metadata = {
-//   title: "Sankalp | SOSC",
-//   description: "Register for Codeblaze Hackathon and events at Sankalp by SOSC",
-//   // TODO: Add more metadata
-// }
 export const metadata: Metadata = {
   title: {
-    default: siteConfig.name,
-    template: `%s - ${siteConfig.name}`,
+    default: `${MAIN_EVENT_NAME} - ${siteConfig.name}`,
+    template: `%s | ${MAIN_EVENT_NAME}`,
   },
   description: siteConfig.description,
   keywords: [

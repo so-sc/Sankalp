@@ -3,10 +3,26 @@ import EventRegistration from "@/components/registration/event-registration"
 import { Button } from "@/components/ui/button"
 import { H1, H2 } from "@/components/ui/typography"
 import { EVENTS_DETAILS, EVENTS_PATHS } from "@/lib/constants"
+import { Metadata, ResolvingMetadata } from "next"
 import { cookies } from "next/headers"
 import Image from "next/image"
 import Link from "next/link"
 import { notFound, redirect } from "next/navigation"
+
+interface URLProps {
+  searchParams: { [key: string]: string | string[] | undefined }
+}
+
+export async function generateMetadata(
+  { searchParams }: URLProps,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const { event } = searchParams
+
+  return {
+    title: `${event && event[0].toUpperCase() + event.slice(1)} QR Code`,
+  }
+}
 
 export default async function EventPage({
   params,

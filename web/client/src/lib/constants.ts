@@ -54,7 +54,7 @@ export const EVENTS_DETAILS = [
   },
   {
     name: "Blind Bytes",
-    actualName: "Ethical Hacking",
+    actualName: "Blind Coding",
     minMember: 2,
     maxMember: 2,
     message: "Prerequisite: Have intermediary knowledge on programming.",
