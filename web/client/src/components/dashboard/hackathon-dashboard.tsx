@@ -101,8 +101,8 @@ export default function HackathonDashboard({ user }: HackathonDashboardProps) {
       )}
       {/* I know this is not hackathon but managing space */}
       <div>
-        <p className="text-center mt-4 border-b-2 border-foreground text-lg px-2 py-2">
-          Register for other exciting events
+        <p className="mt-4 mb-2 border-b-2 font-semibold border-foreground text-lg py-2">
+            Register for other exciting events
         </p>
         <div className="my-4 px-4 flex flex-col gap-2">
           {EVENTS_DETAILS.map((event) => (

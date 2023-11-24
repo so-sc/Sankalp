@@ -79,7 +79,7 @@ export default function UserDashboard({ user }: UserDashboardProps) {
         </p> */}
 
         <div>
-          <p className="text-center mt-4 border-b-2 border-foreground text-lg px-2 py-2">
+          <p className="mt-4 mb-2 border-b-2 font-semibold border-foreground text-lg py-2">
             Registered Events
           </p>
           <div className="grid gap-2 my-4">
