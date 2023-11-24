@@ -60,7 +60,7 @@ router.post("/registration/:info", verifyToken, async(req, res) => {
         }
         res.status(200).json({ success: true, dl: dt.link })
     } catch (e) {
-        res.status(500).json({ success: false, message: e.message })
+        res.status(500).json({ success: false, message: "Application faced some error. Check your data. Contact Maintainers." })
     }
 });
 

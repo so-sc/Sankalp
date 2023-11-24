@@ -15,9 +15,9 @@ const adminAuth = new mongo.Schema<AdminSigupModel>({
         require: true,
         unique: true
     },
-    isVolunter: {
-        type: Boolean,
-        require: false
+    role: {
+        type: Number,
+        require: true
     },
     volunter: {
         type: {
@@ -54,7 +54,10 @@ export const AdminRegister = async (data: any) => {
 
 export const AdminSigninChecker = async (data: AdminSiginModel) => {
     try {
-        var result = await AdminData.findOne({ _id: data.id, username: data.username });
+        if ((await AdminData.findOne({ username: data.username })).volunter){
+            (await AdminData.findOne({ _id: data.id, username: data.username }))
+        }
+        var result = await AdminData.findOne({ username: data.username });
         if (result) {
             var rs = await createToken(data.id);
             if (rs.success) {
