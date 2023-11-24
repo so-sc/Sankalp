@@ -366,8 +366,8 @@ export const EventRegister = async (id: string, data: any) => {
                 let user = await User.findOne({ email: member.info });
                 if (user.event) {
                     for (const event of user.event) {
-                        const foundEvent = await Event.findOne({ _id: event, 'event.type.eve': data.event.eve });
-                        if (foundEvent) {
+                        const foundEvent = await Event.findOne({ _id: event });
+                        if (foundEvent.event.eve===data.event.eve) {
                             return { success: false, message: `The ${member.info} is already in an event. Opt someone else.` };
                         }
                     }
