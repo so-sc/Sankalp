@@ -4,7 +4,7 @@ import TalksRegistration from "@/components/registration/talks-registration"
 import Notification from "@/components/ui/notification"
 import UserDisplay from "@/components/user-display"
 import { EVENTS_DETAILS, genders, numberDisplay } from "@/lib/constants"
-import { UserDashboardProfile, UserProfile } from "@/lib/types"
+import { EventEvent, UserDashboardProfile, UserProfile } from "@/lib/types"
 import { ExternalLink } from "lucide-react"
 import Link from "next/link"
 
@@ -85,13 +85,15 @@ export default function UserDashboard({ user }: UserDashboardProps) {
             Registered Events
           </p>
           <div className="grid gap-2 my-4">
-            {user.events?.map((event, index) => (
+            {user.events?.map((event: any, index: number) => (
               <div
                 key={index}
                 className="flex flex-col gap-2 border-b border-b-foreground/30 pb-2"
               >
                 <Link
-                  href={`/qrcode/${event.qrId}`}
+                  href={`/qrcode/${event.qrId}?event=${
+                    EVENTS_DETAILS[event.event.eve + 1].name
+                  }`}
                   target="_blank"
                   className="flex gap-1 font-bold hover:underline underline-offset-2 items-center"
                   title="View QR Code"
@@ -101,7 +103,7 @@ export default function UserDashboard({ user }: UserDashboardProps) {
                   <ExternalLink className="scale-75" />
                 </Link>
                 <div className="flex flex-col gap-1">
-                  {event.event.participant.map((member, index) => (
+                  {event.event.participant.map((member: any, index: number) => (
                     <p key={index}>
                       Member {index + 1}: {member.name}
                     </p>
