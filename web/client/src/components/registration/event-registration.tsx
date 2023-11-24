@@ -113,7 +113,6 @@ export default function EventRegistration({
         }
       )
       const data = await response.json()
-      console.log(data)
       if (data.success) {
         toast({
           title: `Congratulation! Your Registration for ${event.name} is successful`,
@@ -135,7 +134,6 @@ export default function EventRegistration({
       console.log(error)
     }
 
-    console.log(eventData)
   }
 
   if (user.company) {

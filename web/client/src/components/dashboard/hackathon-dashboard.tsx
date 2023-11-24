@@ -23,7 +23,6 @@ interface HackathonDashboardProps {
 }
 
 export default function HackathonDashboard({ user }: HackathonDashboardProps) {
-  console.log(user)
   return (
     <div>
       {user?.hacks ? (
