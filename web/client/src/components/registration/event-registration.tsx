@@ -133,7 +133,6 @@ export default function EventRegistration({
     } catch (error) {
       console.log(error)
     }
-
   }
 
   if (user.company) {
@@ -259,7 +258,7 @@ export default function EventRegistration({
               name="totalMembers"
               render={({ field }) => (
                 <div>
-                  <FormItem className="flex items-center">
+                  <FormItem className="flex mb-6 items-center">
                     <FormLabel className="basis-40">Total Members:</FormLabel>
                     <FormControl>
                       <Select
@@ -297,13 +296,13 @@ export default function EventRegistration({
           )}
           {event.maxMember === 1 ? (
             <div>
-              <p className="text-center font-bold text-lg mb-2">
+              <p className="text-center font-bold text-lg mb-5">
                 This is a solo event you can register directly :)
               </p>
             </div>
           ) : (
             <div className="flex flex-col gap-2">
-              <p className="text-center font-bold text-lg mb-2">
+              <p className="text-center font-bold text-lg">
                 Form a team of{" "}
                 {event.minMember === event.maxMember
                   ? event.minMember
@@ -313,7 +312,7 @@ export default function EventRegistration({
               <div>
                 {Array.from(Array(totalMembers! - 1).keys()).map((i) => (
                   <>
-                    <p className="mt-8 mb-2">Team Member {i + 1}</p>
+                    <p className="mt-5 mb-2">Team Member {i + 1}</p>
                     <div className="flex flex-col gap-2">
                       <FormField
                         control={form.control}
