@@ -47,24 +47,34 @@ export default function Navbar() {
             </span>
           </Link>
         </div>
-        <ul className="relative pt-6 flex flex-col md:flex-row justify-center gap-2 md:gap-8 col-span-4 place-self-center md:bg-foreground/10 w-full h-full py-4 rounded-b-full">
-          <Link href="/" className="hover:underline underline-offset-2">
-            Register
-          </Link>
+        <ul className="relative flex flex-col md:flex-row justify-center gap-2 md:gap-8 col-span-4 place-self-center md:bg-foreground/10 w-full h-full py-4 rounded-b-full">
           {token ? (
-            <Link
-              href="/hackathon"
-              className="hover:underline underline-offset-2"
-            >
-              Hackathon
-            </Link>
+            <>
+              <Link
+                href="/dashboard"
+                className="hover:underline underline-offset-2"
+              >
+                Dashboard
+              </Link>
+              <Link
+                href="/hackathon"
+                className="hover:underline underline-offset-2"
+              >
+                Hackathon
+              </Link>
+            </>
           ) : (
-            <Link
-              href="/?state=login"
-              className="hover:underline underline-offset-2"
-            >
-              Login
-            </Link>
+            <>
+              <Link href="/" className="hover:underline underline-offset-2">
+                Register
+              </Link>
+              <Link
+                href="/?state=login"
+                className="hover:underline underline-offset-2"
+              >
+                Login
+              </Link>
+            </>
           )}
           <Link
             href={MAIN_EVENT_WEBSITE}

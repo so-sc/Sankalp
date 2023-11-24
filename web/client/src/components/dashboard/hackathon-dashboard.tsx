@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button"
 import Notification from "@/components/ui/notification"
 import {
+  EVENTS_DETAILS,
   HACKATHON_NAME,
   MAIN_EVENT_WEBSITE,
   MAX_MEMBERS,
@@ -22,7 +23,6 @@ interface HackathonDashboardProps {
 }
 
 export default function HackathonDashboard({ user }: HackathonDashboardProps) {
-  console.log(user)
   return (
     <div>
       {user?.hacks ? (
@@ -84,7 +84,9 @@ export default function HackathonDashboard({ user }: HackathonDashboardProps) {
             </p>
             <div className="flex w-full items-center flex-col gap-4 mt-5">
               <Button asChild className="w-1/2 mx-auto">
-                <Link href="/hackathon">Register Now</Link>
+                <Link href="/hackathon" target="_blank">
+                  Register Now
+                </Link>
               </Button>
               <Link
                 href={MAIN_EVENT_WEBSITE}
@@ -97,6 +99,26 @@ export default function HackathonDashboard({ user }: HackathonDashboardProps) {
           </div>
         </div>
       )}
+      {/* I know this is not hackathon but managing space */}
+      <div>
+        <p className="mt-4 mb-2 border-b-2 font-semibold border-foreground text-lg py-2">
+            Register for other exciting events
+        </p>
+        <div className="my-4 px-4 flex flex-col gap-2">
+          {EVENTS_DETAILS.map((event) => (
+            <div
+              key={event.name}
+              className="hover:underline underline-offset-2"
+            >
+              {/* No need of / again before it is there in the link value */}
+              <Link href={`/events${event.link}`}>
+                <span className="font-bold">{event.name}</span>:{" "}
+                {event.actualName}
+              </Link>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   )
 }

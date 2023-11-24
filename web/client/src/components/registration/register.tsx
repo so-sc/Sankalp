@@ -1,7 +1,7 @@
 "use client"
 
 import RegistrationDisplay from "@/components/registration-display"
-import EventRegistration from "@/components/registration/event-registration"
+import TalksRegistration from "@/components/registration/talks-registration"
 import UserRegistration from "@/components/registration/user-registration"
 import { H1 } from "@/components/ui/typography"
 import { MAIN_EVENT_NAME } from "@/lib/constants"
@@ -68,7 +68,7 @@ export default function Register() {
           />
         ) : (
           // ) : step === 2 ? (
-          //   <EventRegistration
+          //   <TalksRegistration
           //     setRegistrationData={setRegistrationData}
           //     registrationData={registrationData}
           //     setStep={setStep}

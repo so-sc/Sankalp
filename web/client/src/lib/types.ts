@@ -1,4 +1,5 @@
 import {
+  eventSchema,
   leaderSchema,
   loginSchema,
   memberSchema,
@@ -16,7 +17,8 @@ export type FormState = "login" | "register"
 export type UserProfile = z.infer<typeof registrationSchema>
 export type HackathonTeam = z.infer<typeof teamSchema>
 export type User = UserProfile["user"]
-export type Event = UserProfile["event"]
+export type Event = UserProfile["event"] // This is supposed to be talks but ik it is messed up a little
+export type EventForm = z.infer<typeof eventSchema>
 export type LoginUser = z.infer<typeof loginSchema>
 export type Member = z.infer<typeof memberSchema>
 export type Leader = z.infer<typeof leaderSchema>
@@ -86,7 +88,7 @@ export interface EventElement {
 
 export interface EventEvent {
   eve: number
-  participant: Member[]
+  participant: AddNewProperty<Member, "name", string>[]
 }
 
 export interface Hacks {
@@ -124,4 +126,12 @@ export interface HackathonData {
   verify: boolean
   leader: AddNewProperty<Leader, "college", string>
   members: AddNewProperty<Leader, "college", string>[] // Schema will be Same as leader only
+}
+
+export interface EventRegistrationData {
+  isEvent: boolean
+  event: {
+    eve: number // This will be the event number mentioned ./constants.ts
+    participant: HackathonMemberAPI[]
+  }
 }

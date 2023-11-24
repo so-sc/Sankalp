@@ -4,9 +4,15 @@ import Logout from "@/components/logout"
 import { H1, H2 } from "@/components/ui/typography"
 import { HACKATHON_NAME, MAIN_EVENT_NAME } from "@/lib/constants"
 import { getCookie } from "cookies-next"
+import { Metadata } from "next"
 import { revalidatePath } from "next/cache"
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
+
+export const metadata: Metadata = {
+  title: "Dashboard",
+  description: `Dashboard for ${MAIN_EVENT_NAME}, checkout the events available`,
+}
 
 export async function getUser() {
   const token = cookies().get("token")?.value
@@ -14,7 +20,7 @@ export async function getUser() {
     redirect("/")
   }
 
-  const isTokenValidRes = await fetch(
+  const isTokenValidRes = await fetch(  
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/token-checker`,
     {
       headers: {
@@ -29,7 +35,6 @@ export async function getUser() {
     throw new Error("Authorization failed, please login and try again.")
   }
 
-  console.log(token)
   // u means user
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/app/info/u`,

@@ -26,28 +26,38 @@ export const THEMES = ["Company Specific", "Open Theme"] as const
 
 export const HACKATHON_NAME = "Codeblaze"
 
+// Event: Codeblaze
+// Event order should be same always - don't change
+// 1. DeCode
+// 2. Open Source Fiesta
+// 3. Blind Bytes
+// 4. The Pitchers
+// 5. Tech-maze
+// 6. The Wolf of Dalal Street
+
 export const EVENTS_DETAILS = [
   {
     name: "DeCode",
     actualName: "Ethical Hacking",
     minMember: 2,
     maxMember: 2,
-    message: "Bring your own laptop to the event",
+    message: "Prerequisite: Bring your own laptop to the event",
     link: "/decode",
   },
   {
-    name: "Tech-maze",
-    actualName: "Escape Room",
-    minMember: 2,
-    maxMember: 2,
-    message: "Intermediary knowledge on prograamming.",
-    link: "/tech-maze",
+    name: "Open Source Fiesta",
+    actualName: "Open Source Contributions",
+    message: "This is an online event",
+    minMember: 1,
+    maxMember: 1,
+    link: "/open-source-fiesta",
   },
   {
     name: "Blind Bytes",
-    actualName: "Ethical Hacking",
+    actualName: "Blind Coding",
     minMember: 2,
     maxMember: 2,
+    message: "Prerequisite: Have intermediary knowledge on programming.",
     link: "/blind-bytes",
   },
   {
@@ -58,20 +68,19 @@ export const EVENTS_DETAILS = [
     link: "/the-pitchers",
   },
   {
+    name: "Tech-maze",
+    actualName: "Escape Room",
+    minMember: 2,
+    maxMember: 2,
+    link: "/tech-maze",
+  },
+  {
     name: "The Wolf of Dalal Street",
     actualName: "Stock market trading",
     message: "This is an online event",
     minMember: 1,
     maxMember: 1,
     link: "/trading",
-  },
-  {
-    name: "Open Source Fiesta",
-    actualName: "Open Source Contributions",
-    message: "This is an online event",
-    minMember: 1,
-    maxMember: 1,
-    link: "/open-source",
   },
 ]
 

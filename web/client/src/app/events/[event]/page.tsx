@@ -1,12 +1,58 @@
-import Error404 from "@/app/events/[event]/404"
-import { EVENTS_PATHS } from "@/lib/constants"
-import { notFound } from "next/navigation"
+import { getUser } from "@/app/dashboard/page"
+import EventRegistration from "@/components/registration/event-registration"
+import { H1, H2 } from "@/components/ui/typography"
+import { EVENTS_DETAILS, EVENTS_PATHS } from "@/lib/constants"
+import { Metadata, ResolvingMetadata } from "next"
+import { cookies } from "next/headers"
+import { notFound, redirect } from "next/navigation"
 
-export default function EventPage({ params }: { params: { event: string } }) {
+interface URLProps {
+  params: { event: string }
+}
+
+export async function generateMetadata(
+  { params }: URLProps,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
   const { event } = params
 
-  if (!EVENTS_PATHS.includes(event)) {
+  const previousImages = (await parent).openGraph?.images || []
+
+  return {
+    title: event[0].toUpperCase() + event.slice(1),
+    description: `Register for ${
+      EVENTS_DETAILS[EVENTS_PATHS.indexOf(`/${event}`)].name
+    }`,
+    openGraph: {
+      images: [`${event}.jpg`, ...previousImages],
+    },
+  }
+}
+
+export default async function EventPage({
+  params,
+}: {
+  params: { event: string }
+}) {
+  // If the page is not an event from defined events, return 404
+  const { event } = params
+  if (!EVENTS_PATHS.includes(`/${event}`)) {
     notFound()
   }
-  return <div>{event}</div>
+  // This is basically index but ID sounds more cool
+  const eventId = EVENTS_PATHS.indexOf(`/${event}`)
+  const user = await getUser()
+
+  const token = cookies().get("token")?.value
+  if (!token) {
+    redirect("/")
+  }
+
+  return (
+    <main className="container my-8">
+      <H1>Register for {EVENTS_DETAILS[eventId].name}</H1>
+      <H2 className="mt-3">Welcome {user.data.name}!</H2>
+      <EventRegistration eventId={eventId} user={user.data} />
+    </main>
+  )
 }
