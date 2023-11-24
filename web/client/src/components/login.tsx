@@ -73,7 +73,7 @@ export default function Login() {
 
   return (
     <div className="max-w-3xl mx-auto">
-      <div className="mb-8">
+      <div className="mb-10">
         <p className="text-center mt-5 text-lg md:text-2xl font-bold">
           Login to Dashboard
         </p>
