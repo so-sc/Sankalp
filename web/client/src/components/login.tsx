@@ -72,8 +72,12 @@ export default function Login() {
   }
 
   return (
-    <div className="w-3/4 mx-auto">
-      <H2 className="text-center mb-4">Login to Dashboard</H2>
+    <div className="max-w-3xl mx-auto">
+      <div className="mb-10">
+        <p className="text-center mt-5 text-lg md:text-2xl font-bold">
+          Login to Dashboard
+        </p>
+      </div>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onLogin)}
@@ -128,10 +132,10 @@ export default function Login() {
       </Form>
       <div>
         <p className="text-center mt-4">
-          Yet to Register?{" "}
+          Yet to register?{" "}
           <Link
             href={`?${new URLSearchParams({ state: "register" })}`}
-            className="underline underline-offset-2"
+            className="underline underline-offset-2 hover:underline-offset-4"
           >
             Register Here
           </Link>

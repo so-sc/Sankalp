@@ -14,12 +14,12 @@ async function fetchServerStatus() {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}`, {
       headers: {
         "Content-Type": "application/json",
-      }
+      },
     })
     return await response.json()
   } catch (error) {
     console.log(error)
-    return {serverStatus: {success: false}}
+    return { serverStatus: { success: false } }
   }
 }
 
@@ -43,10 +43,12 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   return (
     <main className="container mx-auto px-8 lg:px-20 xl:px-24 py-12">
       {state === "login" ? (
-        <>
-          <H1 className="lg:text-9xl text-center mb-8">{MAIN_EVENT_NAME}</H1>
+        <div className="md:pb-10 md:pt-5 py-20">
+          <H1 className="lg:text-8xl md:text-6xl text-5xl text-center">
+            {MAIN_EVENT_NAME}
+          </H1>
           <Login />
-        </>
+        </div>
       ) : state === "register" ? (
         <Register />
       ) : (

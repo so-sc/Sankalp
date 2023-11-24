@@ -48,17 +48,19 @@ export default function Register() {
   const [step, setStep] = useState<Step>(1)
 
   return (
-    <>
+    <div className="md:pb-10 md:pt-5 py-20">
       {step === 1 && (
-        <div className="mb-8">
-          <H1 className="lg:text-9xl text-center">{MAIN_EVENT_NAME}</H1>
-          <p className="text-center text-lg md:text-2xl font-bold">
+        <div className="mb-10">
+          <H1 className="lg:text-8xl md:text-6xl text-5xl text-center">
+            {MAIN_EVENT_NAME}
+          </H1>
+          <p className="text-center mt-5 text-lg md:text-2xl font-bold">
             Register for {MAIN_EVENT_NAME}
           </p>
         </div>
       )}
 
-      <div className="w-3/4 mx-auto">
+      <div className="max-w-3xl mx-auto">
         {step === 1 ? (
           <UserRegistration
             setRegistrationData={setRegistrationData}
@@ -83,7 +85,7 @@ export default function Register() {
               Already registered?{" "}
               <Link
                 href={`?${new URLSearchParams({ state: "login" })}`}
-                className="underline underline-offset-2"
+                className="underline underline-offset-2 hover:underline-offset-4"
               >
                 Log in
               </Link>
@@ -91,6 +93,6 @@ export default function Register() {
           </div>
         )}
       </div>
-    </>
+    </div>
   )
 }
