@@ -23,12 +23,15 @@ export default function VerifyPage({ params }: Params) {
   }, [])
 
   return (
-    <main className="h-96 flex flex-col gap-4 justify-center items-center">
+    <main className="container h-96 flex flex-col gap-4 justify-center items-center">
       <H1>Welcome Captain!</H1>
       {/* <H2>Your account has been verified successfully.</H2> */}
       <H2>
         This page is under maintenance you may need this during the event.
       </H2>
+      <p className="text-lg -mt-4">
+        No need to worry now developers are working hard!
+      </p>
       <p>
         <Link href="/" className="underline">
           Click here
