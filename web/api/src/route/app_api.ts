@@ -2,7 +2,6 @@ import express from "express";
 import { Event, UserRegisterGetInfoByMail, UserRegisterByMail, UserRegistersFindUser, HackathonRegisterFindDetailsByID, UserRegisterByID, hackathonRegisterGetLeadEmail, EventRegisterFindDetailsByID, EventRegister, HackathonRegister, EventQRAdder, HackathonQRAdder } from "../db/sankalpUser";
 import { EventModels, HackathonModel, Member } from "../workers/model";
 import { qrCreator, formID } from "../workers/qrcode";
-import { encrypt } from "workers/crypt";
 import { sendCopyMail } from "../workers/mail";
 import { verifyToken } from "../workers/auth";
 const router = express.Router();

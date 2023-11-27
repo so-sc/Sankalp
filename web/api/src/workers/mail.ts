@@ -160,7 +160,6 @@ export const sendVerifyMail = async (mail: string, event: string) => {
           </html>
         `,
       });
-      console.log(result.response);
       if (result.response) {
         return { success: true, message: result.response }
       } else {

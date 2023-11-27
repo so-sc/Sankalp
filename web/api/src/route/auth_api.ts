@@ -28,11 +28,11 @@ router.post("/signup", async(req, res) => {
             if (rs.success) {
                 res.status(200).json({ success: true, id: result.id })
             } else {
-                console.log(rs.message);
+                console.log(`auth_api>signup>sendUserVerifyMail: ${rs.message}`);
                 res.status(500).json({ success: false, message: `Unable to send the mail, Check the mail id again!` })
             }
         } else {
-            console.log(result.message);
+            console.log(`auth_api>signup>UserRegister: ${result.message}`);
             res.status(500).json({ success: false, message: `Registration Failed: ${result.message}` })
         }
     } catch (e) {

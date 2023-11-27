@@ -41,7 +41,7 @@ export const createToken = async (id: string) => {
         const token = jwt.sign({ id: await encrypt(id) }, process.env.KEY, { expiresIn: '24h' });
         return { success: true, token: token }
     } catch (error) {
-        console.log(error);
+        console.log(`createToken: ${error}`);
         return { success: false, message: 'Authentication failed' };
     }
 }

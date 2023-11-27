@@ -139,7 +139,7 @@ export const UserRegisterGetInfoByMail = async (email: string) => {
         delete data.hack;
         return { success: true, data: data }
     } catch (e) {
-        console.log(`Error: ${e.message}`);
+        console.log(`db>sankalpUser>UserRegisterGetInfoByMail: ${e.message}`);
         return { success: false, message: 'Some error in fetching the data.' }
     }
 }
@@ -214,7 +214,7 @@ export const UserRegistersFindUser = async (id: String) => {
         }
         return { success: true, data: data }
     } catch (e) {
-        console.log(e);
+        console.log(`db>sankalpUser>UserRegistersFindUser: ${e}`);
         return { success: false, message: `Error: ${e.message}` }
     }
 }
@@ -356,7 +356,7 @@ export const EventRegister = async (id: string, data: any) => {
             data.event.participant.push({ info: (await User.findOne({_id: id})).email, lead: true });
             for (const member of data.event.participant) {
                 let user = await User.findOne({ email: member.info });
-                if (user.event) {
+                if (user && user.event) {
                     for (const event of user.event) {
                         const foundEvent = await Event.findOne({ _id: event });
                         if (foundEvent.event.eve===data.event.eve) {
@@ -388,7 +388,7 @@ export const EventRegister = async (id: string, data: any) => {
         }
         return { success: true, id: info._id.toString() }
     } catch (e) {
-        console.log(e);
+        console.log(`db>sankalpUser>EventRegister: ${e}`);
         if (info._id.toString()) {
             await Event.deleteOne({ _id: info._id.toString() })
         }
@@ -583,7 +583,7 @@ export const HackathonRegistersDetails = async () => {
         let data = await Hackathon.find();
         return { success: true }
     } catch (e) {
-        console.log(e);
+        console.log(`db>sankalpUser>HackathonRegistersDetails: ${e}`);
         return { success: false, message: e.message}
     }
 }
@@ -630,7 +630,7 @@ export const HackathonRegister = async (id: string, data: any) => {
         );
         return { success: true, id: info._id.toString() }
     } catch (e) {
-        console.log(e);
+        console.log(`db>sankalpUser>HackathonRegister: ${e}`);
         if (info._id.toString()) {
             await Hackathon.deleteOne({ _id: info._id.toString() })
         }
