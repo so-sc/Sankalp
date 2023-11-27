@@ -86,6 +86,10 @@ export const UserRegisterByMail = async (email: string) => {
     return await User.findOne({ email: email })
 }
 
+export const UserRegisterTotal = async () => {
+    return await User.countDocuments()
+}
+
 export const UserRegisterGender = async () => {
     return await User.aggregate([
         { $group: {
@@ -583,14 +587,23 @@ export const HackathonRegisterFindDetailsByID = async (id: string) => {
 }
 
 export const HackathonCount = async () => {
-    return { 
+    var rs: any = { 
         teams: await Hackathon.countDocuments(), 
-        participants: (await Hackathon.aggregate([
+    }
+    rs.problem = (await Hackathon.aggregate([
+        { $group: { _id: "$theme", count: { $sum: 1 } } },
+        { $project: { theme: '$_id', count: 1, _id: 0 } }
+    ]))[0]
+    try {
+        rs.participants = (await Hackathon.aggregate([
             { $project: { arr: { $size: "$member" } } },
             { $group: { _id: null, totalPart: { $sum: "$arr" } } },
             { $project: { _id: 0, count: "$totalPart" } }
-        ]))[0]["count"] || NaN
+        ]))[0]["count"]
+    } catch (e) {
+        rs.participants = null
     }
+    return rs
 }
 
 export const HackathonRegistersDetails = async () => {
