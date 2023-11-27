@@ -116,7 +116,7 @@ export const UserRegisterYear = async () => {
     return await User.aggregate([
         { $match: {
               year: { $exists: true, $ne: null }
-        } },{ $group: {
+        } }, { $group: {
             _id: "$year",
             count: { $sum: 1 }
         } }, { $project: {
@@ -405,11 +405,18 @@ export const EventQRAdder = async (id: string, qId: string) => {
 
 export const EventCount = async () => {
     try {
-        return (await Event.aggregate([
-            { $match: { isEvent: true } },
-            { $group: { _id: null, totalCount: { $sum: 1 } } }, 
-            { $project: { _id: 0, count: "$totalCount" } }
-        ]))[0]["count"]
+        return {
+            total: (await Event.aggregate([
+                { $match: { isEvent: true } },
+                { $group: { _id: null, totalCount: { $sum: 1 } } }, 
+                { $project: { _id: 0, count: "$totalCount" } }
+            ]))[0]["count"],
+            event: await Event.aggregate([
+                { $match: { isEvent: true } },
+                { $group: { _id: "$event.eve", count: { $sum: 1 } } },
+                { $project: { type: '$_id', count: 1, _id: 0 } }
+            ])
+        }
     } catch(e) {
         return null
     }
@@ -417,11 +424,18 @@ export const EventCount = async () => {
 
 export const TalkCount = async () => {
     try {
-        return (await Event.aggregate([
-            { $match: { isEvent: false } },
-            { $group: { _id: null, totalCount: { $sum: 1 } } }, 
-            { $project: { _id: 0, count: "$totalCount" } }
-        ]))[0]["count"] || null
+        return {
+            total: (await Event.aggregate([
+                { $match: { isEvent: false } },
+                { $group: { _id: null, totalCount: { $sum: 1 } } }, 
+                { $project: { _id: 0, count: "$totalCount" } }
+            ]))[0]["count"],
+            talk: await Event.aggregate([
+                { $match: { isEvent: false } },
+                { $group: { _id: "$talk", count: { $sum: 1 } } },
+                { $project: { type: '$_id', count: 1, _id: 0 } }
+            ])
+        }
     } catch(e) {
         return null
     }
