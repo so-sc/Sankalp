@@ -236,6 +236,7 @@ export const UserRegister = async (data: any) => {
         const info = await user.save();
         return { success: true, id: info._id.toString() }
     } catch (e) {
+        console.log(`db>sankalpUser>UserRegister: ${e}`)
         return { success: false, message: 'The data provided is invalid. Check the fields again.' }
     }
 }
