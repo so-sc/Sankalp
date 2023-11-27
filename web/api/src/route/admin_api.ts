@@ -1,6 +1,6 @@
 
 import express from "express";
-import { HackathonCount, TalkCount, EventCount, UserRegisterYear, UserRegisterStudent, UserRegisterGender, EventRegisters, HackathonRegistersDetails, EventRegistersVerifyTalk, EventRegistersVerifyEvent, hackathonRegistersVerify } from '../db/sankalpUser';
+import { UserRegisterTotal, HackathonCount, TalkCount, EventCount, UserRegisterYear, UserRegisterStudent, UserRegisterGender, EventRegisters, HackathonRegistersDetails, EventRegistersVerifyTalk, EventRegistersVerifyEvent, hackathonRegistersVerify, User } from '../db/sankalpUser';
 import { adminVerifyToken } from "../workers/auth";
 
 const router = express.Router();
@@ -97,6 +97,7 @@ router.get("/statistics/count", async(req, res) => {
     try {
         return res.status(500).json({ 
             success: true, 
+            users: await UserRegisterTotal(),
             gender: await UserRegisterGender(), 
             student: await UserRegisterStudent(), 
             year: await UserRegisterYear(), 
