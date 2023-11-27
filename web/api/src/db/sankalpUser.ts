@@ -91,6 +91,10 @@ export const UserRegisterGender = async () => {
         { $group: {
             _id: "$gender",
             count: { $sum: 1 }
+        } }, { $project: {
+            type: '$_id',
+            count: 1,
+            _id: 0
         } }
     ])
 }
@@ -100,6 +104,10 @@ export const UserRegisterStudent = async () => {
         { $group: {
             _id: "$student",
             count: { $sum: 1 }
+        } }, { $project: {
+            isStudent: '$_id',
+            count: 1,
+            _id: 0
         } }
     ])
 }
@@ -111,29 +119,13 @@ export const UserRegisterYear = async () => {
         } },{ $group: {
             _id: "$year",
             count: { $sum: 1 }
+        } }, { $project: {
+            yearStudent: '$_id',
+            count: 1,
+            _id: 0
         } }
     ])
 }
-
-export const UserRegisterCounts = async () => {
-    return await User.aggregate([
-        { $facet: {
-            hack: [
-                { $match: { hack: { $exists: true, $ne: null } } },
-                { $count: "count" }
-            ],
-            event: [
-                { $match: { event: { $exists: true, $ne: null } } },
-                { $count: "count" }
-            ],
-            talk: [
-                { $match: { talk: { $exists: true, $ne: null } } },
-                { $count: "count" }
-            ]
-        } }
-    ])
-}
-
 
 export const UserRegisterGetInfoByMail = async (email: string) => {
     try {
@@ -411,6 +403,30 @@ export const EventQRAdder = async (id: string, qId: string) => {
     )
 }
 
+export const EventCount = async () => {
+    try {
+        return (await Event.aggregate([
+            { $match: { isEvent: true } },
+            { $group: { _id: null, totalCount: { $sum: 1 } } }, 
+            { $project: { _id: 0, count: "$totalCount" } }
+        ]))[0]["count"]
+    } catch(e) {
+        return null
+    }
+}
+
+export const TalkCount = async () => {
+    try {
+        return (await Event.aggregate([
+            { $match: { isEvent: false } },
+            { $group: { _id: null, totalCount: { $sum: 1 } } }, 
+            { $project: { _id: 0, count: "$totalCount" } }
+        ]))[0]["count"] || null
+    } catch(e) {
+        return null
+    }
+}
+
 export const EventRegistersVerifyEvent = async (id: string) => {
     if (await Event.find({ _id: new mongo.Types.ObjectId(id), verify: true})) {
         return { success: false, message: 'Attendee is already verified.' }
@@ -551,6 +567,16 @@ export const HackathonRegisterFindDetailsByID = async (id: string) => {
 
 }
 
+export const HackathonCount = async () => {
+    return { 
+        teams: await Hackathon.countDocuments(), 
+        participants: (await Hackathon.aggregate([
+            { $project: { arr: { $size: "$member" } } },
+            { $group: { _id: null, totalPart: { $sum: "$arr" } } },
+            { $project: { _id: 0, count: "$totalPart" } }
+        ]))[0]["count"] || NaN
+    }
+}
 
 export const HackathonRegistersDetails = async () => {
     try {

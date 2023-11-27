@@ -1,6 +1,6 @@
 
 import express from "express";
-import { UserRegisterCounts, UserRegisterYear, UserRegisterStudent, UserRegisterGender, EventRegisters, HackathonRegistersDetails, EventRegistersVerifyTalk, EventRegistersVerifyEvent, hackathonRegistersVerify } from '../db/sankalpUser';
+import { HackathonCount, TalkCount, EventCount, UserRegisterYear, UserRegisterStudent, UserRegisterGender, EventRegisters, HackathonRegistersDetails, EventRegistersVerifyTalk, EventRegistersVerifyEvent, hackathonRegistersVerify } from '../db/sankalpUser';
 import { adminVerifyToken } from "../workers/auth";
 
 const router = express.Router();
@@ -89,15 +89,26 @@ router.get("/get-feedback", async(req, res) => {
     }
 })
 
+
 // ----------------- STATISTICS ----------------------
 
 // 
 router.get("/statistics/count", async(req, res) => {
     try {
-        return res.status(500).json({ success: true, gender: (await UserRegisterGender()), student: (await UserRegisterStudent()), year: (await UserRegisterYear()), hte: (await UserRegisterCounts()) })
+        return res.status(500).json({ 
+            success: true, 
+            gender: await UserRegisterGender(), 
+            student: await UserRegisterStudent(), 
+            year: await UserRegisterYear(), 
+            hack: await HackathonCount(),
+            talk: await TalkCount(),
+            event: await EventCount()
+        })
     } catch (e) {
         res.status(500).json({ success: false, message: e.message })
     }
 })
+
+
 
 export const Admin = router
