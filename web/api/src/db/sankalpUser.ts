@@ -593,7 +593,7 @@ export const HackathonCount = async () => {
     rs.problem = (await Hackathon.aggregate([
         { $group: { _id: "$theme", count: { $sum: 1 } } },
         { $project: { theme: '$_id', count: 1, _id: 0 } }
-    ]))[0]
+    ]))
     try {
         rs.participants = (await Hackathon.aggregate([
             { $project: { arr: { $size: "$member" } } },
