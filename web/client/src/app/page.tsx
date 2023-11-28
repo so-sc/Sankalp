@@ -24,7 +24,7 @@ async function fetchServerStatus() {
 }
 
 export default async function HomePage({ searchParams }: HomePageProps) {
-  const state = (searchParams.state as FormState) || "register"
+  const state = (searchParams.state as FormState) || "login"
   const serverStatus = await fetchServerStatus()
 
   if (!serverStatus.success) {
