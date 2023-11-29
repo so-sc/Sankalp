@@ -99,14 +99,6 @@ export const Theme = {
     5: 'Open'
 }
 
-export const Role = {
-    1: "Maintainer",
-    2: "Administrator",
-    3: "Marketing",
-    4: "Leads",
-    5: "Volunteers"
-}
-
 // Member
 export interface Member {
     info: string,
@@ -171,14 +163,28 @@ export interface SigninModal {
 
 // Admin Model
 
+export const Role = {
+    1: "Maintainer", // You know who check contributors
+    2: "Administrator", // Coordinator, Event Management
+    3: "Marketing & Promotion", // Marketing & Promotion
+    4: "Volunteer Head", // Volunteer head
+    5: "Leads", // Event Leads
+    6: "Volunteers" // Volunteers
+}
+
+export interface AdminPrivilege {
+    stats: [true, true, true, true, true, false],
+    email: [true, true, true, true, true, false],
+}
+
 export interface AdminSigupModel {
+    _id: string,
     username: string,
-    email: string,
     role: number,
     volunter?: {
-        password: string,
         hack: boolean,
-        events: Array<number>
+        events: Array<number>,
+        talks: Array<number>
     }
 }
 

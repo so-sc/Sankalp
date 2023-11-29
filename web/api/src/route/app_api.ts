@@ -1,13 +1,12 @@
 import express from "express";
-import { Event, UserRegisterGetInfoByMail, UserRegisterByMail, UserRegistersFindUser, HackathonRegisterFindDetailsByID, UserRegisterByID, hackathonRegisterGetLeadEmail, EventRegisterFindDetailsByID, EventRegister, HackathonRegister, EventQRAdder, HackathonQRAdder } from "../db/sankalpUser";
+import { UserRegisterGetInfoByMail, UserRegisterByMail, UserRegistersFindUser, HackathonRegisterFindDetailsByID, UserRegisterByID, hackathonRegisterGetLeadEmail, EventRegisterFindDetailsByID, EventRegister, HackathonRegister, EventQRAdder, HackathonQRAdder } from "../db/sankalpUser";
 import { EventModels, HackathonModel, Member } from "../workers/model";
 import { qrCreator, formID } from "../workers/qrcode";
 import { sendCopyMail } from "../workers/mail";
 import { verifyToken } from "../workers/auth";
 const router = express.Router();
 
-// --- Form ---
-
+/* --- Form --- */
 
 // Registration for talk or event or hackathon
 router.post("/registration/:info", verifyToken, async(req, res) => {
@@ -114,28 +113,7 @@ router.get("/info/:info", verifyToken, async(req, res) => {
 //     try {
 //         const info = Number(req.params.info);
 //         var modify;
-//         if (info === 0) {
-//             const data = req.body;
-//             if (data['add'] === true) { // Adds event
-//                 modify = await EventRegisterAddEvent(req.body.id, data['events']);
-//             } else { // Removes events
-//                 modify = await EventRegisterRemoveEvent(req.body.id, data['events']);
-//             }
-//         } else if (info === 1) {
-//             const data = req.body;
-//             if (data['add'] === true) { // Adds event
-//                 modify = await EventRegisterAddEvent(req.body.id, data['events']);
-//             } else { // Removes events
-//                 modify = await EventRegisterRemoveEvent(req.body.id, data['events']);
-//             }
-//         } else {
-//             const data = req.body;
-//             if (data['add'] === true) { // Adds member
-//                 modify = await HackathonRegisterAddMembers(req.body.id, data['member']);
-//             } else { // Remove events
-//                 modify = await HackathonRegisterRemoveMembers(req.body.id, data['email']);
-//             }
-//         }
+        
 //         if (!modify.success) {
 //             res.status(500).json({ success: false, message: 'No info on this data.' })
 //         } else {

@@ -4,10 +4,11 @@ import express from "express";
 import jwt from "jsonwebtoken";
 import { verifyToken, adminVerifyToken } from "../workers/auth";
 import { decrypt } from "../workers/crypt";
-import { UserRegisterByID, UserRegister, UserRegistersVerifyByID, UserSigninChecker } from "../db/sankalpUser"; 
-import { AdminRegister, AdminSigninChecker } from "../db/sankalpAdmin";
+import { UserRegisterByID, UserRegister, UserRegistersVerifyByID, UserSigninChecker, UserRegistersGetIDByMail } from "../db/sankalpUser"; 
+import { AdminData, AdminRegister, AdminSigninChecker } from "../db/sankalpAdmin";
 import { AdminSiginModel, AdminSigupModel, SigninModal, SignupModal } from "../workers/model";
 import { sendUserVerifyMail } from "../workers/mail";
+import { Admin } from "./admin_api";
 
 
 const router = express.Router();
@@ -113,11 +114,20 @@ router.post("/verify", verifyToken, async(req, res) => {
 // Signup admin
 router.post("/signup-admin", adminVerifyToken, async(req, res) => {
     try {
-        let id = req.body.id;
+        let adminRole = req.body.adminRole;
+        if (!(adminRole === 1 || adminRole === 2)) {
+            res.status(500).json({ success: false, message: "You do not have privilege to add roles." })
+        }
+        let rs = await UserRegistersGetIDByMail(req.body.email);
+        delete req.body.id, req.body.email, req.body.adminRole;
+        if (!rs.success) {
+            res.status(500).json({ success: false, message: rs.message })
+        }
+        req.body._id = rs.id;
         const data: AdminSigupModel = req.body;
         const result = await AdminRegister(data);
         if (result.success) {
-            res.status(200).json({ success: true, id: id })
+            res.status(200).json({ success: true })
         } else {
             res.status(500).json({ success: false, message: result.message })
         }

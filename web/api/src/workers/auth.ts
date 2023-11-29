@@ -2,7 +2,7 @@
 import jwt from "jsonwebtoken";
 import { Request, Response } from 'express';
 import { decrypt, encrypt } from "../workers/crypt";
-import { isAdmin } from "../db/sankalpAdmin";
+import { isAdmin, AdminRole } from "../db/sankalpAdmin";
 
 export const verifyToken = async (req: Request, res: Response, next: () => void) => {
     const token = req.header('Authorization')?.split(' ')[1];
@@ -24,9 +24,10 @@ export const adminVerifyToken = async (req: Request, res: Response, next: () => 
         return res.status(401).json({ success: false, message: 'Authentication failed' });
     }
     try {
-        const decoded = jwt.verify(token, process.env.KEY) as { id: string };
+        let decoded = jwt.verify(token, process.env.KEY) as { id: string };
         if (await isAdmin(await decrypt(decoded.id))) {
             req.body.id = await decrypt(decoded.id);
+            req.body.adminRole = Number(await AdminRole(await decrypt(decoded.id)));
             next();
         } else {
             return res.status(401).json({ success: false, message: 'Not an admin.' });

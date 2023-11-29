@@ -233,7 +233,7 @@ export const UserRegistersGetIDByMail = async (mail: string) => {
 
 export const UserRegister = async (data: any) => {
     try {
-        if (!(await User.find({ email: data.email }))) {
+        if (await User.findOne({ email: data.email })) {
             return { success: false, message: "The Email ID already exists." }
         }
         const user = new User(data);

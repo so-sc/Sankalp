@@ -5,14 +5,12 @@ import { AdminSigupModel, AdminSiginModel } from "../workers/model";
 import { createToken } from "../workers/auth";
 
 const adminAuth = new mongo.Schema<AdminSigupModel>({
+    _id: {
+        type: String,
+        require: true
+    },
     username: {
         type: String,
-        require: true,
-        unique: true
-    },
-    email: {
-        type: String,
-        require: true,
         unique: true
     },
     role: {
@@ -22,13 +20,14 @@ const adminAuth = new mongo.Schema<AdminSigupModel>({
     volunter: {
         type: {
             hack: Boolean,
-            events: [Number]
+            events: [Number],
+            talks: [Number]
         },
+        _id: false,
         require: false
     }
 }, {
-    collection: "admins",
-    timestamps: true,
+    collection: "admins"
 })
 
 
@@ -42,23 +41,34 @@ export const isAdmin = async (id: string) => {
     }
 }
 
-export const AdminRegister = async (data: any) => {
+export const AdminRole = async (id: string) => {
     try {
+        return (await AdminData.findOne({ _id: id }).select('role -_id'))["role"]
+    } catch(e) {
+        return null
+    }
+}
+
+export const AdminRegister = async (data: AdminSigupModel) => {
+    try {
+        if (await AdminData.findOne({ _id: data._id })) {
+            return { success: false, message: 'Admin access already exists.' }
+        }
         const admin = new AdminData(data);
         const info = await admin.save();
-        return { success: true, id: info._id }
+        return { success: true }
     } catch (e) {
+        console.log(e);
         return { success: false, message: 'Check you data.' }
     }
 }
 
 export const AdminSigninChecker = async (data: AdminSiginModel) => {
     try {
-        if ((await AdminData.findOne({ username: data.username })).volunter){
-            (await AdminData.findOne({ _id: data.id, username: data.username }))
-        }
-        var result = await AdminData.findOne({ username: data.username });
-        if (result) {
+        // if ((await AdminData.findOne({ username: data.username })).volunter){
+        //     (await AdminData.findOne({ _id: data.id, username: data.username }))
+        // }
+        if (await AdminData.findOne({ username: data.username }) && await AdminData.findOne({ username: data.username, _id: data.id })) {
             var rs = await createToken(data.id);
             if (rs.success) {
                 return { success: true, token: rs.token };
@@ -69,7 +79,7 @@ export const AdminSigninChecker = async (data: AdminSiginModel) => {
             return { success: false, message: "Attendee not found." }
         }
     } catch (e) {
-        return { success: false, message: 'The ID is invalid.' }
+        return { success: false, message: 'Something went wrong.' }
     }
 }
 
