@@ -106,7 +106,7 @@ export default function HackathonRegistration({
         })),
       ],
     }
-    
+
     try {
       const token = getCookie("token")
       setError("")
@@ -165,19 +165,33 @@ export default function HackathonRegistration({
 
   if (leader.hacks?.name) {
     return (
-      <div className="mt-5">
-        <Notification variant="info" className="flex flex-col">
-          You have already formed a team!
+      <div className="mt-8">
+        <div>
+          <div className="mb-4">
+            <p className="text-2xl font-bold text-center">
+              Team {leader?.hacks?.name}
+            </p>
+            <p className="text-center">{leader?.college}</p>
+          </div>
+          <p>
+            <span className="font-bold">{THEMES[leader?.hacks?.theme!]}</span>:{" "}
+            {leader?.hacks?.themeDesc}
+          </p>
+        </div>
+        {leader?.hacks?.member.map((member, i) => (
+          <div className="flex flex-col" key={member.email}>
+            <p className="text-center mx-auto my-4 bg-foreground/10 w-full rounded-lg py-1">
+              Team Member {i + 1}
+            </p>
+            <div className="flex flex-col gap-1">
+              <p>Name: {member.name}</p>
+              <p>Email: {member.email}</p>
+            </div>
+          </div>
+        ))}
+        <Notification variant="success" className="my-5">
+          <p>Great team! All the best folks with ❤️ SOSC</p>
         </Notification>
-        <h3 className="text-center text-xl mt-10">
-          Go back to{" "}
-          <Link
-            href="/dashboard"
-            className="underline font-bold underline-offset-2 hover:underline-offset-4 tracking-wide"
-          >
-            Dashboard
-          </Link>
-        </h3>
       </div>
     )
   }

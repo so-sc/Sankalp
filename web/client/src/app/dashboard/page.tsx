@@ -20,7 +20,7 @@ export async function getUser() {
     redirect("/")
   }
 
-  const isTokenValidRes = await fetch(  
+  const isTokenValidRes = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/token-checker`,
     {
       headers: {
@@ -68,9 +68,6 @@ export default async function DashboardPage() {
         <div className="grid md:grid-cols-2 md:pb-0 pb-10 tracking-wide mt-4 gap-10">
           <UserDashboard user={user.data} />
           <div className="pt-4 mt-8 md:pt-0 md:mt-0">
-            <p className="font-semibold border-b-2 border-foreground text-lg py-2">
-              Register for {HACKATHON_NAME} Hackathon
-            </p>
             <HackathonDashboard user={user.data} />
           </div>
         </div>

@@ -1,9 +1,15 @@
 "use client"
 
+import EventDashboard from "@/components/dashboard/event-dashboard"
 import TalksRegistration from "@/components/registration/talks-registration"
 import Notification from "@/components/ui/notification"
 import UserDisplay from "@/components/user-display"
-import { EVENTS_DETAILS, genders, numberDisplay } from "@/lib/constants"
+import {
+  EVENTS_DETAILS,
+  HACKATHON_NAME,
+  genders,
+  numberDisplay,
+} from "@/lib/constants"
 import { EventEvent, UserDashboardProfile, UserProfile } from "@/lib/types"
 import { ExternalLink } from "lucide-react"
 import Link from "next/link"
@@ -73,45 +79,31 @@ export default function UserDashboard({ user }: UserDashboardProps) {
           </p>
         </>
       )}
-      <div>
-        {/* <p className="text-center my-4">
-          <Notification variant="info">Opening Soon... Stay Tuned</Notification>
-        </p> */}
-
-        <div>
-          <p className="mt-4 mb-2 border-b-2 font-semibold border-foreground text-lg py-2">
-            Registered Events
+      {user.hacks ? (
+        <>
+          <p className="font-semibold border-b-2 border-foreground text-lg pt-4 pb-2">
+            Register for {HACKATHON_NAME} Hackathon
           </p>
-          <div className="grid gap-2 my-4">
-            {user.events?.map((event: any, index: number) => (
-              <div
-                key={index}
-                className="flex flex-col gap-2 border-b border-b-foreground/30 pb-2"
-              >
-                <Link
-                  href={`/qrcode/${event.qrId}?event=${
-                    EVENTS_DETAILS[event.event.eve - 1].name
-                  }`}
-                  target="_blank"
-                  className="flex gap-1 font-bold hover:underline underline-offset-2 items-center"
-                  title="View QR Code"
-                >
-                  {EVENTS_DETAILS[event.event.eve - 1].name} -{" "}
-                  {EVENTS_DETAILS[event.event.eve - 1].actualName}{" "}
-                  <ExternalLink className="scale-75" />
-                </Link>
-                <div className="flex flex-col gap-1">
-                  {event.event.participant.map((member: any, index: number) => (
-                    <p key={index}>
-                      Member {index + 1}: {member.name}
-                    </p>
-                  ))}
-                </div>
-              </div>
-            ))}
+
+          <div
+            key={user.hacks.name}
+            className="flex flex-col gap-2 border-b border-b-foreground/30 pb-2"
+          >
+            <p className="mt-4">You have registered for Hackathon</p>
+            <Link
+              href="/hackathon"
+              target="_blank"
+              className="flex gap-1 font-bold hover:underline underline-offset-2 items-center"
+              title="View QR Code"
+            >
+              Click here to know more!
+              <ExternalLink className="scale-75" />
+            </Link>
           </div>
-        </div>
-      </div>
+        </>
+      ) : (
+        <p></p>
+      )}
       {/* <TalksRegistration
           setRegistrationData={setCurrentData}
           registrationData={currentData}
