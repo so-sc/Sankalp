@@ -1,4 +1,5 @@
 import {
+  adminRegisterSchema,
   eventSchema,
   leaderSchema,
   loginSchema,
@@ -23,6 +24,10 @@ export type LoginUser = z.infer<typeof loginSchema>
 export type Member = z.infer<typeof memberSchema>
 export type Leader = z.infer<typeof leaderSchema>
 export type Step = 1 | 2 | 3
+
+// Admin Types
+export type AdminRegister = z.infer<typeof adminRegisterSchema>
+// ------------------
 
 export type SignUp = {
   name: string

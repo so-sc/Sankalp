@@ -85,3 +85,13 @@ export const EVENTS_DETAILS = [
 ]
 
 export const EVENTS_PATHS = EVENTS_DETAILS.map((event) => event.link)
+
+// Admin Constants
+export const ADMIN_ROLES = [
+  "Maintainer",
+  "Administrator",
+  "Marketing & Promotion",
+  "Volunteer Head",
+  "Leads",
+  "Volunteers",
+] as const

@@ -1,4 +1,5 @@
 import {
+  ADMIN_ROLES,
   MAX_MEMBERS,
   MIN_MEMBERS,
   THEMES,
@@ -85,4 +86,10 @@ export const teamSchema = z.object({
     .array(memberSchema)
     .min(MIN_MEMBERS - 1)
     .max(MAX_MEMBERS - 1),
+})
+
+export const adminRegisterSchema = z.object({
+  username: z.string().min(3).max(50),
+  email: z.string().email(),
+  role: z.enum(ADMIN_ROLES),
 })
