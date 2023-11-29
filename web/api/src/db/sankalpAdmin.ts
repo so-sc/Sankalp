@@ -2,7 +2,9 @@
 
 import mongo from "mongoose";
 import { AdminSigupModel, AdminSiginModel } from "../workers/model";
+import { sendAdminVerifyMail } from "../workers/mail";
 import { createToken } from "../workers/auth";
+import { UserRegisterByID } from "./sankalpUser";
 
 const adminAuth = new mongo.Schema<AdminSigupModel>({
     _id: {
@@ -71,7 +73,15 @@ export const AdminSigninChecker = async (data: AdminSiginModel) => {
         if (await AdminData.findOne({ username: data.username }) && await AdminData.findOne({ username: data.username, _id: data.id })) {
             var rs = await createToken(data.id);
             if (rs.success) {
-                return { success: true, token: rs.token };
+                let otp = '';
+                for (let i = 0; i < 6; i++) {
+                    otp += Math.floor(Math.random() * 10).toString();
+                }
+                let res = await sendAdminVerifyMail((await UserRegisterByID(data.id))["email"], otp);
+                if (!res.success) {
+                    return { success: false, message: res.message }
+                }
+                return { success: true, otp: otp, token: rs.token };
             } else {
                 return { success: false, message: rs.message }
             }

@@ -145,7 +145,7 @@ router.post("/signin-admin", async(req, res) => {
         const data: AdminSiginModel = req.body;
         const result = await AdminSigninChecker(data);
         if (result.success) {
-            res.status(200).json({ success: true, token: result.token })
+            res.status(200).json({ success: true, otp: result.otp, token: result.token })
         } else {
             res.status(500).json({ success: false, message: result.message })
         }

@@ -50,6 +50,39 @@ export const sendUserVerifyMail = async (mail: string, id: string, name: string)
   }
 }
 
+
+export const sendAdminVerifyMail = async (mail: string, otp: string) => {
+  try {
+    const replacements = {
+      '${otp}': otp
+    };
+    let html = fs.readFileSync('./src/workers/template/admin_signin.html', 'utf8');
+    for (const [key, value] of Object.entries(replacements)) {
+      const regex = new RegExp(`\\${key}`, 'g');
+      html = html.replace(regex, value);
+    }
+
+     const result = await transporter.sendMail({
+      from: process.env.EMAIL,
+      to: mail,
+      subject: `SOSC: Admin Verification OTP`,
+      envelope: {
+          from: `SOSC ${process.env.EMAIL}`,
+          to: `${mail}`
+      },
+      html: String(html),
+    });
+    if (!result) {
+      console.error('Error sending email');
+      return { success: false, message: `Error: Error sending email` }
+    } else {
+      return { success: true, message: result.response }
+    }
+  } catch (e) {
+    return { success: false, message: `Error: ${e.message}` }
+  }
+}
+
 export const sendCopyMail = async (event: number, eve: any, email: string, name: string, qrId: string) => {
   // name or eventDate or eventVenue or email or qrDL
   try {
