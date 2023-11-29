@@ -16,6 +16,7 @@ import { ADMIN_ROLES, MAIN_EVENT_NAME } from "@/lib/constants"
 import { adminRegisterSchema } from "@/lib/schemas"
 import { AdminRegister } from "@/lib/types"
 import { zodResolver } from "@hookform/resolvers/zod"
+import Link from "next/link"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { TbLoader2 } from "react-icons/tb"
@@ -33,7 +34,7 @@ export default function AdminRegistration() {
     },
   })
 
-  function onLogin(values: AdminRegister) {
+  function onRegister(values: AdminRegister) {
     console.log(values)
   }
 
@@ -44,13 +45,13 @@ export default function AdminRegistration() {
           {MAIN_EVENT_NAME} Admin
         </H1>
         <p className="text-center mt-5 text-lg md:text-2xl font-bold">
-          Register to Admin Panel
+          Register for Admin Panel
         </p>
       </div>
       <div className="max-w-3xl mx-auto">
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(onLogin)}
+            onSubmit={form.handleSubmit(onRegister)}
             className="flex flex-col gap-2"
           >
             <FormField
@@ -117,6 +118,7 @@ export default function AdminRegistration() {
                 </FormItem>
               )}
             />
+            {error && <p className="text-red-500 text-center mt-2">{error}</p>}
             <Button
               type="submit"
               className="mt-4 flex items-center gap-2"
@@ -127,6 +129,17 @@ export default function AdminRegistration() {
             </Button>
           </form>
         </Form>
+        <div>
+          <p className="text-center mt-4">
+            Already admin? Show it,{" "}
+            <Link
+              href="/admin/login"
+              className="underline underline-offset-2 hover:underline-offset-4"
+            >
+              Login Here
+            </Link>
+          </p>
+        </div>
       </div>
     </main>
   )

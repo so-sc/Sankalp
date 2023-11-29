@@ -93,3 +93,12 @@ export const adminRegisterSchema = z.object({
   email: z.string().email(),
   role: z.enum(ADMIN_ROLES),
 })
+
+export const adminLoginSchema = z.object({
+  username: z.string().min(3).max(50),
+  id: z.string().min(3).max(25),
+})
+
+export const otpSchema = z.object({
+  otp: z.string().max(6),
+})

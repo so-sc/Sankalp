@@ -1,9 +1,11 @@
 import {
+  adminLoginSchema,
   adminRegisterSchema,
   eventSchema,
   leaderSchema,
   loginSchema,
   memberSchema,
+  otpSchema,
   registrationSchema,
   teamSchema,
 } from "@/lib/schemas"
@@ -27,6 +29,9 @@ export type Step = 1 | 2 | 3
 
 // Admin Types
 export type AdminRegister = z.infer<typeof adminRegisterSchema>
+export type AdminLogin = z.infer<typeof adminLoginSchema>
+export type OTPType = z.infer<typeof otpSchema>
+export type AdminLoginStatus = "login" | "verify"
 // ------------------
 
 export type SignUp = {
