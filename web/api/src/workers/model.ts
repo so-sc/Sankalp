@@ -175,6 +175,9 @@ export const Role = {
 export interface AdminPrivilege {
     stats: [true, true, true, true, true, false],
     email: [true, true, true, true, true, false],
+    massEmail: [true, true, true, true, true, false],
+    allEmail: [true, true, true, false, false, false],
+    
 }
 
 export interface AdminSigupModel {

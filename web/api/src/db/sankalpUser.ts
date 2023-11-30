@@ -355,7 +355,7 @@ export const EventRegister = async (id: string, data: any) => {
     let info;
     try { 
         if (data.isEvent) { 
-            data.event.participant.map((member: Member) => { 
+            data.event.participant.map((member: Member) => {
                 if(!(User.findOne({ email: member.info }))){return { success: false, message: `The ${member.info} is not registered. Check your Email ID or Confirm whether the participant is registered in the platform.` } } 
             } );
             data.event.participant.push({ info: (await User.findOne({_id: id})).email, lead: true });
