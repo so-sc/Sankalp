@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { H1 } from "@/components/ui/typography"
+import { useToast } from "@/components/ui/use-toast"
 import { ADMIN_ROLES, MAIN_EVENT_NAME } from "@/lib/constants"
 import { adminLoginSchema, adminRegisterSchema, otpSchema } from "@/lib/schemas"
 import {
@@ -14,15 +15,21 @@ import {
   OTPType,
 } from "@/lib/types"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { setCookie } from "cookies-next"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { FormEvent, useState } from "react"
 import { useForm } from "react-hook-form"
-import { TbLoader2 } from "react-icons/tb"
+import { TbCaretLeftFilled, TbLoader2 } from "react-icons/tb"
 
 export default function AdminRegistration() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
+  const [data, setData] = useState<any>(null)
   const [currentState, setCurrentState] = useState<AdminLoginStatus>("login")
+
+  const { toast } = useToast()
+  const router = useRouter()
 
   const loginForm = useForm<AdminLogin>({
     resolver: zodResolver(adminLoginSchema),
@@ -32,9 +39,36 @@ export default function AdminRegistration() {
     },
   })
 
-  function onLogin(values: AdminLogin) {
-    console.log(values)
-    setCurrentState("verify")
+  async function onLogin(values: AdminLogin) {
+    try {
+      setIsLoading(true)
+      setError("")
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/signin-admin`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(values),
+        }
+      )
+      const data = await response.json()
+      if (data.success) {
+        setData(data)
+        toast({
+          title: "OTP has been sent to registered email ID",
+          variant: "success",
+        })
+        setCurrentState("verify")
+      } else {
+        setError(data.message)
+      }
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   function verifyOtp(e: FormEvent<HTMLFormElement>) {
@@ -48,7 +82,18 @@ export default function AdminRegistration() {
       return
     }
 
-    console.log(otp)
+    if (otp === data?.otp) {
+      toast({
+        title: "OTP verified Successfully",
+        variant: "success",
+      })
+      setCookie("admin-token", data.token, {
+        path: "/",
+      })
+      router.push("/admin/stats/count")
+    } else {
+      setError("OTP did not match try again")
+    }
   }
 
   return (
@@ -114,8 +159,15 @@ export default function AdminRegistration() {
               </Button>
             </form>
           </Form>
-        ) : (
+        ) : currentState === "verify" ? (
           <form onSubmit={verifyOtp} className="flex flex-col gap-2">
+            <Button
+              variant="outline"
+              className="w-fit flex gap-2 items-center mb-4"
+              onClick={() => setCurrentState("login")}
+            >
+              <TbCaretLeftFilled /> Back
+            </Button>
             <Input type="password" placeholder="OTP" name="otp" />
             <Button
               type="submit"
@@ -126,6 +178,11 @@ export default function AdminRegistration() {
               {isLoading && <TbLoader2 className="animate-spin" />}
             </Button>
           </form>
+        ) : (
+          <>
+            <p>You are not supposed to be here</p>
+            <Button onClick={() => setCurrentState("login")}>Go back</Button>
+          </>
         )}
         {error && <p className="text-red-500 text-center mt-2">{error}</p>}
         <div>

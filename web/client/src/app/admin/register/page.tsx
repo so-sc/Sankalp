@@ -12,11 +12,14 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { H1 } from "@/components/ui/typography"
+import { useToast } from "@/components/ui/use-toast"
 import { ADMIN_ROLES, MAIN_EVENT_NAME } from "@/lib/constants"
 import { adminRegisterSchema } from "@/lib/schemas"
 import { AdminRegister } from "@/lib/types"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { getCookie } from "cookies-next"
 import Link from "next/link"
+import { redirect } from "next/navigation"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { TbLoader2 } from "react-icons/tb"
@@ -24,6 +27,8 @@ import { TbLoader2 } from "react-icons/tb"
 export default function AdminRegistration() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
+
+  const { toast } = useToast()
 
   const form = useForm<AdminRegister>({
     resolver: zodResolver(adminRegisterSchema),
@@ -34,8 +39,46 @@ export default function AdminRegistration() {
     },
   })
 
-  function onRegister(values: AdminRegister) {
+  async function onRegister(values: AdminRegister) {
     console.log(values)
+    const finalValues = {
+      username: values.username,
+      email: values.email,
+      role: ADMIN_ROLES.indexOf(values.role) + 1,
+    }
+
+    try {
+      setIsLoading(true)
+      setError("")
+      const token = getCookie("token")
+      console.log(finalValues)
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/signup-admin`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(finalValues),
+        }
+      )
+      const data = await response.json()
+      console.log(data)
+      if (data.success) {
+        toast({
+          title: "Admin Registered Successfully",
+          variant: "success",
+        })
+        redirect("/admin/login")
+      } else {
+        setError(data.message)
+      }
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
