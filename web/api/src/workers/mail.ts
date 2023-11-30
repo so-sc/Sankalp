@@ -19,7 +19,7 @@ const transporter1 = nodemailer.createTransport({
   service: 'gmail',
   auth: {
       user: process.env.EMAIL1,
-      pass: process.env.PASS,
+      pass: process.env.PASS1,
   },
 });
 
@@ -55,7 +55,7 @@ export const sendUserVerifyMail = async (mail: string, id: string, name: string)
     }
   } catch (e) {
     try {
-      if ('550 5.4.5' in e.message) {
+      if (e.message && e.message.toString().includes('550 5.4.5')) {
         const replacements = {
           '${name}': name,
           '${id}': id,
@@ -71,7 +71,7 @@ export const sendUserVerifyMail = async (mail: string, id: string, name: string)
           to: mail,
           subject: `SOSC: You have registered to sankalp successfully`,
           envelope: {
-              from: `SOSC ${process.env.EMAIL}`,
+              from: `SOSC ${process.env.EMAIL1}`,
               to: `${mail}`
           },
           html: String(html),
@@ -120,7 +120,7 @@ export const sendAdminVerifyMail = async (mail: string, otp: string) => {
     }
   } catch (e) {
     try {
-      if ('550 5.4.5' in e.message) {
+      if (e.message && e.message.toString().includes('550 5.4.5')) {
         const replacements = {
           '${otp}': otp
         };
@@ -134,7 +134,7 @@ export const sendAdminVerifyMail = async (mail: string, otp: string) => {
           to: mail,
           subject: `SOSC: Admin Verification OTP`,
           envelope: {
-              from: `SOSC ${process.env.EMAIL}`,
+              from: `SOSC ${process.env.EMAIL1}`,
               to: `${mail}`
           },
           html: String(html),
@@ -204,7 +204,7 @@ export const sendCopyMail = async (event: number, eve: any, email: string, name:
         }
   } catch (e) {
     try {
-      if ('550 5.4.5' in e.message) {
+      if (e.message && e.message.toString().includes('550 5.4.5')) {
         var eventDate, eventVenue, eventName: string;
     if (event===2) {
       eventName = HackathonNameModel.name + " - Hackathon";
@@ -240,7 +240,7 @@ export const sendCopyMail = async (event: number, eve: any, email: string, name:
           to: email,
           subject: `SOSC: You have registered ${eventName} successfully`,
           envelope: {
-              from: `SOSC ${process.env.EMAIL}`,
+              from: `SOSC ${process.env.EMAIL1}`,
               to: `${email}`
           },
           html: String(html),

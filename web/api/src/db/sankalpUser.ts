@@ -148,6 +148,15 @@ export const UserRegisterGetInfoByMail = async (email: string) => {
     }
 }
 
+export const UserDeleteByID = async (id: string) => {
+    try {
+        await User.deleteOne({ _id: id })
+    } catch (e) {
+        console.log("EventDelete: Was unable to do");
+        
+    }
+}
+
 export const UserRegistersFindUser = async (id: String) => {
     var res: any = await User.findById(id).select("-_id -__v");
     var data: UserResponseModal = {
@@ -351,6 +360,15 @@ export const EventRegisterFindDetailsByID = async (id: String) => {
     return await Event.findById(id);
 }
 
+export const EventDeleteByID = async (id: string) => {
+    try {
+        await Event.deleteOne({ _id: id })
+    } catch (e) {
+        console.log("EventDelete: Was unable to do");
+        
+    }
+}
+
 export const EventRegister = async (id: string, data: any) => {
     let info;
     try { 
@@ -361,12 +379,14 @@ export const EventRegister = async (id: string, data: any) => {
             data.event.participant.push({ info: (await User.findOne({_id: id})).email, lead: true });
             for (const member of data.event.participant) {
                 let user = await User.findOne({ email: member.info });
-                if (user && user.event) {
+                if (user && user.event) { 
                     for (const event of user.event) {
                         const foundEvent = await Event.findOne({ _id: event });
-                        if (foundEvent.event.eve===data.event.eve) {
-                            return { success: false, message: `The ${member.info} is already in an event. Opt someone else.` };
-                        }
+                        try{
+                            if (foundEvent.event.eve===data.event.eve) {
+                                return { success: false, message: `The ${member.info} is already in an event. Opt someone else.` };
+                            }
+                        } catch (e) {}
                     }
                 }
             }
@@ -393,9 +413,12 @@ export const EventRegister = async (id: string, data: any) => {
         }
         return { success: true, id: info._id.toString() }
     } catch (e) {
-        console.log(`db>sankalpUser>EventRegister: ${e}`);
-        if (info._id.toString()) {
-            await Event.deleteOne({ _id: info._id.toString() })
+        try {
+            if (info._id.toString()) {
+                await Event.deleteOne({ _id: info._id.toString() })
+            }
+        } catch (e) {
+            return { success: false, message: 'Application failed to register. Do check the provided fields.' }
         }
         return { success: false, message: 'Application failed to register. Do check the provided fields.' }
     }

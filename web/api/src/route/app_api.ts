@@ -1,5 +1,5 @@
 import express from "express";
-import { UserRegisterGetInfoByMail, UserRegisterByMail, UserRegistersFindUser, HackathonRegisterFindDetailsByID, UserRegisterByID, hackathonRegisterGetLeadEmail, EventRegisterFindDetailsByID, EventRegister, HackathonRegister, EventQRAdder, HackathonQRAdder } from "../db/sankalpUser";
+import { EventDeleteByID, UserRegisterGetInfoByMail, UserRegisterByMail, UserRegistersFindUser, HackathonRegisterFindDetailsByID, UserRegisterByID, hackathonRegisterGetLeadEmail, EventRegisterFindDetailsByID, EventRegister, HackathonRegister, EventQRAdder, HackathonQRAdder } from "../db/sankalpUser";
 import { EventModels, HackathonModel, Member } from "../workers/model";
 import { qrCreator, formID } from "../workers/qrcode";
 import { sendCopyMail } from "../workers/mail";
@@ -31,6 +31,7 @@ router.post("/registration/:info", verifyToken, async(req, res) => {
         }
         var dt = await qrCreator(register?.id);
         if (!dt.success) {
+            await EventDeleteByID(register?.id)
             res.status(500).json({ success: false, message: dt.message })
             return
         }
@@ -38,6 +39,7 @@ router.post("/registration/:info", verifyToken, async(req, res) => {
         const qr: any =  {'e': 0, 't': 1, 'h': 2 };
         const mail = (info==='e' || info == 't')? (await UserRegisterByID(id))?.email : await hackathonRegisterGetLeadEmail(register.id);
         if (!mail) {
+            await EventDeleteByID(register?.id)
             res.status(500).json({ success: false, message: "Issue with fetching the Email ID." })
             return
         }
@@ -52,12 +54,17 @@ router.post("/registration/:info", verifyToken, async(req, res) => {
         }
         var rs = await sendCopyMail(qr[info], (info==='h')? null: data.event.eve, mail, name, dt.id);
         if (!rs['success']===true) {
-            console.log("Mailed failed");
-            res.status(500).json({ success: false, message: rs.message });
+            console.log("Mailed failed\nError:"+rs["message"]);
+            await EventDeleteByID(register?.id)
+            res.status(500).json({ success: false, message: "Failed to send email or had some issue" });
             return
         }
         res.status(200).json({ success: true, dl: dt.link })
     } catch (e) {
+        console.log(e);
+        try{
+            await EventDeleteByID(register?.id)
+        } catch (e) {}
         res.status(500).json({ success: false, message: "Application faced some error. Check your data. Contact Maintainers." })
     }
 });

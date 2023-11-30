@@ -4,7 +4,7 @@ import express from "express";
 import jwt from "jsonwebtoken";
 import { verifyToken, adminVerifyToken } from "../workers/auth";
 import { decrypt } from "../workers/crypt";
-import { UserRegisterByID, UserRegister, UserRegistersVerifyByID, UserSigninChecker, UserRegistersGetIDByMail } from "../db/sankalpUser"; 
+import { UserDeleteByID, UserRegisterByID, UserRegister, UserRegistersVerifyByID, UserSigninChecker, UserRegistersGetIDByMail } from "../db/sankalpUser"; 
 import { AdminData, AdminRegister, AdminSigninChecker } from "../db/sankalpAdmin";
 import { AdminSiginModel, AdminSigupModel, SigninModal, SignupModal } from "../workers/model";
 import { sendUserVerifyMail } from "../workers/mail";
@@ -29,10 +29,12 @@ router.post("/signup", async(req, res) => {
             if (rs.success) {
                 res.status(200).json({ success: true, id: result.id })
             } else {
+                await UserDeleteByID(result.id);
                 console.log(`auth_api>signup>sendUserVerifyMail: ${rs.message}`);
                 res.status(500).json({ success: false, message: `Unable to send the mail, Check the mail id again!` })
             }
         } else {
+            await UserDeleteByID(result.id);
             console.log(`auth_api>signup>UserRegister: ${result.message}`);
             res.status(500).json({ success: false, message: `Registration Failed: ${result.message}` })
         }
