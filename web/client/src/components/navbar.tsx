@@ -4,13 +4,12 @@ import { ModeToggle } from "@/components/ui/mode-toggle"
 import { MAIN_EVENT_NAME, MAIN_EVENT_WEBSITE } from "@/lib/constants"
 import { useUser } from "@/providers/user-provider"
 import { CookieValueTypes, getCookie } from "cookies-next"
-import { ExternalLink } from "lucide-react"
+import { ExternalLink, Menu, X } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useEffect, useState } from "react"
 import { FaBars } from "react-icons/fa"
 import { TbX } from "react-icons/tb"
-import { Menu, X } from "lucide-react"
 
 export default function Navbar() {
   const [token, setToken] = useState<CookieValueTypes | null>(null)
@@ -65,7 +64,10 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              <Link href="/" className="hover:underline underline-offset-2">
+              <Link
+                href="/?state=register"
+                className="hover:underline underline-offset-2"
+              >
                 Register
               </Link>
               <Link
