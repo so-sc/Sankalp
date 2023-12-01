@@ -8,7 +8,7 @@ export const EventNameModel: NameModel = {
     1: {
         name: "DeCode: Capture the flag",
         date: "9th December 2023 at 2:00PM to 3:00PM",
-        venue: "Digital Library First Floor"
+        venue: "Digital Library - First Floor"
     },
     2: {
         name: "Open Source Fiesta",
@@ -17,17 +17,17 @@ export const EventNameModel: NameModel = {
     },
     3: {
         name: "BlindByte: Blind coding",
-        venue: "Women Empowerment lab",
-        date: "9th December 2023 at 11:30AM to 01:00PM"
+        venue: "CSE Lab 7",
+        date: "9th December 2023 at 10:00AM to 03:00PM"
     },
     4: {
         name: "The Pitchers",
-        date: "Seminar Hall",
+        date: "CoE Board Room - Ground floor",
         venue: "8th December 2023 at 9.30 AM to 10.30AM"
     },
     5: {
         name: "TechMaze: Escape Room",
-        venue: "MBA Classrooms",
+        venue: "MBA Classrooms (3)",
         date: "8th December 2023 at 11:30AM to 01:00PM"
     },
     6: {
@@ -41,7 +41,7 @@ export const TalkNameModel: NameModel = {
     1: {
         name: "",
         date: "",
-        venue: ""
+        venue: "Seminar Hall - First Floor"
     },
     2: {
         name: "",

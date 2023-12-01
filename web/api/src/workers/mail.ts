@@ -15,14 +15,6 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-const transporter1 = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-      user: process.env.EMAIL1,
-      pass: process.env.PASS1,
-  },
-});
-
 
 export const sendUserVerifyMail = async (mail: string, id: string, name: string) => {
   try {
@@ -54,38 +46,6 @@ export const sendUserVerifyMail = async (mail: string, id: string, name: string)
       return { success: true, message: result.response }
     }
   } catch (e) {
-    try {
-      if (e.message && e.message.toString().includes('550 5.4.5')) {
-        const replacements = {
-          '${name}': name,
-          '${id}': id,
-          '${verify}': `${process.env.DOMAIN}/verify`
-        };
-        let html = fs.readFileSync('./src/workers/template/user_registration.html', 'utf8');
-        for (const [key, value] of Object.entries(replacements)) {
-          const regex = new RegExp(`\\${key}`, 'g');
-          html = html.replace(regex, value);
-        }  
-        const result = await transporter1.sendMail({
-          from: process.env.EMAIL1,
-          to: mail,
-          subject: `SOSC: You have registered to sankalp successfully`,
-          envelope: {
-              from: `SOSC ${process.env.EMAIL1}`,
-              to: `${mail}`
-          },
-          html: String(html),
-        });
-        if (!result) {
-          console.error('Error sending email');
-          return { success: false, message: `Error: Error sending email` }
-        } else {
-          return { success: true, message: result.response }
-        }
-      }
-    } catch (e) {
-      return { success: false, message: `Error: ${e.message}` }
-    }
     return { success: false, message: `Error: ${e.message}` }
   }
 }
@@ -119,36 +79,6 @@ export const sendAdminVerifyMail = async (mail: string, otp: string) => {
       return { success: true, message: result.response }
     }
   } catch (e) {
-    try {
-      if (e.message && e.message.toString().includes('550 5.4.5')) {
-        const replacements = {
-          '${otp}': otp
-        };
-        let html = fs.readFileSync('./src/workers/template/admin_signin.html', 'utf8');
-        for (const [key, value] of Object.entries(replacements)) {
-          const regex = new RegExp(`\\${key}`, 'g');
-          html = html.replace(regex, value);
-        }  
-        const result = await transporter1.sendMail({
-          from: process.env.EMAIL1,
-          to: mail,
-          subject: `SOSC: Admin Verification OTP`,
-          envelope: {
-              from: `SOSC ${process.env.EMAIL1}`,
-              to: `${mail}`
-          },
-          html: String(html),
-        });
-        if (!result) {
-          console.error('Error sending email');
-          return { success: false, message: `Error: Error sending email` }
-        } else {
-          return { success: true, message: result.response }
-        }
-      }
-    } catch (e) {
-      return { success: false, message: `Error: ${e.message}` }
-    }
     return { success: false, message: `Error: ${e.message}` }
   }
 }
@@ -203,58 +133,6 @@ export const sendCopyMail = async (event: number, eve: any, email: string, name:
           return { success: true, message: result.response }
         }
   } catch (e) {
-    try {
-      if (e.message && e.message.toString().includes('550 5.4.5')) {
-        var eventDate, eventVenue, eventName: string;
-    if (event===2) {
-      eventName = HackathonNameModel.name + " - Hackathon";
-      eventDate = HackathonNameModel.date;
-      eventVenue = HackathonNameModel.venue;
-    } else if (event===0) { 
-        eventName = EventNameModel[`${eve}`].name;
-        eventDate = EventNameModel[`${eve}`].date;
-        eventVenue = EventNameModel[`${eve}`].venue;
-    } else {
-        for (const et of eve) {
-          eventName = eventName+", "+TalkNameModel[`${et}`].name;
-          eventDate = eventDate+", "+TalkNameModel[`${et}`].date;
-          eventVenue = eventVenue+", "+TalkNameModel[`${et}`].venue;
-        }
-    }
-    var html = `${fs.readFileSync('./src/workers/template/event_registration.html', 'utf8')}`;
-    var qrDL: string = `${qrId}`;
-    const replacements = {
-      '${name}': name,
-      '${email}': email,
-      '${eventName}': eventName,
-      '${eventDate}': eventDate,
-      '${eventVenue}': eventVenue,
-      '${qrDL}': `${qrDL}`
-    };
-    for (const [key, value] of Object.entries(replacements)) {
-          const regex = new RegExp(`\\${key}`, 'g');
-          html = html.replace(regex, value);
-        }  
-        const result = await transporter1.sendMail({
-          from: process.env.EMAIL1,
-          to: email,
-          subject: `SOSC: You have registered ${eventName} successfully`,
-          envelope: {
-              from: `SOSC ${process.env.EMAIL1}`,
-              to: `${email}`
-          },
-          html: String(html),
-        });
-        if (!result) {
-          console.error('Error sending email');
-          return { success: false, message: `Error: Error sending email` }
-        } else {
-          return { success: true, message: result.response }
-        }
-      }
-    } catch (e) {
-      return { success: false, message: `Error: ${e.message}` }
-    }
     return { success: false, message: `Error: ${e.message}` }
   }
 }
