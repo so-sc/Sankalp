@@ -15,10 +15,10 @@ import {
   OTPType,
 } from "@/lib/types"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { setCookie } from "cookies-next"
+import { CookieValueTypes, getCookie, setCookie } from "cookies-next"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { FormEvent, useState } from "react"
+import { FormEvent, useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { TbCaretLeftFilled, TbLoader2 } from "react-icons/tb"
 
@@ -38,6 +38,28 @@ export default function AdminRegistration() {
       id: "",
     },
   })
+
+  async function isTokenValid(token: CookieValueTypes) {
+    const isTokenValidRes = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/token-checker`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+
+    const result = await isTokenValidRes.json()
+
+    if (result.success) {
+      router.push("/admin/stats/count")
+    }
+  }
+
+  useEffect(() => {
+    const token = getCookie("admin-token")
+    isTokenValid(token)
+  }, [])
 
   async function onLogin(values: AdminLogin) {
     try {
@@ -88,7 +110,7 @@ export default function AdminRegistration() {
         variant: "success",
       })
       setCookie("admin-token", data.token, {
-        path: "/",
+        path: "/admin",
       })
       router.push("/admin/stats/count")
     } else {
