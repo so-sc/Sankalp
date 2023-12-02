@@ -1,5 +1,6 @@
 "use client"
 
+import Notification from "@/components/ui/notification"
 import { H1, H3 } from "@/components/ui/typography"
 import { deleteCookie } from "cookies-next"
 import Link from "next/link"
@@ -35,6 +36,18 @@ export default function ErrorPage({
         </Link>{" "}
         to go back to Login page
       </p>
+      <div className="w-1/2 mx-auto my-4">
+        <Notification variant="info" className="flex flex-col">
+          <p>
+            Developer note: If you are seeing this try hard refresh{" "}
+            <span className="bg-foreground/20 px-2 py-0.5">
+              Ctrl + Shift + R
+            </span>{" "}
+            and login. <br />
+            It should fix (hopefully)
+          </p>
+        </Notification>
+      </div>
     </div>
   )
 }
