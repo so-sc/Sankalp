@@ -137,32 +137,4 @@ router.get("/info/:info", verifyToken, async(req, res) => {
 //     }
 // })
 
-/*  */
-// import fs from "fs";
-// import xlsx from 'xlsx';
-// router.get("/excel/", adminVerifyToken, async(req, res) => {
-//     try {
-//         const dataFromMongo = await HackathonRegisterAll();
-//         const wb = xlsx.utils.book_new();
-//         const ws = xlsx.utils.json_to_sheet(dataFromMongo);
-//         xlsx.utils.book_append_sheet(wb, ws, 'HackathonData');
-    
-//         const filePath = './data.xlsx'; // File path to save the Excel file
-    
-//         xlsx.writeFile(wb, filePath); // Write Excel file to the server
-    
-//         res.download(filePath, 'HackathonData.xlsx', (err) => {
-//           if (err) {
-//             console.error('Error downloading file:', err);
-//           } else {
-//             // Delete the file after download is complete
-//             fs.unlinkSync(filePath);
-//             console.log('File deleted successfully');
-//           }
-//         });
-//     } catch (error) {
-//         console.error('Error generating Excel:', error);
-//         res.status(500).send('Error generating Excel');
-//     }
-// });
 export const App = router

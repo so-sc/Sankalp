@@ -1,6 +1,6 @@
 
 interface NameModel {
-    [key: string]: { name: string, date: string; venue: string };
+    [key: string]: { name: string, date: string; venue: string, max: any };
   }
   
 // Keys start from 1 guys sadly deveesh believes this is an array. May key value pair be with you..
@@ -8,32 +8,38 @@ export const EventNameModel: NameModel = {
     1: {
         name: "DeCode: Capture the flag",
         date: "9th December 2023 at 2:00PM to 3:00PM",
-        venue: "Digital Library - First Floor"
+        venue: "Digital Library - First Floor",
+        max: 18
     },
     2: {
         name: "Open Source Fiesta",
         venue: "Online (Github)",
-        date: "6th to 8th December 2023"
+        date: "6th to 8th December 2023",
+        max: 100
     },
     3: {
         name: "BlindByte: Blind coding",
         venue: "CSE Lab 7",
-        date: "9th December 2023 at 10:00AM to 03:00PM"
+        date: "9th December 2023 at 10:00AM to 03:00PM",
+        max: 100
     },
     4: {
         name: "The Pitchers",
         date: "CoE Board Room - Ground floor",
-        venue: "8th December 2023 at 9.30 AM to 10.30AM"
+        venue: "8th December 2023 at 9.30 AM to 10.30AM",
+        max: 100
     },
     5: {
         name: "TechMaze: Escape Room",
         venue: "MBA Classrooms (3)",
-        date: "8th December 2023 at 11:30AM to 01:00PM"
+        date: "8th December 2023 at 11:30AM to 01:00PM",
+        max: 55
     },
     6: {
         name: "The Wolf of Wall Street",
         venue: "Online (StockGro)",
-        date: "8th December 2023 at 09:00AM to 03:30PM"
+        date: "8th December 2023 at 09:00AM to 03:30PM",
+        max: 100
     },
 }
 
@@ -41,39 +47,46 @@ export const TalkNameModel: NameModel = {
     1: {
         name: "",
         date: "",
-        venue: "Seminar Hall - First Floor"
+        venue: "Seminar Hall - First Floor",
+        max: [150, 500]
     },
     2: {
         name: "",
         date: "",
-        venue: ""
+        venue: "",
+        max: 100
     },
     3: {
         name: "",
         date: "",
-        venue: ""
+        venue: "",
+        max: 100
     },
     4: {
         name: "",
         date: "",
-        venue: ""
+        venue: "",
+        max: 100
     },
     5: {
         name: "",
         date: "",
-        venue: ""
+        venue: "",
+        max: 100
     },
     6: {
         name: "",
         date: "",
-        venue: ""
+        venue: "",
+        max: 100
     },
 }
 
 export const HackathonNameModel = {
     name: "Codeblaze",
     date: "8th December 2023",
-    venue: "Sahyadri College of Engineering & Management"
+    venue: "Sahyadri College of Engineering & Management",
+    max: 325
 }
 
 export const YearModel = {

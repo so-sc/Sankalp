@@ -1,7 +1,7 @@
 //
 
 import mongo from "mongoose";
-import { EventModels, HackathonModel, Member, SigninModal, SignupModal, Talk, UserResponseModal, gender } from "../workers/model";
+import { EventNameModel, TalkNameModel, HackathonNameModel, EventModels, HackathonModel, Member, SigninModal, SignupModal, Talk, UserResponseModal, gender } from "../workers/model";
 import { createToken } from "../workers/auth";
 
 
@@ -373,6 +373,12 @@ export const EventRegister = async (id: string, data: any) => {
     let info;
     try { 
         if (data.isEvent) { 
+            if ((await Event.aggregate([
+                { $match: { isEvent: {$exists: true, $eq: true}, 'event.eve': data.eve } },
+                { $count: "count" }
+            ]))[0]["count"] === Number(EventNameModel[data.eve]['max'])) {
+                return { success: false, message: `The event registration of ${EventNameModel[data.eve]['name']} is closed.` }
+            }
             data.event.participant.map((member: Member) => {
                 if(!(User.findOne({ email: member.info }))){return { success: false, message: `The ${member.info} is not registered. Check your Email ID or Confirm whether the participant is registered in the platform.` } } 
             } );
@@ -396,7 +402,16 @@ export const EventRegister = async (id: string, data: any) => {
                 participant.info = rs.id;
             }
             data.verify = false; 
-        } 
+        } else {
+            for (const talk of data.talk) {
+                if ((await Event.aggregate([
+                    { $match: { isEvent: {$exists: true, $eq: false}, 'talk': { $elemMatch: { id: talk.id } } } },
+                    { $count: "count" }
+                ]))[0]["count"] === Number(TalkNameModel[data.eve]['max'][0])) {
+                    return { success: false, message: `The talk registration of ${TalkNameModel[data.eve]['name']} is closed.` }
+                }
+            }
+        }
         const event = new Event(data);
         info = await event.save();
         if (data.isEvent) {
@@ -609,13 +624,12 @@ export const HackathonRegisterFindDetailsByID = async (id: string) => {
 
 }
 
-// export const HackathonRegisterAll = async () => {
-//     await Hackathon.aggregate([
-//         {  }
-//     ])
-
-//     return
-// }
+export const HackathonRegisterAll = async () => {
+    let rs = await Hackathon.aggregate([
+        { $group: { _id: "$theme" } }
+    ])
+    return rs
+}
 
 export const HackathonCount = async () => {
     var rs: any = { 
@@ -673,6 +687,12 @@ export const HackathonRegister = async (id: string, data: any) => {
             member.info = rs.id;
         }
         data.member.push({ info: id, lead: true })
+        if ((await Hackathon.aggregate([
+            { $project: { size: { $size: '$member' } } },
+            { $group: { _id: null, size: { $sum: '$size' } } }
+        ]))[0]['size']+data.member.length() > HackathonNameModel['max']) {
+            return { success: false, message: `The hackathon registration of ${HackathonNameModel['name']} is closed.` }
+        }
         const hackathon = new Hackathon(data);
         info = await hackathon.save();
         var ids = Array()
