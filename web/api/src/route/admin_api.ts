@@ -20,14 +20,14 @@ router.get("/verify/:info", adminVerifyToken, async(req, res) => {
         } else if (info==='h') {
             result = await hackathonRegistersVerify(data.eventID);
         } else {
-            res.status(500).json({ success: false, message: "Check your info params." })
+            return res.status(500).json({ success: false, message: "Check your info params." })
         }
         if (!result.success) {
-            res.status(500).json({ success: false, message: result.message })
+            return res.status(500).json({ success: false, message: result.message })
         }
         return res.status(500).json({ success: true })
     } catch (e) {
-        res.status(500).json({ success: false, message: e.message })
+        return res.status(500).json({ success: false, message: e.message })
     }
 });
 
@@ -44,7 +44,7 @@ router.get("/get-event/:info", adminVerifyToken, async(req, res) => {
         }
         return res.status(500).json({ success: true, result: event })
     } catch (e) {
-        res.status(500).json({ success: false, message: e.message })
+        return res.status(500).json({ success: false, message: e.message })
     }
 })
 
@@ -54,7 +54,7 @@ router.get("/get-hackathon", adminVerifyToken, async(req, res) => {
         var hackathon = await HackathonRegistersDetails();
         return res.status(500).json({ success: true, result: hackathon })
     } catch (e) {
-        res.status(500).json({ success: false, message: e.message })
+        return res.status(500).json({ success: false, message: e.message })
     }
 })
 
@@ -66,26 +66,26 @@ router.post("/feedback", async(req, res) => {
     try {
         var feedback = req.body;
 
-        res.status(500).json({})
+        return res.status(500).json({})
     } catch (e) {
-        res.status(500).json({ success: false, message: e.message })
+        return res.status(500).json({ success: false, message: e.message })
     }
 })
 
 router.get("/get-feedbacks", async(req, res) => {
     try {
-        res.status(500).json({})
+        return res.status(500).json({})
     } catch (e) {
-        res.status(500).json({ success: false, message: e.message })
+        return res.status(500).json({ success: false, message: e.message })
     }
 })
 
 router.get("/get-feedback", async(req, res) => {
     try {
 
-        res.status(500).json({})
+        return res.status(500).json({})
     } catch (e) {
-        res.status(500).json({ success: false, message: e.message })
+        return res.status(500).json({ success: false, message: e.message })
     }
 })
 
@@ -106,7 +106,7 @@ router.get("/statistics/count", async(req, res) => {
             event: await EventCount()
         })
     } catch (e) {
-        res.status(500).json({ success: false, message: e.message })
+        return res.status(500).json({ success: false, message: e.message })
     }
 })
 

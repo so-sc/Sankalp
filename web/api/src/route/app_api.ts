@@ -1,9 +1,9 @@
-import express from "express";
+import express from "express";//HackathonRegisterAll
 import { EventDeleteByID, UserRegisterGetInfoByMail, UserRegisterByMail, UserRegistersFindUser, HackathonRegisterFindDetailsByID, UserRegisterByID, hackathonRegisterGetLeadEmail, EventRegisterFindDetailsByID, EventRegister, HackathonRegister, EventQRAdder, HackathonQRAdder } from "../db/sankalpUser";
 import { EventModels, HackathonModel, Member } from "../workers/model";
 import { qrCreator, formID } from "../workers/qrcode";
 import { sendCopyMail } from "../workers/mail";
-import { verifyToken } from "../workers/auth";
+import { adminVerifyToken, verifyToken } from "../workers/auth";
 const router = express.Router();
 
 /* --- Form --- */
@@ -60,12 +60,14 @@ router.post("/registration/:info", verifyToken, async(req, res) => {
             return
         }
         res.status(200).json({ success: true, dl: dt.link })
+        return
     } catch (e) {
         console.log(e);
         try{
             await EventDeleteByID(register?.id)
         } catch (e) {}
         res.status(500).json({ success: false, message: "Application faced some error. Check your data. Contact Maintainers." })
+        return
     }
 });
 
@@ -80,9 +82,11 @@ router.get("/form-info-helper/:info", async(req, res) => {
             result = await UserRegisterGetInfoByMail(data.email);
         };
         res.status(200).json(result);
+        return
     } catch (e) {
         console.log(e);
         res.status(500).json({ success: false, message: e.message })
+        return
     }
 });
 
@@ -110,8 +114,10 @@ router.get("/info/:info", verifyToken, async(req, res) => {
             return
         }
         res.status(200).json(register)
+        return
     } catch (e) {
         res.status(500).json({ success: false, message: e.message })
+        return
     }
 })
 
@@ -131,4 +137,32 @@ router.get("/info/:info", verifyToken, async(req, res) => {
 //     }
 // })
 
+/*  */
+// import fs from "fs";
+// import xlsx from 'xlsx';
+// router.get("/excel/", adminVerifyToken, async(req, res) => {
+//     try {
+//         const dataFromMongo = await HackathonRegisterAll();
+//         const wb = xlsx.utils.book_new();
+//         const ws = xlsx.utils.json_to_sheet(dataFromMongo);
+//         xlsx.utils.book_append_sheet(wb, ws, 'HackathonData');
+    
+//         const filePath = './data.xlsx'; // File path to save the Excel file
+    
+//         xlsx.writeFile(wb, filePath); // Write Excel file to the server
+    
+//         res.download(filePath, 'HackathonData.xlsx', (err) => {
+//           if (err) {
+//             console.error('Error downloading file:', err);
+//           } else {
+//             // Delete the file after download is complete
+//             fs.unlinkSync(filePath);
+//             console.log('File deleted successfully');
+//           }
+//         });
+//     } catch (error) {
+//         console.error('Error generating Excel:', error);
+//         res.status(500).send('Error generating Excel');
+//     }
+// });
 export const App = router

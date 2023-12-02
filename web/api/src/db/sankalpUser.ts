@@ -609,6 +609,14 @@ export const HackathonRegisterFindDetailsByID = async (id: string) => {
 
 }
 
+// export const HackathonRegisterAll = async () => {
+//     await Hackathon.aggregate([
+//         {  }
+//     ])
+
+//     return
+// }
+
 export const HackathonCount = async () => {
     var rs: any = { 
         teams: await Hackathon.countDocuments(), 
