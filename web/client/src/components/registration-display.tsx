@@ -138,9 +138,10 @@ export default function RegistrationDisplay({
       {error && <p className="text-red-500 text-center mt-2">{error}</p>}
       <Notification variant="info" className="mt-2">
         <p>
-          A verification mail with a unique ID will be sent to your registered
-          mail id. This unique Id will be your password to the dashboard. Double
-          check your mail, and make sure to check your spam folder too!
+          After clicking this button, a verification mail with a unique ID will
+          be sent to your registered mail id. This unique Id will be your
+          password to the dashboard. Double check your mail, and make sure to
+          check your spam folder too!
         </p>
       </Notification>
       <Button
@@ -148,7 +149,7 @@ export default function RegistrationDisplay({
         disabled={isLoading}
         onClick={handleRegistration}
       >
-        Confirm Registration
+        Register Now!
         {isLoading && <TbLoader2 className="animate-spin" />}
       </Button>
     </main>
