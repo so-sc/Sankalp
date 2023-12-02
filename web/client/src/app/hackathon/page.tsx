@@ -26,7 +26,7 @@ export default async function HackathonPage() {
   return (
     <main className="container max-w-5xl mx-auto px-8 lg:px-20 xl:px-24 py-12">
       <h2 className="mt-3 tracking-wide text-3xl font-bold">
-        Welcome, Leader {user.data.name}!
+        Welcome, {user.data.name}!
       </h2>
       <h3 className="text-2xl mt-4 font-light">
         Register your Team for the Hackathon
