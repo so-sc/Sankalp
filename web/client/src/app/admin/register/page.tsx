@@ -50,7 +50,7 @@ export default function AdminRegistration() {
     try {
       setIsLoading(true)
       setError("")
-      const token = getCookie("token")
+      const token = getCookie("admin-token")
       console.log(finalValues)
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/signup-admin`,
