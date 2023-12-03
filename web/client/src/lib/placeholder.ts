@@ -49,7 +49,7 @@ export const hackathonTeam: HackathonTeam = {
   ],
 }
 
-export const HackathonAdminResponse: HackathonAdminApiResult[] = [
+export const hackathonAdminResponse: HackathonAdminApiResult[] = [
   {
     _id: "6532509a88142c86c59c029f",
     TmName: "NightHawks",

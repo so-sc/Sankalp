@@ -28,6 +28,7 @@ export async function isAdminLoggedIn() {
 }
 
 import { Payment, columns } from "@/components/tables/hackathon-columns"
+import { hackathonAdminResponse } from "@/lib/placeholder"
 
 async function getData(): Promise<Payment[]> {
   // Fetch data from your API here.
@@ -58,7 +59,7 @@ export default async function HackathonTeamsPage() {
         <H1>Hackathon Teams</H1>
         <H2 className="mt-2 font-normal"> Registered for {MAIN_EVENT_NAME}</H2>
       </div>
-      <DataTable columns={columns} data={data} />
+      <DataTable columns={columns} data={hackathonAdminResponse} />
     </main>
   )
 }
