@@ -172,7 +172,6 @@ router.post("/hackathon-mail-leader", async(req, res) => {
             return res.status(500).json({ success: false, message: result.message })
         }
         return res.status(200).json({ success: true, result: result.data })
-        return res.status(200).json({ success: true })
     } catch (e) {
         return res.status(500).json({ success: false, message: e.message })
     }
