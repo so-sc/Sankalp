@@ -86,6 +86,12 @@ export const UserRegisterForHackNEvent = async (id: String) => {
     return await User.findById(id).select('-_id -hack -talk -event -__v');
 }
 
+export const UserRegisterGetDetails = async (id: String) => {
+    let rs = await User.aggregate([
+
+    ])
+}
+
 export const UserRegisterByMail = async (email: string) => {
     return await User.findOne({ email: email })
 }
@@ -467,18 +473,45 @@ export const EventRegisterTeamScrapper = async (data: any) => {
 }
 
 export const EventRegisterAll = async () => {
-    let rs: EventResponseModel[] = (await Event.aggregate([
-        { $group: { _id: "$event.eve", data: { $push: { verify: '$verify', qrId: '$qrId', participant: '$event.participant' } } } },
-        { $project: { _id: 0, theme: '$_id', data: "$data" } }
-    ]))
-    for (const rp of rs) {
-        var res = await EventRegisterTeamScrapper(rp.data);
+    try{
+        let rs: EventResponseModel[] = (await Event.aggregate([
+            { $match: { isEvent: true } },
+            { $group: { _id: "$event.eve", data: { $push: { verify: '$verify', qrId: '$qrId', participant: '$event.participant' } } } },
+            { $project: { _id: 0, theme: '$_id', data: "$data" } }
+        ]))
+        for (const rp of rs) {
+            var res = await EventRegisterTeamScrapper(rp.data);
+            if (!res.success) {
+                return { success: false, message: res.messsage }
+            }
+            rp.data = res.data;
+        }
+        return { success: true, data: rs }
+    } catch (e) {
+        console.log(`db>sankalpUser>EventRegisterAll: ${e.message}`);
+        return { success: false, message: 'Something went wrong' }
+    }
+}
+
+
+export const EventRegisterOfEvent = async (eve: number) => {
+    try {
+        let rs = (await Event.aggregate([
+            { $match: { isEvent: true, 'event.eve': eve } },
+            { $group: { _id: null, data: { $push: { verify: '$verify', qrId: '$qrId', participant: '$event.participant' } } } },
+            { $project: { _id: 0, data: "$data" } }
+        ]))[0]
+        console.log(rs);
+        var res = await EventRegisterTeamScrapper(rs.data);
         if (!res.success) {
             return { success: false, message: res.messsage }
         }
-        rp.data = res.data;
+        rs.data = res.data;
+        return { success: false, data: rs }
+    } catch (e) {
+        console.log(`db>sankalpUser>EventRegisterOfEvent: ${e.message}`);
+        return { success: false, message: 'Something went wrong' }
     }
-    return rs
 }
 
 export const EventCount = async () => {
@@ -675,18 +708,23 @@ export const HackathonRegisterTeamScrapper = async (data: any) => {
 }
 
 export const HackathonRegisterAll = async () => {
-    let rs: HackathonResponseModel[] = (await Hackathon.aggregate([
-        { $group: { _id: "$theme", data: { $push: { name: '$name', themeDesc: '$themeDesc', member: '$member', verify: '$verify' } } } },
-        { $project: { _id: 0, theme: '$_id', data: "$data" } }
-    ]))
-    for (const rp of rs) {
-        var res = await HackathonRegisterTeamScrapper(rp.data);
-        if (!res.success) {
-            return { success: false, message: res.messsage }
+    try {
+        let rs: HackathonResponseModel[] = (await Hackathon.aggregate([
+            { $group: { _id: "$theme", data: { $push: { name: '$name', themeDesc: '$themeDesc', member: '$member', verify: '$verify' } } } },
+            { $project: { _id: 0, theme: '$_id', data: "$data" } }
+        ]))
+        for (const rp of rs) {
+            var res = await HackathonRegisterTeamScrapper(rp.data);
+            if (!res.success) {
+                return { success: false, message: res.messsage }
+            }
+            rp.data = res.data;
         }
-        rp.data = res.data;
+        return { success: true, data: rs }
+    } catch (e) {
+        console.log(`db>sankalpUser>HackathonRegisterAll: ${e.message}`);
+        return { success: false, message: 'Something went wrong' }
     }
-    return rs
 }
 
 export const HackathonCount = async () => {
@@ -750,7 +788,7 @@ export const HackathonRegister = async (id: string, data: any) => {
         if ((await Hackathon.aggregate([
             { $project: { size: { $size: '$member' } } },
             { $group: { _id: null, size: { $sum: '$size' } } }
-        ]))[0]['size']+data.member.length() > HackathonNameModel['max']) {
+        ]))[0]['size']+data.member.length > HackathonNameModel['max']) {
             return { success: false, message: `The hackathon registration of ${HackathonNameModel['name']} is closed.` }
         }
         const hackathon = new Hackathon(data);

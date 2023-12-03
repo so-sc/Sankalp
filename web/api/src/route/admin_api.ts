@@ -1,11 +1,11 @@
 
 import express from "express";
-import { UserRegisterTotal, HackathonCount, TalkCount, EventCount, UserRegisterYear, UserRegisterStudent, UserRegisterGender, EventRegisters, HackathonRegistersDetails, EventRegistersVerifyTalk, EventRegistersVerifyEvent, hackathonRegistersVerify, User, EventRegisterAll, HackathonRegisterAll } from '../db/sankalpUser';
+import { UserRegisterTotal, HackathonCount, TalkCount, EventCount, UserRegisterYear, UserRegisterStudent, UserRegisterGender, EventRegisters, HackathonRegistersDetails, EventRegistersVerifyTalk, EventRegistersVerifyEvent, hackathonRegistersVerify, User, EventRegisterAll, HackathonRegisterAll, EventRegisterOfEvent } from '../db/sankalpUser';
 import { adminVerifyToken } from "../workers/auth";
 
 const router = express.Router();
 
-// ----------------- Verify ------------------------
+/* ----------------- Verify ------------------------ */
 
 // Verify the attendee
 router.get("/verify/:info", adminVerifyToken, async(req, res) => {
@@ -30,6 +30,79 @@ router.get("/verify/:info", adminVerifyToken, async(req, res) => {
         return res.status(500).json({ success: false, message: e.message })
     }
 });
+
+
+
+/* ---------------- Access data --------------------- */
+
+router.get("/get-events", adminVerifyToken, async(req, res) => {
+    try {
+        let data = await EventRegisterAll();
+        if (!data.success) {
+            return res.status(500).json({ success: true, message: data.message })
+        }
+        return res.status(200).json({ success: true, result: data.data })
+    } catch (e) {
+        return res.status(500).json({ success: false, message: e.message })
+    }
+})
+
+
+router.get("/get-event/:eve", adminVerifyToken, async(req, res) => {
+    try {
+        var eve = Number(req.params.eve);
+        if (!eve) {
+            return res.status(500).json({ success: false, message: 'Provide the which event details you need.' })
+        }
+        let data = await EventRegisterOfEvent(eve);
+        if (!data.success) {
+            return res.status(500).json({ success: true, message: data.message })
+        }
+        return res.status(500).json({ success: true, result: data.data })
+    } catch (e) {
+        return res.status(500).json({ success: false, message: e.message })
+    }
+})
+
+
+// router.get("/get-talks", adminVerifyToken, async(req, res) => {
+//     try {
+//         return res.status(200).json({ success: true, result: await EventRegisterAll() })
+//     } catch (e) {
+//         return res.status(500).json({ success: false, message: e.message })
+//     }
+// })
+
+// router.get("/get-talk/", adminVerifyToken, async(req, res) => {
+//     try {
+//         var info = Number(req.params.info);
+//         if (info === 0) {
+//             var event = await EventRegisters(true);
+//         } else {
+//             var event = await EventRegisters(false);
+//         }
+//         return res.status(500).json({ success: true, result: event })
+//     } catch (e) {
+//         return res.status(500).json({ success: false, message: e.message })
+//     }
+// })
+
+
+// Get all hackathon team registered for hackathon
+router.get("/get-hackathons", adminVerifyToken, async(req, res) => {
+    try {
+        let data = await HackathonRegisterAll();
+        if (!data.success) {
+            return res.status(500).json({ success: true, message: data.message })
+        }
+        return res.status(500).json({ success: true, result: data })
+    } catch (e) {
+        return res.status(500).json({ success: false, message: e.message })
+    }
+})
+
+
+/* Generator */
 
 
 /*  */
@@ -62,40 +135,6 @@ router.get("/verify/:info", adminVerifyToken, async(req, res) => {
 //     }
 // });
 
-
-
-// ---------------- Access data ---------------------
-
-router.get("/get-events", adminVerifyToken, async(req, res) => {
-    try {
-        return res.status(200).json({ success: true, result: await EventRegisterAll() })
-    } catch (e) {
-        return res.status(500).json({ success: false, message: e.message })
-    }
-})
-
-router.get("/get-event/:info", adminVerifyToken, async(req, res) => {
-    try {
-        var info = Number(req.params.info);
-        if (info === 0) {
-            var event = await EventRegisters(true);
-        } else {
-            var event = await EventRegisters(false);
-        }
-        return res.status(500).json({ success: true, result: event })
-    } catch (e) {
-        return res.status(500).json({ success: false, message: e.message })
-    }
-})
-
-// Get all hackathon team registered for hackathon
-router.get("/get-hackathons", adminVerifyToken, async(req, res) => {
-    try {
-        return res.status(500).json({ success: true, result: await HackathonRegisterAll() })
-    } catch (e) {
-        return res.status(500).json({ success: false, message: e.message })
-    }
-})
 
 
 // ----------------- Feedback ------------------------
