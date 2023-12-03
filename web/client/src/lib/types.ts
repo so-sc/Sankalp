@@ -176,3 +176,31 @@ export interface HackathonAdminApiMember {
   year: string
   _id: string
 }
+
+export interface UserAdminAPIResponse {
+  success: boolean
+  result: UserAdminAPIResult[]
+}
+
+export interface UserAdminAPIResult {
+  _id: string
+  stName: string
+  mail: string
+  college: string
+  branch: string
+  year: number
+  eventOpt: number[]
+  student: boolean
+  gender: number
+  verify: boolean
+  hack: UserAdminHackathonData
+  createdAt: Date | string
+  updatedAt: Date | string
+  __v: number
+}
+
+export interface UserAdminHackathonData {
+  team: string
+  isHack: boolean
+  leader?: boolean
+}

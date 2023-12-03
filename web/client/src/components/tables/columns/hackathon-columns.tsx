@@ -5,7 +5,7 @@ import { ColumnDef } from "@tanstack/react-table"
 import { THEMES } from "@/lib/constants"
 import { HackathonAdminApiResult } from "@/lib/types"
 
-export const columns: ColumnDef<HackathonAdminApiResult>[] = [
+export const hackathonColumns: ColumnDef<HackathonAdminApiResult>[] = [
   {
     accessorKey: "id",
     header: "Id",

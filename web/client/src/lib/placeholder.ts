@@ -1,6 +1,7 @@
 import {
   HackathonAdminApiResult,
   HackathonTeam,
+  UserAdminAPIResult,
   UserProfile,
 } from "@/lib/types"
 
@@ -72,6 +73,48 @@ export const hackathonAdminResponse: HackathonAdminApiResult[] = [
     verify: false,
     createdAt: "2023-10-20T10:04:10.899Z",
     updatedAt: "2023-10-20T10:04:10.899Z",
+    __v: 0,
+  },
+]
+
+export const userAdminResponse: UserAdminAPIResult[] = [
+  {
+    _id: "65314c38431453239a3d893f",
+    stName: "Akkil M G",
+    mail: "kvd1plg1@seemsgood.us",
+    college: "Sahyadri College of Engineering",
+    branch: "ISE",
+    year: 3,
+    eventOpt: [1, 3],
+    student: true,
+    gender: 1,
+    verify: false,
+    hack: {
+      team: "65314c64431453239a3d8943",
+      isHack: true,
+      leader: true,
+    },
+    createdAt: "2023-10-19T15:33:12.204Z",
+    updatedAt: "2023-10-19T15:33:56.782Z",
+    __v: 0,
+  },
+  {
+    _id: "65314c45431453239a3d8941",
+    stName: "Deveesh Shetty",
+    mail: "rundbvxw@seemsgood.us",
+    college: "Sahyadri College of Engineering",
+    branch: "ISE",
+    year: 3,
+    eventOpt: [1, 3],
+    student: true,
+    gender: 1,
+    verify: false,
+    hack: {
+      team: "65314c64431453239a3d8943",
+      isHack: true,
+    },
+    createdAt: "2023-10-19T15:33:25.475Z",
+    updatedAt: "2023-10-19T15:33:56.774Z",
     __v: 0,
   },
 ]
