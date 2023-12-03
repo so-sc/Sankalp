@@ -18,7 +18,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { CookieValueTypes, getCookie, setCookie } from "cookies-next"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { FormEvent, useEffect, useState } from "react"
+import { FormEvent, useCallback, useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { TbCaretLeftFilled, TbLoader2 } from "react-icons/tb"
 
@@ -39,27 +39,32 @@ export default function AdminRegistration() {
     },
   })
 
-  async function isTokenValid(token: CookieValueTypes) {
-    const isTokenValidRes = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/token-checker`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+  const isTokenValid = useCallback(
+    async (token: CookieValueTypes) => {
+      const isTokenValidRes = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/token-checker`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+
+      const result = await isTokenValidRes.json()
+
+      if (result.success) {
+        router.push("/admin/stats/count")
       }
-    )
-
-    const result = await isTokenValidRes.json()
-
-    if (result.success) {
-      router.push("/admin/stats/count")
-    }
-  }
+    },
+    [router]
+  )
 
   useEffect(() => {
-    const token = getCookie("admin-token")
+    const token = getCookie("admin-token", {
+      path: "/admin",
+    })
     isTokenValid(token)
-  }, [])
+  }, [isTokenValid])
 
   async function onLogin(values: AdminLogin) {
     try {
@@ -111,6 +116,7 @@ export default function AdminRegistration() {
       })
       setCookie("admin-token", data.token, {
         path: "/admin",
+        expires: new Date(Date.now() + 60 * 60 * 24 * 1000),
       })
       router.push("/admin/stats/count")
     } else {
