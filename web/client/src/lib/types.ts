@@ -145,3 +145,33 @@ export interface EventRegistrationData {
     participant: HackathonMemberAPI[]
   }
 }
+
+export interface HackathonAdminApiResponse {
+  success: boolean
+  result: HackathonAdminApiResult[]
+}
+
+export interface HackathonAdminApiResult {
+  _id: string
+  TmName: string
+  college: string
+  theme: string
+  themeName: string
+  tlName: string
+  tlEmail: string
+  tlYear: number
+  tlPhNo: number
+  memNo: number
+  member: HackathonAdminApiMember[]
+  verify: boolean
+  createdAt: Date | string
+  updatedAt: Date | string
+  __v: number
+}
+
+export interface HackathonAdminApiMember {
+  name: string
+  email: string
+  year: string
+  _id: string
+}
