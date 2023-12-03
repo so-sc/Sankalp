@@ -1,5 +1,5 @@
 import express from "express";//HackathonRegisterAll
-import { EventDeleteByID, UserRegisterGetInfoByMail, UserRegisterByMail, UserRegistersFindUser, HackathonRegisterFindDetailsByID, UserRegisterByID, hackathonRegisterGetLeadEmail, EventRegisterFindDetailsByID, EventRegister, HackathonRegister, EventQRAdder, HackathonQRAdder } from "../db/sankalpUser";
+import { EventDeleteByID, UserRegisterGetInfoByMail, UserRegisterByMail, UserRegistersFindUser, HackathonRegisterFindDetailsByID, UserRegisterByID, hackathonRegisterGetLeadEmail, EventRegisterFindDetailsByID, EventRegister, HackathonRegister, EventQRAdder, HackathonQRAdder, HackathonRegisterAll, EventRegisterAll } from "../db/sankalpUser";
 import { EventModels, HackathonModel, Member } from "../workers/model";
 import { qrCreator, formID } from "../workers/qrcode";
 import { sendCopyMail } from "../workers/mail";
@@ -47,9 +47,6 @@ router.post("/registration/:info", verifyToken, async(req, res) => {
         if (info==='h') {
             name=data.name;
         } else {
-            // for (const participant of data.event.participant) { 
-            //     (participant.lead)? name=UserRegisterByMail(participant.info): {}
-            // }
             name=(await UserRegisterByID(id)).name;
         }
         var rs = await sendCopyMail(qr[info], (info==='h')? null: data.event.eve, mail, name, dt.id);
@@ -136,5 +133,9 @@ router.get("/info/:info", verifyToken, async(req, res) => {
 //         res.status(500).json({ success: false, message: e.message })
 //     }
 // })
+
+// router.get("/tester", async(req, res) => {
+//     res.json({})
+// });
 
 export const App = router

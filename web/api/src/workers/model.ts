@@ -231,3 +231,29 @@ export interface UserResponseModal {
     talks?: object,
     events?: Array<object>
 }
+
+
+export interface HackathonResponseModel {
+    theme: number,
+    data: Array<{
+        name: string,
+        themeDesc: string,
+        member: {
+            info: any,
+            lead?: boolean
+        }[],
+        verify?: Boolean
+    }>
+}
+
+export interface EventResponseModel {
+    eve: number,
+    data: Array<{
+        verify: boolean,
+        qrId: string,
+        participant: {
+            info: any,
+            lead?: boolean
+        }[]
+    }>
+}

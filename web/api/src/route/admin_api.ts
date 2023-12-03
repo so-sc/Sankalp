@@ -1,6 +1,6 @@
 
 import express from "express";
-import { UserRegisterTotal, HackathonCount, TalkCount, EventCount, UserRegisterYear, UserRegisterStudent, UserRegisterGender, EventRegisters, HackathonRegistersDetails, EventRegistersVerifyTalk, EventRegistersVerifyEvent, hackathonRegistersVerify, User } from '../db/sankalpUser';
+import { UserRegisterTotal, HackathonCount, TalkCount, EventCount, UserRegisterYear, UserRegisterStudent, UserRegisterGender, EventRegisters, HackathonRegistersDetails, EventRegistersVerifyTalk, EventRegistersVerifyEvent, hackathonRegistersVerify, User, EventRegisterAll, HackathonRegisterAll } from '../db/sankalpUser';
 import { adminVerifyToken } from "../workers/auth";
 
 const router = express.Router();
@@ -66,7 +66,13 @@ router.get("/verify/:info", adminVerifyToken, async(req, res) => {
 
 // ---------------- Access data ---------------------
 
-// Get all students (0) or employee (1) registered in event 
+router.get("/get-events", adminVerifyToken, async(req, res) => {
+    try {
+        return res.status(200).json({ success: true, result: await EventRegisterAll() })
+    } catch (e) {
+        return res.status(500).json({ success: false, message: e.message })
+    }
+})
 
 router.get("/get-event/:info", adminVerifyToken, async(req, res) => {
     try {
@@ -83,10 +89,9 @@ router.get("/get-event/:info", adminVerifyToken, async(req, res) => {
 })
 
 // Get all hackathon team registered for hackathon
-router.get("/get-hackathon", adminVerifyToken, async(req, res) => {
+router.get("/get-hackathons", adminVerifyToken, async(req, res) => {
     try {
-        var hackathon = await HackathonRegistersDetails();
-        return res.status(500).json({ success: true, result: hackathon })
+        return res.status(500).json({ success: true, result: await HackathonRegisterAll() })
     } catch (e) {
         return res.status(500).json({ success: false, message: e.message })
     }

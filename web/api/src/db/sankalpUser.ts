@@ -1,7 +1,7 @@
 //
 
 import mongo from "mongoose";
-import { EventNameModel, TalkNameModel, HackathonNameModel, EventModels, HackathonModel, Member, SigninModal, SignupModal, Talk, UserResponseModal, gender } from "../workers/model";
+import { EventResponseModel, EventNameModel, TalkNameModel, HackathonNameModel, EventModels, HackathonModel, Member, SigninModal, SignupModal, Talk, UserResponseModal, gender, HackathonResponseModel } from "../workers/model";
 import { createToken } from "../workers/auth";
 
 
@@ -80,6 +80,10 @@ export const UserRegisters = (st: boolean) => { return User.find( { student: st 
 export const UserRegistersBy = (param: any) => { return User.find({ param }); }
 export const UserRegisterByID = async (id: String) => {
     return await User.findById(id);
+}
+
+export const UserRegisterForHackNEvent = async (id: String) => {
+    return await User.findById(id).select('-_id -hack -talk -event -__v');
 }
 
 export const UserRegisterByMail = async (email: string) => {
@@ -446,6 +450,37 @@ export const EventQRAdder = async (id: string, qId: string) => {
     )
 }
 
+
+export const EventRegisterTeamScrapper = async (data: any) => {
+    try {  
+        var res = data;
+        for (const information of res) {
+            for (const member of information.participant) {
+                member.info = await UserRegisterForHackNEvent(member.info);
+            }
+        }
+        return { success: true, data: res }
+    } catch (e){
+        console.log(e, e.message);
+        return { success: false, messsage: "Fetching data went wrong.."}
+    }
+}
+
+export const EventRegisterAll = async () => {
+    let rs: EventResponseModel[] = (await Event.aggregate([
+        { $group: { _id: "$event.eve", data: { $push: { verify: '$verify', qrId: '$qrId', participant: '$event.participant' } } } },
+        { $project: { _id: 0, theme: '$_id', data: "$data" } }
+    ]))
+    for (const rp of rs) {
+        var res = await EventRegisterTeamScrapper(rp.data);
+        if (!res.success) {
+            return { success: false, message: res.messsage }
+        }
+        rp.data = res.data;
+    }
+    return rs
+}
+
 export const EventCount = async () => {
     try {
         return {
@@ -624,10 +659,33 @@ export const HackathonRegisterFindDetailsByID = async (id: string) => {
 
 }
 
+export const HackathonRegisterTeamScrapper = async (data: any) => {
+    try {  
+        var res = data;
+        for (const information of res) {
+            for (const member of information.member) {
+                member.info = await UserRegisterForHackNEvent(member.info);
+            }
+        }
+        return { success: true, data: res }
+    } catch (e){
+        console.log(e, e.message);
+        return { success: false, messsage: "Fetching data went wrong.."}
+    }
+}
+
 export const HackathonRegisterAll = async () => {
-    let rs = await Hackathon.aggregate([
-        { $group: { _id: "$theme" } }
-    ])
+    let rs: HackathonResponseModel[] = (await Hackathon.aggregate([
+        { $group: { _id: "$theme", data: { $push: { name: '$name', themeDesc: '$themeDesc', member: '$member', verify: '$verify' } } } },
+        { $project: { _id: 0, theme: '$_id', data: "$data" } }
+    ]))
+    for (const rp of rs) {
+        var res = await HackathonRegisterTeamScrapper(rp.data);
+        if (!res.success) {
+            return { success: false, message: res.messsage }
+        }
+        rp.data = res.data;
+    }
     return rs
 }
 
@@ -653,7 +711,9 @@ export const HackathonCount = async () => {
 
 export const HackathonRegistersDetails = async () => {
     try {
-        let data = await Hackathon.find();
+        let data = await Hackathon.aggregate([
+            { $group: { _id: "$theme" } }
+        ]);
         return { success: true }
     } catch (e) {
         console.log(`db>sankalpUser>HackathonRegistersDetails: ${e}`);
@@ -668,9 +728,9 @@ export const HackathonRegister = async (id: string, data: any) => {
         if (data.member.length<1 && data.member.length>3) {
             return { success: false, message: 'The size of an hackathon team should be strictly 2-4.' }
         }
-        data.member.map((member: Member) => { 
-            if(!(User.findOne({ email: member.info }))){return { success: false, message: `The ${member.info} is not registered. Check your Email ID or Confirm whether the participant is registered in the platform.` } } 
-        } );
+        for (const member of data.member){
+            if(!(await User.findOne({ email: member.info }))){return { success: false, message: `The ${member.info} is not registered. Check your Email ID or Confirm whether the participant is registered in the platform.` } } 
+        }
         data.verify = false;
         var rs;
         for (const member of data.member) {
