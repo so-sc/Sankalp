@@ -17,6 +17,41 @@ const transporter = nodemailer.createTransport({
 });
 
 
+export const sendAdminEventMail = async (mail: string, subject: string, para: string, button: string) => {
+  try {
+    const replacements = {
+      '${para}': para,
+      '${button}': button
+    };
+    let html = fs.readFileSync('./src/workers/template/admin_event_mail.html', 'utf8');
+    for (const [key, value] of Object.entries(replacements)) {
+      const regex = new RegExp(`\\${key}`, 'g');
+      html = html.replace(regex, value);
+    }
+
+     const result = await transporter.sendMail({
+      from: process.env.EMAIL,
+      to: mail,
+      subject: `SOSC: ${subject}`,
+      envelope: {
+          from: `SOSC ${process.env.EMAIL}`,
+          to: `${mail}`
+      },
+      html: String(html),
+    });
+    if (!result) {
+      console.error('Error sending email');
+      return { success: false, message: `Something went wrong, when mailing.` }
+    } else {
+      return { success: true, message: result.response }
+    }
+  } catch (e) {
+    console.log(e.message);
+    return { success: false, message: `Something went wrong, when mailing.` }
+  }
+}
+
+
 export const sendUserVerifyMail = async (mail: string, id: string, name: string) => {
   try {
     const replacements = {

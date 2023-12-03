@@ -1,9 +1,9 @@
 //
 
 import mongo from "mongoose";
-import { EventResponseModel, EventNameModel, TalkNameModel, HackathonNameModel, EventModels, HackathonModel, Member, SigninModal, SignupModal, Talk, UserResponseModal, gender, HackathonResponseModel } from "../workers/model";
+import { paraCode, buttonCode, EventResponseModel, EventNameModel, TalkNameModel, HackathonNameModel, EventModels, HackathonModel, Member, SigninModal, SignupModal, Talk, UserResponseModal, gender, HackathonResponseModel } from "../workers/model";
 import { createToken } from "../workers/auth";
-
+import { sendAdminEventMail } from "../workers/mail";
 
 const userRegisteration = new mongo.Schema<SignupModal>({
     name: {
@@ -86,14 +86,21 @@ export const UserRegisterForHackNEvent = async (id: String) => {
     return await User.findById(id).select('-_id -hack -talk -event -__v');
 }
 
-export const UserRegisterGetDetails = async (id: String) => {
-    let rs = await User.aggregate([
-
-    ])
+export const UserRegisterGetDetails = async () => {
+    try {
+        let rs = await User.find({}).select('-_id -hack -event -talk')
+        return { success: true, data: rs}
+    } catch (e) {
+        return { success: true, message: 'Something went wrong.' }
+    }
 }
 
 export const UserRegisterByMail = async (email: string) => {
     return await User.findOne({ email: email })
+}
+
+export const UserRegisterMailByID = async (id: String) => {
+    return await User.findOne({ _id: id }).select('email')
 }
 
 export const UserRegisterTotal = async () => {
@@ -494,6 +501,52 @@ export const EventRegisterAll = async () => {
 }
 
 
+export const EventSendEmailAll = async (data: any) => {
+    try {
+        let unable = Array();
+        let res = (await Event.aggregate([
+            { $match:{ isEvent: true } },
+            { $group: { _id: null, data: { $push: { info: "$event.participant.info" } } } }, 
+            { $unwind: "$data" }, { $unwind: "$data.info" },  
+            { $group: { _id: 0, info: { $addToSet: "$data.info" } } },
+            { $project: { _id: 0, info: "$info" } }
+        ]))[0]['info'];
+        for (const reso of res) {
+            let result = await sendAdminEventMail((await UserRegisterMailByID(reso)).email, data.subject, await paraCode(data.p), await buttonCode(data.button.title, data.button.url));
+            if (!result.success) {
+                unable.push(reso);
+            }
+        }
+        return { success: true, data: unable.length?`Unable to send mail to ${unable.join(',')}`:`Sent mail to everyone successfully.`}
+    } catch (e) {
+        console.log(e);
+        return { success: false, message: 'Something went wrong.'}
+    }
+}
+
+export const EventSendEmailEve = async (eve: number, data: any) => {
+    try {
+        let unable = Array();
+        let res = (await Event.aggregate([
+            { $match:{ isEvent: true, "event.eve": eve } },
+            { $group: { _id: null, data: { $push: { info: "$event.participant.info" } } } }, 
+            { $unwind: "$data" }, { $unwind: "$data.info" },  
+            { $group: { _id: 0, info: { $addToSet: "$data.info" } } },
+            { $project: { _id: 0, info: "$info" } }
+        ]))[0]['info'];
+        for (const reso of res) {
+            let result = await sendAdminEventMail((await UserRegisterMailByID(reso)).email, data.subject, await paraCode(data.p), await buttonCode(data.button.title, data.button.url));
+            if (!result.success) {
+                unable.push(reso);
+            }
+        }
+        return { success: true, data: unable.length?`Unable to send mail to ${unable.join(',')}`:`Sent mail to everyone successfully.`}
+    } catch (e) {
+        console.log(e);
+        return { success: false, message: 'Something went wrong.'}
+    }
+}
+
 export const EventRegisterOfEvent = async (eve: number) => {
     try {
         let rs = (await Event.aggregate([
@@ -823,6 +876,52 @@ export const HackathonQRAdder = async (id: string, qId: string) => {
         { $set: { qrId: qId } }
     )
 }
+
+
+export const HackathonSendEmailLead = async (data: any) => {
+    try {
+        let unable = Array();
+        let res = (await Hackathon.aggregate([
+            { $unwind: "$member" },
+            { $match: {'member.lead': {$exists: true, $eq: true} }},
+            { $group: { _id: null, data: { $push: { info: "$member.info" } } } },   
+            { $project: { _id: 0, info: "$data.info" } }
+          ]))[0]['info'];
+        for (const reso of res) {
+            let result = await sendAdminEventMail((await UserRegisterMailByID(reso)).email, data.subject, await paraCode(data.p), await buttonCode(data.button.title, data.button.url));
+            if (!result.success) {
+                unable.push(reso);
+            }
+        }
+        return { success: true, data: unable.length?`Unable to send mail to ${unable.join(',')}`:`Sent mail to everyone successfully.`}
+    } catch (e) {
+        console.log(e);
+        return { success: false, message: 'Something went wrong.'}
+    }
+}
+
+
+export const HackathonSendEmailAll = async (data: any) => {
+    try {
+        let unable = Array();
+        let res = (await Hackathon.aggregate([
+            { $unwind: "$member" },
+            { $group: { _id: null, data: { $push: { info: "$member.info" } } } },   
+            { $project: { _id: 0, info: "$data.info" } }
+          ]))[0]['info'];
+        for (const reso of res) {
+            let result = await sendAdminEventMail((await UserRegisterMailByID(reso)).email, data.subject, await paraCode(data.p), await buttonCode(data.button.title, data.button.url));
+            if (!result.success) {
+                unable.push(reso);
+            }
+        }
+        return { success: true, data: unable.length?`Unable to send mail to ${unable.join(',')}`:`Sent mail to everyone successfully.`}
+    } catch (e) {
+        console.log(e);
+        return { success: false, message: 'Something went wrong.'}
+    }
+}
+
 
 export const hackathonRegistersVerify = async (id: string) => {
     if (await Hackathon.find({ _id: new mongo.Types.ObjectId(id), verify: true})) {

@@ -1,6 +1,6 @@
 
 import express from "express";
-import { UserRegisterTotal, HackathonCount, TalkCount, EventCount, UserRegisterYear, UserRegisterStudent, UserRegisterGender, EventRegisters, HackathonRegistersDetails, EventRegistersVerifyTalk, EventRegistersVerifyEvent, hackathonRegistersVerify, User, EventRegisterAll, HackathonRegisterAll, EventRegisterOfEvent } from '../db/sankalpUser';
+import { UserRegisterTotal, HackathonCount, TalkCount, EventCount, UserRegisterYear, UserRegisterStudent, UserRegisterGender, EventRegisters, HackathonRegistersDetails, EventRegistersVerifyTalk, EventRegistersVerifyEvent, hackathonRegistersVerify, User, EventRegisterAll, HackathonRegisterAll, EventRegisterOfEvent, UserRegisterGetDetails, EventSendEmailEve, EventSendEmailAll, HackathonSendEmailLead, HackathonSendEmailAll } from '../db/sankalpUser';
 import { adminVerifyToken } from "../workers/auth";
 
 const router = express.Router();
@@ -25,7 +25,7 @@ router.get("/verify/:info", adminVerifyToken, async(req, res) => {
         if (!result.success) {
             return res.status(500).json({ success: false, message: result.message })
         }
-        return res.status(500).json({ success: true })
+        return res.status(200).json({ success: true })
     } catch (e) {
         return res.status(500).json({ success: false, message: e.message })
     }
@@ -34,6 +34,32 @@ router.get("/verify/:info", adminVerifyToken, async(req, res) => {
 
 
 /* ---------------- Access data --------------------- */
+
+
+router.get("/get-users", adminVerifyToken, async(req, res) => {
+    try {
+        let data = await UserRegisterGetDetails();
+        if (!data.success) {
+            return res.status(500).json({ success: true, message: data.message })
+        }
+        return res.status(200).json({ success: true, result: data.data })
+    } catch (e) {
+        return res.status(500).json({ success: false, message: e.message })
+    }
+})
+
+router.get("/get-events", adminVerifyToken, async(req, res) => {
+    try {
+        let data = await EventRegisterAll();
+        if (!data.success) {
+            return res.status(500).json({ success: true, message: data.message })
+        }
+        return res.status(200).json({ success: true, result: data.data })
+    } catch (e) {
+        return res.status(500).json({ success: false, message: e.message })
+    }
+})
+
 
 router.get("/get-events", adminVerifyToken, async(req, res) => {
     try {
@@ -58,7 +84,7 @@ router.get("/get-event/:eve", adminVerifyToken, async(req, res) => {
         if (!data.success) {
             return res.status(500).json({ success: true, message: data.message })
         }
-        return res.status(500).json({ success: true, result: data.data })
+        return res.status(200).json({ success: true, result: data.data })
     } catch (e) {
         return res.status(500).json({ success: false, message: e.message })
     }
@@ -95,7 +121,7 @@ router.get("/get-hackathons", adminVerifyToken, async(req, res) => {
         if (!data.success) {
             return res.status(500).json({ success: true, message: data.message })
         }
-        return res.status(500).json({ success: true, result: data })
+        return res.status(200).json({ success: true, result: data })
     } catch (e) {
         return res.status(500).json({ success: false, message: e.message })
     }
@@ -136,6 +162,64 @@ router.get("/get-hackathons", adminVerifyToken, async(req, res) => {
 // });
 
 
+/* ----------------- Sending Mail ----------------- */
+
+router.post("/hackathon-mail-leader", async(req, res) => {
+    try {
+        let data = req.body;
+        let result = await HackathonSendEmailLead(data);
+        if (!result.success) {
+            return res.status(500).json({ success: false, message: result.message })
+        }
+        return res.status(200).json({ success: true, result: result.data })
+        return res.status(200).json({ success: true })
+    } catch (e) {
+        return res.status(500).json({ success: false, message: e.message })
+    }
+});
+
+
+router.post("/event-mail/:eve", async(req, res) => {
+    try {
+        let data = req.body;
+        let result = await EventSendEmailEve(Number(req.params.eve), data);
+        if (!result.success) {
+            return res.status(500).json({ success: false, message: result.message })
+        }
+        return res.status(200).json({ success: true, result: result.data })
+    } catch (e) {
+        return res.status(500).json({ success: false, message: e.message })
+    }
+});
+
+
+router.post("/hackathon-mail-all", async(req, res) => {
+    try {
+        let data = req.body;
+        let result = await HackathonSendEmailAll(data);
+        if (!result.success) {
+            return res.status(500).json({ success: false, message: result.message })
+        }
+        return res.status(200).json({ success: true, result: result.data })
+    } catch (e) {
+        return res.status(500).json({ success: false, message: e.message })
+    }
+});
+
+
+router.post("/event-mail-all", async(req, res) => {
+    try {
+        let data = req.body;
+        let result = await EventSendEmailAll(data);
+        if (!result.success) {
+            return res.status(500).json({ success: false, message: result.message })
+        }
+        return res.status(200).json({ success: true, result: result.data })
+    } catch (e) {
+        return res.status(500).json({ success: false, message: e.message })
+    }
+});
+
 
 // ----------------- Feedback ------------------------
 
@@ -144,7 +228,7 @@ router.post("/feedback", async(req, res) => {
     try {
         var feedback = req.body;
 
-        return res.status(500).json({})
+        return res.status(200).json({})
     } catch (e) {
         return res.status(500).json({ success: false, message: e.message })
     }
@@ -152,7 +236,7 @@ router.post("/feedback", async(req, res) => {
 
 router.get("/get-feedbacks", async(req, res) => {
     try {
-        return res.status(500).json({})
+        return res.status(200).json({})
     } catch (e) {
         return res.status(500).json({ success: false, message: e.message })
     }
@@ -161,7 +245,7 @@ router.get("/get-feedbacks", async(req, res) => {
 router.get("/get-feedback", async(req, res) => {
     try {
 
-        return res.status(500).json({})
+        return res.status(200).json({})
     } catch (e) {
         return res.status(500).json({ success: false, message: e.message })
     }
@@ -173,7 +257,7 @@ router.get("/get-feedback", async(req, res) => {
 // 
 router.get("/statistics/count", async(req, res) => {
     try {
-        return res.status(500).json({ 
+        return res.status(200).json({ 
             success: true, 
             users: await UserRegisterTotal(),
             gender: await UserRegisterGender(), 

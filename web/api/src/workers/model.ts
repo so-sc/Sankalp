@@ -257,3 +257,48 @@ export interface EventResponseModel {
         }[]
     }>
 }
+
+
+
+/* ------- HTML Base Code ----------- */
+
+export const buttonCode = async (title: any, url: any) => {
+    if (!(title && url)) {
+        return ''
+    }
+    return `<table align="center" width="100%" role="presentation" cellspacing="0" cellpadding="0" border="0" style="max-width:600px;margin-left:auto;margin-right:auto;padding:0.5rem">
+        <tbody>
+            <tr style="width:100%">
+                <td>
+                <table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin-bottom:20px;margin-top:0px;text-align:center">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <a href="${url}" target="_blank" style="border:2px solid #09dc43;line-height:1.25rem;text-decoration:none;display:inline-block;max-width:100%;padding:12px 34px;font-size:0.875rem;font-weight:500;text-decoration-line:none;background-color:rgb(9,220,67);color:rgb(239,239,239);border-color:rgb(9,220,67);border-radius:9999px"><span></span><span style="max-width:100%;display:inline-block;line-height:120%;mso-padding-alt:0px;mso-text-raise:9px">${title}</span><span></span></a></td>
+                        </tr>
+                    </tbody>
+                </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>`
+}
+
+export const paraCode = async (data: string[]) => {
+    var base = ``;
+    for (const text of data) {
+        base += `<p style="
+        font-size: 15px;
+        line-height: 24px;
+        margin: 16px 0;
+        margin-bottom: 20px;
+        margin-top: 0px;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-align: left;
+    ">
+            ${text}   
+        </p></br>`
+    }
+    return base
+}
