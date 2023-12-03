@@ -32,6 +32,7 @@ export type AdminRegister = z.infer<typeof adminRegisterSchema>
 export type AdminLogin = z.infer<typeof adminLoginSchema>
 export type OTPType = z.infer<typeof otpSchema>
 export type AdminLoginStatus = "login" | "verify"
+export type Purpose = "user" | "hackathon" | "event" // For tables
 // ------------------
 
 export type SignUp = {

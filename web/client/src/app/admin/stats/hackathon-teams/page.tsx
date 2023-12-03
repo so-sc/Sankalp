@@ -27,31 +27,12 @@ export async function isAdminLoggedIn() {
   }
 }
 
-import { Payment, columns } from "@/components/tables/hackathon-columns"
+import { columns } from "@/components/tables/columns/hackathon-columns"
 import { hackathonAdminResponse } from "@/lib/placeholder"
-
-async function getData(): Promise<Payment[]> {
-  // Fetch data from your API here.
-  return [
-    {
-      id: "728ed52f",
-      amount: 100,
-      status: "pending",
-      email: "m@example.com",
-    },
-    {
-      id: "728ed52f",
-      amount: 100,
-      status: "pending",
-      email: "am@example.com",
-    },
-    // ...
-  ]
-}
 
 export default async function HackathonTeamsPage() {
   await isAdminLoggedIn()
-  const data = await getData()
+  // Get Hackathon teams using API
 
   return (
     <main className="container mx-auto px-8 lg:px-20 xl:px-24 py-10 md:py-24 flex flex-col justify-center">
@@ -59,7 +40,11 @@ export default async function HackathonTeamsPage() {
         <H1>Hackathon Teams</H1>
         <H2 className="mt-2 font-normal"> Registered for {MAIN_EVENT_NAME}</H2>
       </div>
-      <DataTable columns={columns} data={hackathonAdminResponse} />
+      <DataTable
+        columns={columns}
+        data={hackathonAdminResponse}
+        purpose="hackathon"
+      />
     </main>
   )
 }

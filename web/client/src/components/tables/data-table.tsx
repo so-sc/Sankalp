@@ -13,9 +13,8 @@ import {
 } from "@tanstack/react-table"
 import { useState } from "react"
 
-import { Input } from "@/components/ui/input"
-
 import PaginationBar from "@/components/tables/components/pagination-bar"
+import HackathonTeamFilter from "@/components/tables/components/team-filter"
 import {
   Table,
   TableBody,
@@ -24,15 +23,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { Purpose } from "@/lib/types"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
+  purpose?: Purpose
 }
 
 export default function DataTable<TData, TValue>({
   columns,
   data,
+  purpose,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
@@ -54,16 +56,7 @@ export default function DataTable<TData, TValue>({
 
   return (
     <div className="my-4">
-      <div className="flex items-center py-4">
-        <Input
-          placeholder="Filter emails..."
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
-      </div>
+      {purpose === "hackathon" && <HackathonTeamFilter table={table} />}
       <div className="rounded-md border">
         <Table className="overflow-x-auto">
           <TableHeader>
