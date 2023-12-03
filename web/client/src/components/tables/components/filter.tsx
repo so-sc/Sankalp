@@ -3,18 +3,24 @@ import { Table } from "@tanstack/react-table"
 
 interface DataTablePaginationProps<TData> {
   table: Table<TData>
+  searchItem: string
+  placeholder: string
 }
 
-export default function HackathonTeamFilter<TData>({
+export default function Filter<TData>({
   table,
+  searchItem,
+  placeholder,
 }: DataTablePaginationProps<TData>) {
   return (
     <div className="flex items-center py-4">
       <Input
-        placeholder="Search Team..."
-        value={(table.getColumn("TmName")?.getFilterValue() as string) ?? ""}
+        placeholder={placeholder}
+        value={
+          (table.getColumn(`${searchItem}`)?.getFilterValue() as string) ?? ""
+        }
         onChange={(event) =>
-          table.getColumn("TmName")?.setFilterValue(event.target.value)
+          table.getColumn(`${searchItem}`)?.setFilterValue(event.target.value)
         }
         className="max-w-sm"
       />

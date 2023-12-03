@@ -83,7 +83,9 @@ export const hackathonColumns: ColumnDef<HackathonAdminApiResult>[] = [
     header: "Leader Phone",
     cell: ({ row }) => {
       const hackathon = row.original
-      return <div className="text-left font-medium">{hackathon.tlPhNo}</div>
+      return (
+        <div className="text-left font-medium w-36">{hackathon.tlPhNo}</div>
+      )
     },
   },
   {

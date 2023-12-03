@@ -13,8 +13,8 @@ import {
 } from "@tanstack/react-table"
 import { useState } from "react"
 
+import Filter from "@/components/tables/components/filter"
 import PaginationBar from "@/components/tables/components/pagination-bar"
-import HackathonTeamFilter from "@/components/tables/components/team-filter"
 import {
   Table,
   TableBody,
@@ -56,7 +56,20 @@ export default function DataTable<TData, TValue>({
 
   return (
     <div className="my-4">
-      {purpose === "hackathon" && <HackathonTeamFilter table={table} />}
+      {purpose === "hackathon" && (
+        <Filter
+          searchItem="TmName"
+          placeholder="Search team..."
+          table={table}
+        />
+      )}
+      {purpose === "user" && (
+        <Filter
+          searchItem="stName"
+          placeholder="Search user..."
+          table={table}
+        />
+      )}
       <div className="rounded-md border">
         <Table className="overflow-x-auto">
           <TableHeader>
