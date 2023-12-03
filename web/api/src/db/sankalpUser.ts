@@ -770,9 +770,11 @@ export const HackathonRegister = async (id: string, data: any) => {
         return { success: true, id: info._id.toString() }
     } catch (e) {
         console.log(`db>sankalpUser>HackathonRegister: ${e}`);
-        if (info._id.toString()) {
-            await Hackathon.deleteOne({ _id: info._id.toString() })
-        }
+        try{
+            if (info._id.toString()) {
+                await Hackathon.deleteOne({ _id: info._id.toString() })
+            }
+        } catch(e) {}
         return { success: false, message: 'The data is invalid.' }
     }
 }
