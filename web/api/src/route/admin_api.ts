@@ -164,7 +164,7 @@ router.get("/get-hackathons", adminVerifyToken, async(req, res) => {
 
 /* ----------------- Sending Mail ----------------- */
 
-router.post("/hackathon-mail-leader", async(req, res) => {
+router.post("/hackathon-mail-leader", adminVerifyToken, async(req, res) => {
     try {
         let data = req.body;
         let result = await HackathonSendEmailLead(data);
@@ -178,7 +178,7 @@ router.post("/hackathon-mail-leader", async(req, res) => {
 });
 
 
-router.post("/event-mail/:eve", async(req, res) => {
+router.post("/event-mail/:eve", adminVerifyToken, async(req, res) => {
     try {
         let data = req.body;
         let result = await EventSendEmailEve(Number(req.params.eve), data);
@@ -206,7 +206,7 @@ router.post("/hackathon-mail-all", async(req, res) => {
 });
 
 
-router.post("/event-mail-all", async(req, res) => {
+router.post("/event-mail-all", adminVerifyToken, async(req, res) => {
     try {
         let data = req.body;
         let result = await EventSendEmailAll(data);
@@ -223,7 +223,7 @@ router.post("/event-mail-all", async(req, res) => {
 // ----------------- Feedback ------------------------
 
 // Feedback
-router.post("/feedback", async(req, res) => {
+router.post("/feedback", adminVerifyToken, async(req, res) => {
     try {
         var feedback = req.body;
 
@@ -233,7 +233,7 @@ router.post("/feedback", async(req, res) => {
     }
 })
 
-router.get("/get-feedbacks", async(req, res) => {
+router.get("/get-feedbacks", adminVerifyToken, async(req, res) => {
     try {
         return res.status(200).json({})
     } catch (e) {
@@ -241,7 +241,7 @@ router.get("/get-feedbacks", async(req, res) => {
     }
 })
 
-router.get("/get-feedback", async(req, res) => {
+router.get("/get-feedback", adminVerifyToken, async(req, res) => {
     try {
 
         return res.status(200).json({})

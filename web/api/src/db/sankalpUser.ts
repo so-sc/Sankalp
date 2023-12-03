@@ -909,8 +909,20 @@ export const HackathonSendEmailAll = async (data: any) => {
             { $group: { _id: null, data: { $push: { info: "$member.info" } } } },   
             { $project: { _id: 0, info: "$data.info" } }
           ]))[0]['info'];
+        // if (data.button.title === undefined) {
+        //     data.button.title = null;
+        // }
+        // if (data.button.url === undefined) {
+        //     data.button.url = null;
+        // }
+        var button;
+        try { 
+            button = await buttonCode(data.button.title, data.button.url);
+        } catch (e) {
+            button = '';
+        }
         for (const reso of res) {
-            let result = await sendAdminEventMail((await UserRegisterMailByID(reso)).email, data.subject, await paraCode(data.p), await buttonCode(data.button.title, data.button.url));
+            let result = await sendAdminEventMail((await UserRegisterMailByID(reso)).email, data.subject, await paraCode(data.p), button);
             if (!result.success) {
                 unable.push(reso);
             }

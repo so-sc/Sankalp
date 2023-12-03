@@ -298,7 +298,7 @@ export const paraCode = async (data: string[]) => {
         text-align: left;
     ">
             ${text}   
-        </p></br>`
+        </p>`
     }
     return base
 }
