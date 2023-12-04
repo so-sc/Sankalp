@@ -220,7 +220,7 @@ router.post("/event-mail-all", adminVerifyToken, async(req, res) => {
 });
 
 
-// ----------------- Feedback ------------------------
+/* ----------------- Feedback ------------------------ */
 
 // Feedback
 router.post("/feedback", adminVerifyToken, async(req, res) => {

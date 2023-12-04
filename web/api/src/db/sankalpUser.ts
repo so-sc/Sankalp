@@ -3,7 +3,7 @@
 import mongo from "mongoose";
 import { paraCode, buttonCode, EventResponseModel, EventNameModel, TalkNameModel, HackathonNameModel, EventModels, HackathonModel, Member, SigninModal, SignupModal, Talk, UserResponseModal, gender, HackathonResponseModel } from "../workers/model";
 import { createToken } from "../workers/auth";
-import { sendAdminEventMail } from "../workers/mail";
+import { sendAdminEventMail, sendAdminHackathonMail } from "../workers/mail";
 
 const userRegisteration = new mongo.Schema<SignupModal>({
     name: {
@@ -888,7 +888,7 @@ export const HackathonSendEmailLead = async (data: any) => {
             { $project: { _id: 0, info: "$data.info" } }
           ]))[0]['info'];
         for (const reso of res) {
-            let result = await sendAdminEventMail((await UserRegisterMailByID(reso)).email, data.subject, await paraCode(data.p), await buttonCode(data.button.title, data.button.url));
+            let result = await sendAdminHackathonMail((await UserRegisterMailByID(reso)).email, data.subject, await paraCode(data.p), await buttonCode(data.button.title, data.button.url));
             if (!result.success) {
                 unable.push(reso);
             }
@@ -909,12 +909,6 @@ export const HackathonSendEmailAll = async (data: any) => {
             { $group: { _id: null, data: { $push: { info: "$member.info" } } } },   
             { $project: { _id: 0, info: "$data.info" } }
           ]))[0]['info'];
-        // if (data.button.title === undefined) {
-        //     data.button.title = null;
-        // }
-        // if (data.button.url === undefined) {
-        //     data.button.url = null;
-        // }
         var button;
         try { 
             button = await buttonCode(data.button.title, data.button.url);
@@ -922,7 +916,7 @@ export const HackathonSendEmailAll = async (data: any) => {
             button = '';
         }
         for (const reso of res) {
-            let result = await sendAdminEventMail((await UserRegisterMailByID(reso)).email, data.subject, await paraCode(data.p), button);
+            let result = await sendAdminHackathonMail((await UserRegisterMailByID(reso)).email, data.subject, await paraCode(data.p), button);
             if (!result.success) {
                 unable.push(reso);
             }
