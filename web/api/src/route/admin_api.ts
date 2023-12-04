@@ -205,7 +205,7 @@ router.post("/event-mail/:eve", adminVerifyToken, async(req, res) => {
 });
 
 
-router.post("/hackathon-mail-all", adminVerifyToken, async(req, res) => {
+router.post("/hackathon-mail-all", async(req, res) => {
     try {
         let data = req.body;
         let result = await HackathonSendEmailAll(data);
