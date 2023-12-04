@@ -128,7 +128,7 @@ router.get("/get-hackathons", adminVerifyToken, async(req, res) => {
 })
 
 // Get all hackathon team registered for hackathon
-router.get("/get-hackathons-phone-no", adminVerifyToken, async(req, res) => {
+router.get("/get-hackathons-phone-no", async(req, res) => {
     try {
         let data = await HackathonGetPhoneNo();
         if (!data.success) {
