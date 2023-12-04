@@ -249,14 +249,17 @@ export const UserRegistersFindUser = async (id: String) => {
     }
 }
 
-export const UserRegistersPhoneNumber = async (data: any) => {
+export const UserRegistersPhoneNumber = async (values: any) => {
     try {
-        var res = data;
-        await User.aggregate([
-            // {}
-        ])
+        let data = values.map((id: string) => new mongo.Types.ObjectId(id));
+        var res = (await User.aggregate([
+            { $match: { _id: { $in: data } } },
+            { $group: { _id: null, phone: { $push: "$PhNo" } } },
+            { $project: { _id: 0, phone: "$phone" }}
+        ]))[0]["phone"];
         return { success: true, data: res }
     } catch(e) {
+        console.log();
         return { success: false, message: "Something went wrong.." }
     }
 }
@@ -893,16 +896,19 @@ export const HackathonQRAdder = async (id: string, qId: string) => {
 }
 
 
-export const HackathonGetPhoneNo = async (data: any) => {
+export const HackathonGetPhoneNo = async () => {
     try {
-        let unable = Array();
+        // let unable = Array();
         let res = (await Hackathon.aggregate([
             { $unwind: "$member" },
-            { $match: {'member.lead': {$exists: true, $eq: true} }},
-            { $group: { _id: null, data: { $push: { info: "$member.info" } } } },   
-            { $project: { _id: 0, info: "$data.info" } }
+            { $group: { _id: null, data: { $push: "$member.info" } } },   
+            { $project: { _id: 0, info: "$data" } }
         ]))[0]['info'];
-        return { success: true, data: await UserRegistersPhoneNumber(res)}
+        let result = await UserRegistersPhoneNumber(res);
+        if (!result.success) {
+            return { success: false, message: result.message }
+        }
+        return { success: true, data: result.data }
     } catch (e) {
         console.log(e);
         return { success: false, message: 'Something went wrong.'}
