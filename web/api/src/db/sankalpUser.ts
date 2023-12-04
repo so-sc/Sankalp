@@ -254,9 +254,9 @@ export const UserRegistersPhoneNumber = async (values: any) => {
         let data = values.map((id: string) => new mongo.Types.ObjectId(id));
         var res = (await User.aggregate([
             { $match: { _id: { $in: data } } },
-            { $group: { _id: null, phone: { $push: "$PhNo" } } },
-            { $project: { _id: 0, phone: "$phone" }}
-        ]))[0]["phone"];
+            { $group: { _id: null, data: { $push: {name: "$name", phone: "$PhNo"} } } },
+            { $project: { _id: 0, data: "$data" } }
+        ]))[0]["data"];
         return { success: true, data: res }
     } catch(e) {
         console.log();
