@@ -877,6 +877,9 @@ export const HackathonRegister = async (id: string, data: any) => {
         for (const member of data.member){
             if(!(await User.findOne({ email: member.info }))){return { success: false, message: `The ${member.info} is not registered. Check your Email ID or Confirm whether the participant is registered in the platform.` } } 
         }
+        if (await Hackathon.findOne({ name: data.name })) {
+            return { success: false, message: "Team name is already taken" }
+        }
         data.verify = false;
         var rs;
         for (const member of data.member) {
