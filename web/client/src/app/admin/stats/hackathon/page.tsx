@@ -3,6 +3,7 @@ import DataTable from "@/components/tables/data-table"
 import { H1, H2 } from "@/components/ui/typography"
 import { MAIN_EVENT_NAME } from "@/lib/constants"
 import { hackathonAdminResponse } from "@/lib/placeholder"
+import { HackathonAPIResponse, HackathonAdminApiResponse } from "@/lib/types"
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 
@@ -29,9 +30,62 @@ export async function isAdminLoggedIn() {
   }
 }
 
+export async function getHackathonData() {
+  const nextCookie = cookies()
+  const token = nextCookie.get("admin-token")?.value
+
+  if (!token) {
+    redirect("/admin/login")
+  }
+
+  const hackathonRes = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/get-hackathons`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  )
+
+  const hackathonData = await hackathonRes.json()
+
+  if (!hackathonData.success) {
+    redirect("/admin/login")
+  }
+
+  return hackathonData
+}
+
+interface HackathonData {
+  TmName: string
+  college: string
+  theme: string
+  themeName: string
+  tlName: string
+  tlEmail: string
+  tlYear: number
+  tlPhNo: number
+  memNo: number
+  member: {
+    name: string
+    email: string
+    year: string
+    _id: string
+  }[]
+  verify: boolean
+  createdAt: Date | string
+  updatedAt: Date | string
+  __v: number
+}
+
 export default async function HackathonTeamsPage() {
   await isAdminLoggedIn()
-  // Get Hackathon teams using API
+  const rawData: HackathonAdminApiResponse = await getHackathonData()
+
+  // const data: HackathonData = {
+  //   TmName: rawData.result.data.map,
+  // }
 
   return (
     <main className="container mx-auto px-8 lg:px-20 xl:px-24 py-10 md:py-24 flex flex-col justify-center">
@@ -43,7 +97,7 @@ export default async function HackathonTeamsPage() {
       </div>
       <DataTable
         columns={hackathonColumns}
-        data={hackathonAdminResponse}
+        data={rawData.result.data}
         purpose="hackathon"
       />
     </main>

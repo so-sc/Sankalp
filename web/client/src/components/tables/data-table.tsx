@@ -58,7 +58,7 @@ export default function DataTable<TData, TValue>({
     <div className="my-4">
       {purpose === "hackathon" && (
         <Filter
-          searchItem="TmName"
+          searchItem="data.name"
           placeholder="Search team..."
           table={table}
         />

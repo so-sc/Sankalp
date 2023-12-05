@@ -50,7 +50,7 @@ export const hackathonTeam: HackathonTeam = {
   ],
 }
 
-export const hackathonAdminResponse: HackathonAdminApiResult[] = [
+export const hackathonAdminResponse = [
   {
     _id: "6532509a88142c86c59c029f",
     TmName: "NightHawks",

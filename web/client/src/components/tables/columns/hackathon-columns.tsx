@@ -14,50 +14,82 @@ export const hackathonColumns: ColumnDef<HackathonAdminApiResult>[] = [
     },
   },
   {
-    accessorKey: "TmName",
+    accessorKey: "data.name",
     header: "Team name",
     cell: ({ row }) => {
       const hackathon = row.original
       return (
-        <div className="text-left font-medium w-36">{hackathon.TmName}</div>
+        <div className="text-left font-medium">{hackathon.data[0].name}</div>
       )
     },
   },
   {
-    accessorKey: "tlName",
+    accessorKey: "data.member.info.name",
     header: "Leader Name",
     cell: ({ row }) => {
       const hackathon = row.original
+      const leader = hackathon.data[0].member.filter(
+        (mem) => mem.lead === true
+      )[0]
       return (
-        <div className="text-left font-medium w-36">{hackathon.tlName}</div>
+        <div className="text-left font-medium w-36">{leader.info.name}</div>
       )
     },
   },
   {
-    accessorKey: "tlEmail",
-    header: "Leader Email",
-    cell: ({ row }) => {
-      const hackathon = row.original
-      return <div className="text-left font-medium">{hackathon.tlEmail}</div>
-    },
-  },
-  {
-    accessorKey: "member.name",
+    accessorKey: "data.member.info.name",
     header: "Members Name",
     cell: ({ row }) => {
       const hackathon = row.original
       return (
         <div className="text-left font-medium w-36">
-          {hackathon.member.map((mem, index) => (
-            <p key={index}>{mem.name}</p>
+          {hackathon.data[0].member.map((mem, index) => (
+            <p key={index}>{mem.info.name}</p>
           ))}
         </div>
       )
     },
   },
   {
-    accessorKey: "theme",
+    accessorKey: "data.member.info.email",
+    header: "Leader Email",
+    cell: ({ row }) => {
+      const hackathon = row.original
+      const leader = hackathon.data[0].member.filter(
+        (mem) => mem.lead === true
+      )[0]
+      return <div className="text-left font-medium">{leader.info.email}</div>
+    },
+  },
+  {
+    accessorKey: "data.member.info.email",
+    header: "Members Email",
+    cell: ({ row }) => {
+      const hackathon = row.original
+      return (
+        <div className="text-left font-medium">
+          {hackathon.data[0].member.map((mem, index) => (
+            <p key={index}>{mem.info.email}</p>
+          ))}
+        </div>
+      )
+    },
+  },
+  {
+    accessorKey: "data.themeDesc",
     header: "Theme",
+    cell: ({ row }) => {
+      const hackathon = row.original
+      return (
+        <div className="text-left font-medium w-48">
+          {hackathon.data[0].themeDesc}
+        </div>
+      )
+    },
+  },
+  {
+    accessorKey: "data.theme",
+    header: "Statement",
     cell: ({ row }) => {
       const hackathon = row.original
       return (
@@ -67,48 +99,30 @@ export const hackathonColumns: ColumnDef<HackathonAdminApiResult>[] = [
       )
     },
   },
-  {
-    accessorKey: "themeName",
-    header: "Statement",
-    cell: ({ row }) => {
-      const hackathon = row.original
-      return (
-        <div className="text-left font-medium w-48">{hackathon.themeName}</div>
-      )
-    },
-  },
 
   {
-    accessorKey: "tlPhNo",
+    accessorKey: "data.member.info.PhNo",
     header: "Leader Phone",
     cell: ({ row }) => {
       const hackathon = row.original
+      const leader = hackathon.data[0].member.filter(
+        (mem) => mem.lead === true
+      )[0]
       return (
-        <div className="text-left font-medium w-36">{hackathon.tlPhNo}</div>
+        <div className="text-left font-medium w-36">{leader.info.PhNo}</div>
       )
     },
   },
   {
-    accessorKey: "member.email",
-    header: "Members Email",
-    cell: ({ row }) => {
-      const hackathon = row.original
-      return (
-        <div className="text-left font-medium">
-          {hackathon.member.map((mem, index) => (
-            <p key={index}>{mem.email}</p>
-          ))}
-        </div>
-      )
-    },
-  },
-  {
-    accessorKey: "college",
+    accessorKey: "data.member.info.name",
     header: "College",
     cell: ({ row }) => {
       const hackathon = row.original
+      const leader = hackathon.data[0].member.filter(
+        (mem) => mem.lead === true
+      )[0]
       return (
-        <div className="text-left font-medium w-48">{hackathon.college}</div>
+        <div className="text-left font-medium w-48">{leader.info.college}</div>
       )
     },
   },

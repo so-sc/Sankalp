@@ -149,32 +149,41 @@ export interface EventRegistrationData {
 
 export interface HackathonAdminApiResponse {
   success: boolean
-  result: HackathonAdminApiResult[]
+  result: HackathonAdminApiResponseNested
+}
+export interface HackathonAdminApiResult {
+  theme: number
+  data: DatumDatumHackathonAdminApi[]
 }
 
-export interface HackathonAdminApiResult {
-  _id: string
-  TmName: string
-  college: string
-  theme: string
-  themeName: string
-  tlName: string
-  tlEmail: string
-  tlYear: number
-  tlPhNo: number
-  memNo: number
+export interface HackathonAdminApiResponseNested {
+  success: boolean
+  data: HackathonAdminApiResult[]
+}
+
+export interface DatumDatumHackathonAdminApi {
+  name: string
+  themeDesc: string
   member: HackathonAdminApiMember[]
   verify: boolean
-  createdAt: Date | string
-  updatedAt: Date | string
-  __v: number
 }
 
 export interface HackathonAdminApiMember {
+  info: HackathonAdminApiUserInfo
+  lead?: boolean
+}
+
+export interface HackathonAdminApiUserInfo {
   name: string
   email: string
-  year: string
-  _id: string
+  gender: number
+  verify: boolean
+  student: boolean
+  PhNo: string
+  college: string
+  branch: string
+  course: string
+  year: number
 }
 
 export interface UserAdminAPIResponse {
