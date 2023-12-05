@@ -139,8 +139,10 @@ router.get("/info/:info", verifyToken, async(req, res) => {
 // })
 
 // testing
-// router.get("/tester", async(req, res) => {
-//     res.json({})
-// });
+router.get("/tester", async(req, res) => {
+    const currentDate: Date = new Date();
+    const specificTime: Date = new Date("2023-12-07T16:30:00.234Z");
+    res.json({current: currentDate, specific: specificTime })
+});
 
 export const App = router

@@ -1,8 +1,6 @@
 
-import mongo from "mongoose";
-
 interface NameModel {
-    [key: string]: { name: string, date: string; venue: string, max: any };
+    [key: string]: { name: string, date: string; venue: string, max: any, due: string };
   }
   
 // Keys start from 1 guys sadly deveesh believes this is an array. May key value pair be with you..
@@ -11,37 +9,43 @@ export const EventNameModel: NameModel = {
         name: "DeCode: Capture the flag",
         date: "9th December 2023 at 2:00PM to 3:00PM",
         venue: "Digital Library - First Floor",
-        max: 18
+        max: 18,
+        due: "2023-12-09T15:30:00.234Z"
     },
     2: {
         name: "Open Source Fiesta",
         venue: "Online (Github)",
         date: "6th to 8th December 2023",
-        max: 100
+        max: 100,
+        due: "2023-12-06T00:30:00.234Z"
     },
     3: {
         name: "BlindByte: Blind coding",
         venue: "CSE Lab 7",
         date: "9th December 2023 at 10:00AM to 03:00PM",
-        max: 100
+        max: 100,
+        due: "2023-12-09T15:50:00.234Z"
     },
     4: {
         name: "The Pitchers",
         date: "CoE Board Room - Ground floor",
         venue: "8th December 2023 at 9.30 AM to 10.30AM",
-        max: 100
+        max: 100,
+        due: "2023-12-08T10:50:00.234Z"
     },
     5: {
         name: "TechMaze: Escape Room",
         venue: "MBA Classrooms (3)",
         date: "8th December 2023 at 11:30AM to 01:00PM",
-        max: 55
+        max: 55,
+        due: "2023-12-08T13:30:00.234Z"
     },
     6: {
-        name: "The Wolf of Wall Street",
+        name: "The Wolf of Dalal Street",
         venue: "Online (StockGro)",
         date: "8th December 2023 at 09:00AM to 03:30PM",
-        max: 100
+        max: 100,
+        due: "2023-12-07T16:30:00.234Z"
     },
 }
 
@@ -50,37 +54,43 @@ export const TalkNameModel: NameModel = {
         name: "",
         date: "",
         venue: "Seminar Hall - First Floor",
-        max: [150, 500]
+        max: [150, 500],
+        due: "2023-12-08T15:30:00.234Z"
     },
     2: {
         name: "",
         date: "",
         venue: "",
-        max: 100
+        max: 100,
+        due: "2023-12-05T08:30:00.234Z"
     },
     3: {
         name: "",
         date: "",
         venue: "",
-        max: 100
+        max: 100,
+        due: "2023-12-05T08:30:00.234Z"
     },
     4: {
         name: "",
         date: "",
         venue: "",
-        max: 100
+        max: 100,
+        due: "2023-12-05T08:30:00.234Z"
     },
     5: {
         name: "",
         date: "",
         venue: "",
-        max: 100
+        max: 100,
+        due: "2023-12-05T08:30:00.234Z"
     },
     6: {
         name: "",
         date: "",
         venue: "",
-        max: 100
+        max: 100,
+        due: "2023-12-05T08:30:00.234Z"
     },
 }
 

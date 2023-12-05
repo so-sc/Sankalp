@@ -406,11 +406,14 @@ export const EventRegister = async (id: string, data: any) => {
     try { 
         if (data.isEvent) {
             try {
+                if ((new Date()) > (new Date(EventNameModel[data.event.eve].due))) {
+                    return { success: false, message: `The registration is closed for ${EventNameModel[data.event.eve].name}.` }
+                }
                 if ((await Event.aggregate([
-                    { $match: { isEvent: {$exists: true, $eq: true}, 'event.eve': {$exists: true, $eq: data.eve } } },
+                    { $match: { isEvent: {$exists: true, $eq: true}, 'event.eve': {$exists: true, $eq: data.event.eve } } },
                     { $count: "count" }
-                ]))[0]["count"]+data.event.participant.length > Number(EventNameModel[data.eve]['max'])) {
-                    return { success: false, message: `The event registration of ${EventNameModel[data.eve]['name']} is closed.` }
+                ]))[0]["count"]+data.event.participant.length > Number(EventNameModel[data.event.eve]['max'])) {
+                    return { success: false, message: `The event registration of ${EventNameModel[data.event.eve]['name']} is closed.` }
                 }
             } catch (e) {}
             data.event.participant.map((member: Member) => {
@@ -437,6 +440,9 @@ export const EventRegister = async (id: string, data: any) => {
             }
             data.verify = false; 
         } else {
+            // if ((new Date())>(new Date(TalkNameModel[data.talk].due))) {
+            //     return { success: false, message: `The registration is closed for ${EventNameModel[data.eve].name}.` }
+            // }
             for (const talk of data.talk) {
                 if ((await Event.aggregate([
                     { $match: { isEvent: {$exists: true, $eq: false}, 'talk': { $elemMatch: { id: talk.id } } } },
