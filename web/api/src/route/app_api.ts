@@ -121,9 +121,13 @@ router.get("/info/:info", verifyToken, async(req, res) => {
 // Modifier
 // router.post("/modifier/:info", verifyToken, async(req, res) => {
 //     try {
-//         const info = Number(req.params.info);
-//         var modify;
-        
+//         const info = req.params.info;
+//         var modify, data;
+//         if (info==='e' || info==='t') {
+//             modify = await ();
+//         } else if (info==='') {
+//             modify = await ();
+//         }
 //         if (!modify.success) {
 //             res.status(500).json({ success: false, message: 'No info on this data.' })
 //         } else {
@@ -134,6 +138,7 @@ router.get("/info/:info", verifyToken, async(req, res) => {
 //     }
 // })
 
+// testing
 // router.get("/tester", async(req, res) => {
 //     res.json({})
 // });

@@ -98,8 +98,7 @@ export const sendUserVerifyMail = async (mail: string, id: string, name: string)
     for (const [key, value] of Object.entries(replacements)) {
       const regex = new RegExp(`\\${key}`, 'g');
       html = html.replace(regex, value);
-    }    
-
+    }   
      const result = await transporter.sendMail({
       from: process.env.EMAIL,
       to: mail,

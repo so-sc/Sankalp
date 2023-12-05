@@ -8,7 +8,7 @@ import { UserRegisterByID } from "./sankalpUser";
 
 const adminAuth = new mongo.Schema<AdminSigupModel>({
     _id: {
-        type: String,
+        type: mongo.Types.ObjectId,
         require: true
     },
     username: {
@@ -56,6 +56,7 @@ export const AdminRegister = async (data: AdminSigupModel) => {
         if (await AdminData.findOne({ _id: data._id })) {
             return { success: false, message: 'Admin access already exists.' }
         }
+        data._id = new mongo.Types.ObjectId(data._id);
         const admin = new AdminData(data);
         const info = await admin.save();
         return { success: true }
@@ -67,16 +68,13 @@ export const AdminRegister = async (data: AdminSigupModel) => {
 
 export const AdminSigninChecker = async (data: AdminSiginModel) => {
     try {
-        // if ((await AdminData.findOne({ username: data.username })).volunter){
-        //     (await AdminData.findOne({ _id: data.id, username: data.username }))
-        // }
         if (await AdminData.findOne({ username: data.username }) && await AdminData.findOne({ username: data.username, _id: data.id })) {
             var rs = await createToken(data.id);
             if (rs.success) {
                 let otp = '';
                 for (let i = 0; i < 6; i++) {
                     otp += Math.floor(Math.random() * 10).toString();
-                }
+                } 
                 let res = await sendAdminVerifyMail((await UserRegisterByID(data.id))["email"], otp);
                 if (!res.success) {
                     return { success: false, message: res.message }

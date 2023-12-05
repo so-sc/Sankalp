@@ -1,4 +1,6 @@
 
+import mongo from "mongoose";
+
 interface NameModel {
     [key: string]: { name: string, date: string; venue: string, max: any };
   }
@@ -86,7 +88,7 @@ export const HackathonNameModel = {
     name: "Codeblaze",
     date: "8th December 2023",
     venue: "Sahyadri College of Engineering & Management",
-    max: 325
+    max: 360
 }
 
 export const YearModel = {
@@ -194,7 +196,7 @@ export interface AdminPrivilege {
 }
 
 export interface AdminSigupModel {
-    _id: string,
+    _id: any,
     username: string,
     role: number,
     volunter?: {

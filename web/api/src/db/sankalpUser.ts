@@ -409,7 +409,7 @@ export const EventRegister = async (id: string, data: any) => {
                 if ((await Event.aggregate([
                     { $match: { isEvent: {$exists: true, $eq: true}, 'event.eve': {$exists: true, $eq: data.eve } } },
                     { $count: "count" }
-                ]))[0]["count"] === Number(EventNameModel[data.eve]['max'])) {
+                ]))[0]["count"]+data.event.participant.length > Number(EventNameModel[data.eve]['max'])) {
                     return { success: false, message: `The event registration of ${EventNameModel[data.eve]['name']} is closed.` }
                 }
             } catch (e) {}
@@ -441,7 +441,7 @@ export const EventRegister = async (id: string, data: any) => {
                 if ((await Event.aggregate([
                     { $match: { isEvent: {$exists: true, $eq: false}, 'talk': { $elemMatch: { id: talk.id } } } },
                     { $count: "count" }
-                ]))[0]["count"] === Number(TalkNameModel[data.eve]['max'][0])) {
+                ]))[0]["count"]+1 > Number(TalkNameModel[data.eve]['max'][0])) {
                     return { success: false, message: `The talk registration of ${TalkNameModel[data.eve]['name']} is closed.` }
                 }
             }
@@ -683,6 +683,9 @@ export const EventRegisterAddParticipant = async (id: string, data: Array<string
             { _id: new mongo.Types.ObjectId(id), isEvent: true },
             { $addToSet: { 'event.participant': { $each: data } } },
         )
+        await User.updateMany(
+            // { _id:  }
+        )
         return { success: true }
     } catch (e) {
         return { success: false }
@@ -896,9 +899,28 @@ export const HackathonQRAdder = async (id: string, qId: string) => {
 }
 
 
+export const HackathonGetLeaderPhoneNo = async () => {
+    try {
+        let res = (await Hackathon.aggregate([
+            { $unwind: "$member" },
+            { $match: { 'member.lead': { $exists: true, $eq: true } } },
+            { $group: { _id: null, data: { $push: "$member.info" } } },   
+            { $project: { _id: 0, info: "$data" } }
+        ]))[0]['info'];
+        let result = await UserRegistersPhoneNumber(res);
+        if (!result.success) {
+            return { success: false, message: result.message }
+        }
+        return { success: true, data: result.data }
+    } catch (e) {
+        console.log(e);
+        return { success: false, message: 'Something went wrong.'}
+    }
+}
+
+
 export const HackathonGetPhoneNo = async () => {
     try {
-        // let unable = Array();
         let res = (await Hackathon.aggregate([
             { $unwind: "$member" },
             { $group: { _id: null, data: { $push: "$member.info" } } },   

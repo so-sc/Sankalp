@@ -1,6 +1,6 @@
 
 import express from "express";
-import { UserRegisterTotal, HackathonCount, TalkCount, EventCount, UserRegisterYear, UserRegisterStudent, UserRegisterGender, EventRegisters, HackathonRegistersDetails, EventRegistersVerifyTalk, EventRegistersVerifyEvent, hackathonRegistersVerify, User, EventRegisterAll, HackathonRegisterAll, EventRegisterOfEvent, UserRegisterGetDetails, EventSendEmailEve, EventSendEmailAll, HackathonSendEmailLead, HackathonSendEmailAll, HackathonGetPhoneNo } from '../db/sankalpUser';
+import { UserRegisterTotal, HackathonCount, TalkCount, EventCount, UserRegisterYear, UserRegisterStudent, UserRegisterGender, EventRegisters, HackathonRegistersDetails, EventRegistersVerifyTalk, EventRegistersVerifyEvent, hackathonRegistersVerify, User, EventRegisterAll, HackathonRegisterAll, EventRegisterOfEvent, UserRegisterGetDetails, EventSendEmailEve, EventSendEmailAll, HackathonSendEmailLead, HackathonSendEmailAll, HackathonGetPhoneNo, HackathonGetLeaderPhoneNo } from '../db/sankalpUser';
 import { adminVerifyToken } from "../workers/auth";
 
 const router = express.Router();
@@ -127,7 +127,7 @@ router.get("/get-hackathons", adminVerifyToken, async(req, res) => {
     }
 })
 
-// Get all hackathon team registered for hackathon
+// Get all hackathon participants phone numbers
 router.get("/get-hackathons-phone-no", async(req, res) => {
     try {
         let data = await HackathonGetPhoneNo();
@@ -140,6 +140,18 @@ router.get("/get-hackathons-phone-no", async(req, res) => {
     }
 })
 
+// Get all hackathon team leaders phone number
+router.get("/get-hackathons-leader-phone-no", async(req, res) => {
+    try {
+        let data = await HackathonGetLeaderPhoneNo();
+        if (!data.success) {
+            return res.status(500).json({ success: true, message: data.message })
+        }
+        return res.status(200).json(data)
+    } catch (e) {
+        return res.status(500).json({ success: false, message: e.message })
+    }
+})
 
 /* Generator */
 
@@ -205,7 +217,7 @@ router.post("/event-mail/:eve", adminVerifyToken, async(req, res) => {
 });
 
 
-router.post("/hackathon-mail-all", async(req, res) => {
+router.post("/hackathon-mail-all", adminVerifyToken, async(req, res) => {
     try {
         let data = req.body;
         let result = await HackathonSendEmailAll(data);
