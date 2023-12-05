@@ -585,6 +585,40 @@ export const EventRegisterOfEvent = async (eve: number) => {
     }
 }
 
+
+export const EventRegistersGetPhoneNo = async () => {
+    try {
+        var info = (await Event.aggregate([
+            { $match: { isEvent: true } },
+            { $unwind: "$event.participant" },
+            { $group: { _id: "$event.eve", info: { $push: "$event.participant.info" } } },
+            { $project: { _id: 0, info: "$info" } }
+        ]))
+        var data = await Promise.all(info.map(async (id) => { return (await UserRegistersPhoneNumber(id.info)).data }));
+        return { success: true, data: data }
+    } catch (e) {
+        return { success: false, message: "Something went wrong." }
+    }
+}
+
+export const EventRegistersGetEventPhoneNo = async (eve: number) => {
+    try {
+        var info = (await Event.aggregate([
+            { $match: { isEvent: true, 'event.eve': eve } },
+            { $unwind: "$event.participant" },
+            { $group: { _id: null, info: { $push: "$event.participant.info" } } },
+            { $project: { _id: 0, info: "$info" } }
+        ]))[0]['info']
+        var data = await UserRegistersPhoneNumber(info);
+        if (!data.success) {
+            return { success: false, message: data.message}
+        }
+        return { success: true, data: data.data }
+    } catch (e) {
+        return { success: false, message: "Something went wrong." }
+    }
+}
+
 export const EventCount = async () => {
     try {
         return {

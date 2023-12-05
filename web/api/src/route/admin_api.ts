@@ -1,6 +1,6 @@
 
 import express from "express";
-import { UserRegisterTotal, HackathonCount, TalkCount, EventCount, UserRegisterYear, UserRegisterStudent, UserRegisterGender, EventRegisters, HackathonRegistersDetails, EventRegistersVerifyTalk, EventRegistersVerifyEvent, hackathonRegistersVerify, User, EventRegisterAll, HackathonRegisterAll, EventRegisterOfEvent, UserRegisterGetDetails, EventSendEmailEve, EventSendEmailAll, HackathonSendEmailLead, HackathonSendEmailAll, HackathonGetPhoneNo, HackathonGetLeaderPhoneNo } from '../db/sankalpUser';
+import { UserRegisterTotal, HackathonCount, TalkCount, EventCount, UserRegisterYear, UserRegisterStudent, UserRegisterGender, EventRegisters, HackathonRegistersDetails, EventRegistersVerifyTalk, EventRegistersVerifyEvent, hackathonRegistersVerify, User, EventRegisterAll, HackathonRegisterAll, EventRegisterOfEvent, UserRegisterGetDetails, EventSendEmailEve, EventSendEmailAll, HackathonSendEmailLead, HackathonSendEmailAll, HackathonGetPhoneNo, HackathonGetLeaderPhoneNo, EventRegistersGetEventPhoneNo, EventRegistersGetPhoneNo } from '../db/sankalpUser';
 import { adminVerifyToken } from "../workers/auth";
 
 const router = express.Router();
@@ -112,6 +112,36 @@ router.get("/get-event/:eve", adminVerifyToken, async(req, res) => {
 //         return res.status(500).json({ success: false, message: e.message })
 //     }
 // })
+
+
+router.get("/get-events-phone-no", adminVerifyToken, async(req, res) => {
+    try {
+        let data = await EventRegistersGetPhoneNo();
+        if (!data.success) {
+            return res.status(500).json({ success: true, message: data.message })
+        }
+        return res.status(200).json(data)
+    } catch (e) {
+        return res.status(500).json({ success: false, message: e.message })
+    }
+})
+
+
+router.get("/get-event-phone-no/:eve", adminVerifyToken, async(req, res) => {
+    try {
+        let eve = Number(req.params.eve);
+        if (!eve) {
+            return { success: false, message: 'eve params is missing.' }
+        }
+        let data = await EventRegistersGetEventPhoneNo(eve);
+        if (!data.success) {
+            return res.status(500).json({ success: false, message: data.message })
+        }
+        return res.status(200).json(data)
+    } catch (e) {
+        return res.status(500).json({ success: false, message: e.message })
+    }
+})
 
 
 // Get all hackathon team registered for hackathon
