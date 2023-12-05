@@ -95,6 +95,15 @@ export const UserRegisterGetDetails = async () => {
     }
 }
 
+export const UserRegisterGetInfoDetails = async (info: string) => {
+    try {
+        let rs = (info==='e')?(await User.find({}).select('name email -_id')):(await User.find({}).select('name PhNo -_id'))
+        return { success: true, data: rs }
+    } catch (e) {
+        return { success: true, message: 'Something went wrong.' }
+    }
+}
+
 export const UserRegisterByMail = async (email: string) => {
     return await User.findOne({ email: email })
 }

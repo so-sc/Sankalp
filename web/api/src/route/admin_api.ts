@@ -1,6 +1,6 @@
 
 import express from "express";
-import { UserRegisterTotal, HackathonCount, TalkCount, EventCount, UserRegisterYear, UserRegisterStudent, UserRegisterGender, EventRegisters, HackathonRegistersDetails, EventRegistersVerifyTalk, EventRegistersVerifyEvent, hackathonRegistersVerify, User, EventRegisterAll, HackathonRegisterAll, EventRegisterOfEvent, UserRegisterGetDetails, EventSendEmailEve, EventSendEmailAll, HackathonSendEmailLead, HackathonSendEmailAll, HackathonGetPhoneNo, HackathonGetLeaderPhoneNo, EventRegistersGetEventPhoneNo, EventRegistersGetPhoneNo } from '../db/sankalpUser';
+import { UserRegisterTotal, HackathonCount, TalkCount, EventCount, UserRegisterYear, UserRegisterStudent, UserRegisterGender, EventRegisters, HackathonRegistersDetails, EventRegistersVerifyTalk, EventRegistersVerifyEvent, hackathonRegistersVerify, User, EventRegisterAll, HackathonRegisterAll, EventRegisterOfEvent, UserRegisterGetDetails, EventSendEmailEve, EventSendEmailAll, HackathonSendEmailLead, HackathonSendEmailAll, HackathonGetPhoneNo, HackathonGetLeaderPhoneNo, EventRegistersGetEventPhoneNo, EventRegistersGetPhoneNo, UserRegisterGetInfoDetails } from '../db/sankalpUser';
 import { adminVerifyToken } from "../workers/auth";
 
 const router = express.Router();
@@ -47,6 +47,20 @@ router.get("/get-users", adminVerifyToken, async(req, res) => {
         return res.status(500).json({ success: false, message: e.message })
     }
 })
+
+
+router.get("/get-users-info/:info", adminVerifyToken, async(req, res) => {
+    try {
+        let data = await UserRegisterGetInfoDetails(req.params.info);
+        if (!data.success) {
+            return res.status(500).json({ success: true, message: data.message })
+        }
+        return res.status(200).json({ success: true, result: data.data })
+    } catch (e) {
+        return res.status(500).json({ success: false, message: e.message })
+    }
+})
+
 
 router.get("/get-events", adminVerifyToken, async(req, res) => {
     try {
@@ -182,6 +196,8 @@ router.get("/get-hackathons-leader-phone-no", async(req, res) => {
         return res.status(500).json({ success: false, message: e.message })
     }
 })
+
+
 
 /* Generator */
 
