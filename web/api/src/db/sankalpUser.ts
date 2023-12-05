@@ -863,7 +863,7 @@ export const HackathonRegister = async (id: string, data: any) => {
             { $project: { size: { $size: '$member' } } },
             { $group: { _id: null, size: { $sum: '$size' } } }
         ]))[0]['size']+data.member.length > HackathonNameModel['max']) {
-            return { success: false, message: `The hackathon registration of ${HackathonNameModel['name']} is closed.` }
+            return { success: false, message: `As we have reached the maximum number of participants, the hackathon registration of is closed.` }
         }
         const hackathon = new Hackathon(data);
         info = await hackathon.save();
