@@ -35,7 +35,7 @@ export const adminVerifyToken = async (req: Request, res: Response, next: () => 
         }
     } catch (error) {
         console.log(error);
-        return res.status(401).json({ success: false, message: 'Authentication failed' });
+        return res.status(401).json({ success: false, message: 'Authentication failed. Due to some internal issue.' });
     }
 }
 
