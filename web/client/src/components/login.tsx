@@ -1,5 +1,6 @@
 "use client"
 
+import LoginForm from "@/components/forms/login-form"
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
@@ -115,7 +116,7 @@ export default function Login({ isVerify }: LoginProps) {
   }
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <>
       <div className="mb-10">
         {isVerify && (
           <H1 className="lg:text-8xl md:text-6xl text-5xl text-center">
@@ -126,82 +127,38 @@ export default function Login({ isVerify }: LoginProps) {
           {isVerify ? "Verify User" : "Login to Dashboard"}
         </p>
       </div>
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onLogin)}
-          className="flex flex-col gap-2"
-        >
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input type="email" placeholder="Email" {...field} />
-                </FormControl>
-                {form.formState.errors.email?.message && (
-                  <p className="text-red-500">
-                    {form.formState.errors.email?.message}
-                  </p>
-                )}
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input
-                    type="password"
-                    placeholder="Password (Authorization ID which you got in mail)"
-                    {...field}
-                  />
-                </FormControl>
-                {form.formState.errors.password?.message && (
-                  <p className="text-red-500">
-                    {form.formState.errors.password?.message}
-                  </p>
-                )}
-              </FormItem>
-            )}
-          />
-          <Button
-            type="submit"
-            className="mt-4 flex items-center gap-2"
-            disabled={isLoading}
-          >
-            {isVerify ? "Verify" : "Login"}
-            {isLoading && <TbLoader2 className="animate-spin" />}
-          </Button>
-        </form>
-        {error && <p className="text-red-500 text-center mt-2">{error}</p>}
-      </Form>
-      <div>
-        {!isVerify && (
-          <p className="text-center mt-4">
-            Yet to register?{" "}
-            <Link
-              href={`?${new URLSearchParams({ state: "register" })}`}
-              className="underline underline-offset-2 hover:underline-offset-4"
-            >
-              Register Here
-            </Link>
-          </p>
+
+      <LoginForm
+        form={form}
+        onLogin={onLogin}
+        isLoading={isLoading}
+        error={error}
+      >
+        {userIsVerified && (
+          <div className="text-center mt-4">
+            <p className="text-green-500">Verified Succesfully!</p>
+            <p>
+              Go to{" "}
+              <Link href="/dashboard" className="underline">
+                Dashboard
+              </Link>
+            </p>
+          </div>
         )}
-      </div>
-      {userIsVerified && (
-        <div className="text-center mt-4">
-          <p className="text-green-500">Verified Succesfully!</p>
-          <p>
-            Go to{" "}
-            <Link href="/dashboard" className="underline">
-              Dashboard
-            </Link>
-          </p>
-        </div>
-      )}
-    </div>
+        {!isVerify && (
+          <div>
+            <p className="text-center mt-4">
+              Yet to register?{" "}
+              <Link
+                href={`?${new URLSearchParams({ state: "register" })}`}
+                className="underline underline-offset-2 hover:underline-offset-4"
+              >
+                Register Here
+              </Link>
+            </p>
+          </div>
+        )}
+      </LoginForm>
+    </>
   )
 }
