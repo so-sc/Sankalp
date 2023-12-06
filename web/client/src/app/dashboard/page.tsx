@@ -49,7 +49,8 @@ export async function getUser() {
     }
   )
   revalidatePath("/dashboard")
-  return response.json()
+  const data = response.json()
+  return data
 }
 
 export default async function DashboardPage() {
