@@ -140,7 +140,7 @@ router.get("/get-events-phone-no", adminVerifyToken, async(req, res) => {
 })
 
 
-router.get("/get-event-phone-no/:eve", adminVerifyToken, async(req, res) => {
+router.get("/get-event-phone-no/:eve", async(req, res) => {
     try {
         let eve = Number(req.params.eve);
         if (!eve) {
