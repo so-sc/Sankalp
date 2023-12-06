@@ -582,18 +582,16 @@ export const EventSendEmailEve = async (eve: number, data: any) => {
 
 export const EventRegisterOfEvent = async (eve: number) => {
     try {
-        let rs = (await Event.aggregate([
+        let rs: any = (await Event.aggregate([
             { $match: { isEvent: true, 'event.eve': eve } },
             { $group: { _id: null, data: { $push: { verify: '$verify', qrId: '$qrId', participant: '$event.participant' } } } },
             { $project: { _id: 0, data: "$data" } }
         ]))[0]
-        console.log(rs);
         var res = await EventRegisterTeamScrapper(rs.data);
         if (!res.success) {
             return { success: false, message: res.messsage }
         }
-        rs.data = res.data;
-        return { success: false, data: rs }
+        return { success: true, data: res.data }
     } catch (e) {
         console.log(`db>sankalpUser>EventRegisterOfEvent: ${e.message}`);
         return { success: false, message: 'Something went wrong' }

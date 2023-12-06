@@ -37,8 +37,10 @@ export const AdminData = mongo.model('auth', adminAuth);
 
 export const isAdmin = async (id: string) => {
     try {
-        return (await AdminData.findOne({ _id: id }))?true:false
+        return (await AdminData.findOne({ _id: new mongo.Types.ObjectId(id) }))?true:false
     } catch (e) {
+        console.log(e);
+        
         return false
     }
 }

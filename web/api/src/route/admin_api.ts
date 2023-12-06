@@ -97,7 +97,7 @@ router.get("/get-event/:eve", adminVerifyToken, async(req, res) => {
         if (!data.success) {
             return res.status(500).json({ success: true, message: data.message })
         }
-        return res.status(200).json({ success: true, result: data.data })
+        return res.status(200).json(data)
     } catch (e) {
         return res.status(500).json({ success: false, message: e.message })
     }
@@ -261,7 +261,7 @@ router.post("/hackathon-mail-leader", adminVerifyToken, async(req, res) => {
 });
 
 
-router.post("/event-mail/:eve", adminVerifyToken, async(req, res) => {
+router.post("/event-mail/:eve", async(req, res) => {
     try {
         let data = req.body;
         let result = await EventSendEmailEve(Number(req.params.eve), data);
