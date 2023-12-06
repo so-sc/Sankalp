@@ -1,6 +1,6 @@
 
 import express from "express";
-import { UserRegisterTotal, HackathonCount, TalkCount, EventCount, UserRegisterYear, UserRegisterStudent, UserRegisterGender, EventRegisters, HackathonRegistersDetails, EventRegistersVerifyTalk, EventRegistersVerifyEvent, hackathonRegistersVerify, User, EventRegisterAll, HackathonRegisterAll, EventRegisterOfEvent, UserRegisterGetDetails, EventSendEmailEve, EventSendEmailAll, HackathonSendEmailLead, HackathonSendEmailAll, HackathonGetPhoneNo, HackathonGetLeaderPhoneNo, EventRegistersGetEventPhoneNo, EventRegistersGetPhoneNo, UserRegisterGetInfoDetails } from '../db/sankalpUser';
+import { UserRegisterTotal, HackathonCount, TalkCount, EventCount, UserRegisterYear, UserRegisterStudent, UserRegisterGender, EventRegisters, HackathonRegistersDetails, EventRegistersVerifyTalk, EventRegistersVerifyEvent, hackathonRegistersVerify, User, EventRegisterAll, HackathonRegisterAll, EventRegisterOfEvent, UserRegisterGetDetails, EventSendEmailEve, EventSendEmailAll, HackathonSendEmailLead, HackathonSendEmailAll, HackathonGetPhoneNo, HackathonGetLeaderPhoneNo, EventRegistersGetEventPhoneNo, EventRegistersGetPhoneNo, UserRegisterGetInfoDetails, HackathonGetTeamwiseDetails } from '../db/sankalpUser';
 import { adminVerifyToken } from "../workers/auth";
 
 const router = express.Router();
@@ -34,7 +34,6 @@ router.get("/verify/:info", adminVerifyToken, async(req, res) => {
 
 
 /* ---------------- Access data --------------------- */
-
 
 router.get("/get-users", adminVerifyToken, async(req, res) => {
     try {
@@ -172,7 +171,7 @@ router.get("/get-hackathons", adminVerifyToken, async(req, res) => {
 })
 
 // Get all hackathon participants phone numbers
-router.get("/get-hackathons-phone-no", async(req, res) => {
+router.get("/get-hackathons-phone-no", adminVerifyToken, async(req, res) => {
     try {
         let data = await HackathonGetPhoneNo();
         if (!data.success) {
@@ -185,7 +184,7 @@ router.get("/get-hackathons-phone-no", async(req, res) => {
 })
 
 // Get all hackathon team leaders phone number
-router.get("/get-hackathons-leader-phone-no", async(req, res) => {
+router.get("/get-hackathons-leader-phone-no", adminVerifyToken, async(req, res) => {
     try {
         let data = await HackathonGetLeaderPhoneNo();
         if (!data.success) {
@@ -231,6 +230,19 @@ router.get("/get-hackathons-leader-phone-no", async(req, res) => {
 //         res.status(500).send('Error generating Excel');
 //     }
 // });
+
+
+router.get("/hackathon-teamwise", adminVerifyToken, async (req, res) => {
+    try {
+        let result = await HackathonGetTeamwiseDetails();
+        if (!result.success) {
+            return res.status(500).json({ success: false, message: result.message })
+        }
+        return res.status(200).json({ success: true, result: result.data })
+    } catch (e) {
+        return res.status(500).json({ success: false, message: e.message })
+    }
+})
 
 
 /* ----------------- Sending Mail ----------------- */

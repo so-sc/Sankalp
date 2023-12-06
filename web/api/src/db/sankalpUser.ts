@@ -989,6 +989,30 @@ export const HackathonGetPhoneNo = async () => {
     }
 }
 
+export const HackathonGetTeamwiseDetails = async () => {
+    try {
+        let info = (await Hackathon.aggregate([
+            { $group: { _id: null, 
+              info: { $push: { teamName: "$name",  theme: "$theme", themeDesc: "$themeDesc", 
+              member: {
+                $map: { input: "$member", as: "m", in: { $toObjectId: "$$m.info" } }
+              } } } } }, { $project: { _id: 0, info: "$info"} }
+        ]))[0]['info'];
+        var data = await Promise.all(info.map(async (team: any) => {
+            team.member = (await User.aggregate([
+                { $match: { _id: { $in: team.member } } },
+                { $group: { _id: null, data: { $push: {name: "$name", phone: "$PhNo", email: "$email", batch: "$year", branch: "$branch", college: "$college" } } } },
+                { $project: { _id: 0, data: "$data" } }
+            ]))[0]["data"];
+            return team;            
+        }));
+        return { success: true, data: data }
+    } catch (e) {
+        console.log(e);
+        return { success: false, message: 'Something went wrong.'}
+    }
+}
+
 export const HackathonSendEmailLead = async (data: any) => {
     try {
         let unable = Array();

@@ -9,8 +9,8 @@ export const EventNameModel: NameModel = {
         name: "DeCode: Capture the flag",
         date: "9th December 2023 at 2:00PM to 3:00PM",
         venue: "Digital Library - First Floor",
-        max: 18,
-        due: "2023-12-09T15:30:00.234Z"
+        max: 15,
+        due: "2023-12-06T22:30:00.234Z"
     },
     2: {
         name: "Open Source Fiesta",
