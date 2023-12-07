@@ -410,6 +410,32 @@ export const EventDeleteByID = async (id: string) => {
     }
 }
 
+
+export const EventGetTeamwiseDetails = async (eve: number) => {
+    try {
+        let info = (await Hackathon.aggregate([
+            {$match: {'event.eve': eve}},
+            { $group: { _id: null, info: { $push: "$event.participant.info" } } }, 
+            { $project: { _id: 0, info: "$info"} }
+        ]));
+        console.log(info);
+        var data = info;
+        // var data = await Promise.all(info.map(async (team: any) => {
+        //     team.member = (await User.aggregate([
+        //         { $match: { _id: { $in: team.member } } },
+        //         { $group: { _id: null, data: { $push: {name: "$name", phone: "$PhNo", email: "$email", batch: "$year", branch: "$branch", college: "$college" } } } },
+        //         { $project: { _id: 0, data: "$data" } }
+        //     ]))[0]["data"];
+        //     return team;            
+        // }));
+        return { success: true, data: data }
+    } catch (e) {
+        console.log(e);
+        return { success: false, message: 'Something went wrong.'}
+    }
+}
+
+
 export const EventRegister = async (id: string, data: any) => {
     let info;
     try { 

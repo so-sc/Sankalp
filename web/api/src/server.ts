@@ -22,7 +22,7 @@ db.on('error', (error: Error) => console.log("Check your mongodb please. There i
 db.on('open', () => console.log("Mongodb is connected."))
 app.use(express.json())
 
-if (process.env.PRODUCTION) {
+if (process.env.PRODUCTION==="true") {
     app.use(cors({
         origin: '*', // process.env.DOMAIN,
         methods: 'GET, HEAD, PUT, PATCH, POST, DELETE',
@@ -38,7 +38,7 @@ if (process.env.PRODUCTION) {
     });
 }
 
-if (process.env.PRODUCTION) {
+if (process.env.PRODUCTION==="true") {
     app.set('trust proxy', true);
 }
 app.use(bodyParser.json());
