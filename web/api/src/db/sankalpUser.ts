@@ -413,21 +413,24 @@ export const EventDeleteByID = async (id: string) => {
 
 export const EventGetTeamwiseDetails = async (eve: number) => {
     try {
-        let info = (await Hackathon.aggregate([
-            {$match: {'event.eve': eve}},
-            { $group: { _id: null, info: { $push: "$event.participant.info" } } }, 
+        if (!eve) {
+            return { success: false, message: "Please provide which event details you want to retrieve." }
+        }
+        let info = (await Event.aggregate([
+            { $match: { 'event.eve': {$exists: true, $eq: eve} } },
+            { $group: { _id: null, info: { $push: {
+                $map: { input: "$event.participant", as: "m", in: { $toObjectId: "$$m.info" } }
+            }}}},
             { $project: { _id: 0, info: "$info"} }
-        ]));
-        console.log(info);
-        var data = info;
-        // var data = await Promise.all(info.map(async (team: any) => {
-        //     team.member = (await User.aggregate([
-        //         { $match: { _id: { $in: team.member } } },
-        //         { $group: { _id: null, data: { $push: {name: "$name", phone: "$PhNo", email: "$email", batch: "$year", branch: "$branch", college: "$college" } } } },
-        //         { $project: { _id: 0, data: "$data" } }
-        //     ]))[0]["data"];
-        //     return team;            
-        // }));
+        ]))[0]['info'];
+        var data = await Promise.all(info.map(async (team: any) => {
+            team = (await User.aggregate([
+                { $match: { _id: { $in: team } } },
+                { $group: { _id: null, data: { $push: {name: "$name", phone: "$PhNo", email: "$email", batch: "$year", branch: "$branch", college: "$college" } } } },
+                { $project: { _id: 0, data: "$data" } }
+            ]))[0]["data"];
+            return team;            
+        }));
         return { success: true, data: data }
     } catch (e) {
         console.log(e);
