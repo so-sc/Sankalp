@@ -1,11 +1,15 @@
 "use client"
 import React, { useEffect, useState } from "react"
+// import { cookies } from "next/headers"
+import { getCookie } from "cookies-next"
 import { QrReader } from "react-qr-reader"
 import { redirect } from "next/navigation"
+import { log } from "console"
+import { CornerDownLeft } from "lucide-react"
 
 export default function Page() {
   const [data, setData] = useState("")
-  const [selectedOption, setSelectedOption] = useState("")
+  const [selectedOption, setSelectedOption] = useState("e")
 
   useEffect(() => {
     data && console.log("state value changed -->", data)
@@ -18,7 +22,7 @@ export default function Page() {
   // scanner result handler
   const handleScannerOutput = (res: React.SetStateAction<string>) => {
     console.log("response of qr code scanner -->", res)
-    setData(res)
+    console.log('option: '+selectedOption)
     sendDataToAPI(selectedOption, res)
     // Redirect should be performed after the state has been updated
     // redirect(`/hackathon/qrcode/${res}`)
@@ -30,21 +34,26 @@ export default function Page() {
     option: string,
     qrData: React.SetStateAction<string>
   ) => {
-    const apiUrl = `http://localhost:7000/api/admin/verify/${option}`
-    console.log(qrData)
-    console.log("option:", option)
+    // const nextCookie = cookies()
+    // const token = nextCookie.get("admin-token")?.value
+    const token = getCookie("admin-token");
     try {
-      const response = await fetch(apiUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ qrData }), // Sending JSON data in the request body
-      })
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/verify/${option}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            // Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ "eventID": qrData }),
+        }
+      )
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`)
-      }
+      // if (!response.ok) {
+      //   throw new Error(`HTTP error! Status: ${response.status}`)
+      // }
 
       let res = await response.json()
       console.log(res)
@@ -53,8 +62,7 @@ export default function Page() {
         alert("Data sent to the API successfully")
         // Handle success if needed
       } else {
-        const errorMessage = res.message
-        console.error(`API error: ${errorMessage}`)
+        console.error(`API error: ${res.message}`)
         // Handle error if needed
       }
     } catch (error) {

@@ -22,7 +22,7 @@ db.on('error', (error: Error) => console.log("Check your mongodb please. There i
 db.on('open', () => console.log("Mongodb is connected."))
 app.use(express.json())
 
-if (process.env.PRODUCTION==="true") {
+// if (process.env.PRODUCTION==="true") {
     app.use(cors({
         origin: '*', // process.env.DOMAIN,
         methods: 'GET, HEAD, PUT, PATCH, POST, DELETE',
@@ -36,11 +36,11 @@ if (process.env.PRODUCTION==="true") {
         res.header('Access-Control-Allow-Headers', 'Content-Type, Origin, X-Requested-With, Content-Type, Accept, Authorization, Access-Control-Allow-Origin, Access-Control-Allow-Methods, Access-Control-Allow-Headers'); 
         next();
     });
-}
+// }
 
-if (process.env.PRODUCTION==="true") {
-    app.set('trust proxy', true);
-}
+// if (process.env.PRODUCTION==="true") {
+app.set('trust proxy', true);
+// }
 app.use(bodyParser.json());
 
 var server;

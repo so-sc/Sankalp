@@ -700,11 +700,12 @@ export const TalkCount = async () => {
 }
 
 export const EventRegistersVerifyEvent = async (id: string) => {
-    if ((await Event.find({ _id: id }))[0]) {
+    if (!(await Event.findOne({ _id: new mongo.Types.ObjectId(id) }))) {
         return { success: false, message: 'Check your qr code.' }
-    } else if ((await Event.find({ _id: new mongo.Types.ObjectId(id), verify: true}))[0]) {
+    } else if (await Event.findOne({ _id: new mongo.Types.ObjectId(id), verify: true})) {
         return { success: false, message: 'Attendee team is already verified.' }
-    }else if (await Event.updateOne({ _id: new mongo.Types.ObjectId(id) }, { $set: { verify: true }})) {
+    } else if (await Event.findOne({ _id: new mongo.Types.ObjectId(id), verify: false})) {
+        await Event.updateOne({ _id: new mongo.Types.ObjectId(id) }, { $set: { verify: true }})
         return { success: true }
     } else {
         return { success: false, message: 'The ID is invalid.' }
@@ -713,9 +714,9 @@ export const EventRegistersVerifyEvent = async (id: string) => {
 
 export const EventRegistersVerifyTalk = async (id: string, event: number) => {
     try {
-        if ((await Event.find({ _id: id }))[0]) {
+        if (!(await Event.findOne({ _id: new mongo.Types.ObjectId(id) }))) {
             return { success: false, message: 'Check your qr code.' }
-        } else if ((await Event.find({ _id: id, 'talk.type.id': event, 'talk.type.verify': true}))[0]) {
+        } else if ((await Event.findOne({ _id: id, 'talk.type.id': event, 'talk.type.verify': true}))) {
             return { success: false, message: 'Attendee is already verified.' }
         }else if (await Event.findOne(
             { _id: id, 'talk.type.id': event },
@@ -1096,11 +1097,12 @@ export const HackathonSendEmailAll = async (data: any) => {
 
 
 export const hackathonRegistersVerify = async (id: string) => {
-    if ((await Hackathon.find({ _id: id }))[0]) {
+    if (!(await Hackathon.findOne({ _id: new mongo.Types.ObjectId(id) }))) {
         return { success: false, message: 'Check your qr code.' }
-    } if ((await Hackathon.find({ _id: new mongo.Types.ObjectId(id), verify: true}))[0]) {
+    } if ((await Hackathon.findOne({ _id: new mongo.Types.ObjectId(id), verify: true}))) {
         return { success: false, message: 'Hackathon team is already verified.' }
-    }else if (await Hackathon.updateOne({ _id: new mongo.Types.ObjectId(id) }, { $set: { verify: true }})) {
+    }else if (await Hackathon.findOne({ _id: new mongo.Types.ObjectId(id) })) {
+        await Hackathon.updateOne({ _id: new mongo.Types.ObjectId(id) }, { $set: { verify: true }})
         return { success: true }
     } else {
         return { success: false, message: 'The ID is invalid.' }

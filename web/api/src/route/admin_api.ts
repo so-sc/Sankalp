@@ -8,7 +8,7 @@ const router = express.Router();
 /* ----------------- Verify ------------------------ */
 
 // Verify the attendee
-router.get("/verify/:info", adminVerifyToken, async(req, res) => {
+router.post("/verify/:info", adminVerifyToken, async(req, res) => {
     try {
         var info = req.params.info;
         var data = req.body;
