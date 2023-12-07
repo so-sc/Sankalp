@@ -1,6 +1,6 @@
 
 import express from "express";
-import { UserRegisterTotal, HackathonCount, TalkCount, EventCount, UserRegisterYear, UserRegisterStudent, UserRegisterGender, EventRegisters, HackathonRegistersDetails, EventRegistersVerifyTalk, EventRegistersVerifyEvent, hackathonRegistersVerify, User, EventRegisterAll, HackathonRegisterAll, EventRegisterOfEvent, UserRegisterGetDetails, EventSendEmailEve, EventSendEmailAll, HackathonSendEmailLead, HackathonSendEmailAll, HackathonGetPhoneNo, HackathonGetLeaderPhoneNo, EventRegistersGetEventPhoneNo, EventRegistersGetPhoneNo, UserRegisterGetInfoDetails, HackathonGetTeamwiseDetails } from '../db/sankalpUser';
+import { UserRegisterTotal, HackathonCount, TalkCount, EventCount, UserRegisterYear, UserRegisterStudent, UserRegisterGender, EventRegisters, HackathonRegistersDetails, EventRegistersVerifyTalk, EventRegistersVerifyEvent, hackathonRegistersVerify, User, EventRegisterAll, HackathonRegisterAll, EventRegisterOfEvent, UserRegisterGetDetails, EventSendEmailEve, EventSendEmailAll, HackathonSendEmailLead, HackathonSendEmailAll, HackathonGetPhoneNo, HackathonGetLeaderPhoneNo, EventRegistersGetEventPhoneNo, EventRegistersGetPhoneNo, UserRegisterGetInfoDetails, HackathonGetTeamwiseDetails, EventGetTeamwiseDetails } from '../db/sankalpUser';
 import { adminVerifyToken } from "../workers/auth";
 
 const router = express.Router();
@@ -140,7 +140,7 @@ router.get("/get-events-phone-no", adminVerifyToken, async(req, res) => {
 })
 
 
-router.get("/get-event-phone-no/:eve", async(req, res) => {
+router.get("/get-event-phone-no/:eve", adminVerifyToken, async(req, res) => {
     try {
         let eve = Number(req.params.eve);
         if (!eve) {
@@ -245,6 +245,18 @@ router.get("/hackathon-teamwise", adminVerifyToken, async (req, res) => {
 })
 
 
+router.get("/event-teamwise/:eve", adminVerifyToken, async (req, res) => {
+    try {
+        let result = await EventGetTeamwiseDetails(Number(req.params.eve));
+        if (!result.success) {
+            return res.status(500).json({ success: false, message: result.message })
+        }
+        return res.status(200).json({ success: true, result: result.data })
+    } catch (e) {
+        return res.status(500).json({ success: false, message: e.message })
+    }
+})
+
 /* ----------------- Sending Mail ----------------- */
 
 router.post("/hackathon-mail-leader", adminVerifyToken, async(req, res) => {
@@ -261,7 +273,7 @@ router.post("/hackathon-mail-leader", adminVerifyToken, async(req, res) => {
 });
 
 
-router.post("/event-mail/:eve", async(req, res) => {
+router.post("/event-mail/:eve", adminVerifyToken, async(req, res) => {
     try {
         let data = req.body;
         let result = await EventSendEmailEve(Number(req.params.eve), data);
@@ -337,7 +349,7 @@ router.get("/get-feedback", adminVerifyToken, async(req, res) => {
 // ----------------- STATISTICS ----------------------
 
 // 
-router.get("/statistics/count", async(req, res) => {
+router.get("/statistics/count", adminVerifyToken, async(req, res) => {
     try {
         return res.status(200).json({ 
             success: true, 
