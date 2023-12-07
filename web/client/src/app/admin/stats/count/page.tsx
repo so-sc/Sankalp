@@ -14,8 +14,8 @@ async function getRegistrationCount() {
   const cookieObj = cookies()
   const adminToken = cookieObj.get("admin-token")?.value
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/statistics/count`,
-    // "https://sankalp-api.sosc.org.in/api/admin/statistics/count",
+    // `${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/statistics/count`,
+    "https://sankalp-api.sosc.org.in/api/admin/statistics/count",
     {
       headers: {
         "Content-Type": "application/json",

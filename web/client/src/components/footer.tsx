@@ -132,6 +132,7 @@ const youtubeLink = "https://www.youtube.com/channel/UCk8nlSMwUT-jhEtamMF-V-w"
 const discordLink = "https://discord.gg/hHYfMRydAK"
 
 const communityGuidelines = "https://github.com/so-sc/code-of-conduct"
+const termsAndConditions = "https://sankalp.sosc.org.in/t&c"
 
 const Footer = () => {
   return (
@@ -200,6 +201,12 @@ const Footer = () => {
                   target="_blank"
                 >
                   Community Guidelines
+                </Link>
+                <Link
+                  className="pt-3 hover:underline w-fit hover:underline-offset-4"
+                  href={termsAndConditions}
+                >
+                  Terms and Conditions
                 </Link>
               </div>
             </div>
