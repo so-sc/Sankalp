@@ -1,11 +1,8 @@
 "use client"
 import React, { useEffect, useState } from "react"
-// import { cookies } from "next/headers"
 import { getCookie } from "cookies-next"
 import { QrReader } from "react-qr-reader"
 import { redirect } from "next/navigation"
-import { log } from "console"
-import { CornerDownLeft } from "lucide-react"
 
 export default function Page() {
   const [data, setData] = useState("")
@@ -18,8 +15,7 @@ export default function Page() {
   useEffect(() => {
     console.log("selectedOption changed -->", selectedOption)
   }, [selectedOption])
-
-  // scanner result handler
+  
   const handleScannerOutput = (res: React.SetStateAction<string>) => {
     console.log("response of qr code scanner -->", res)
     console.log('option: '+selectedOption)
@@ -34,8 +30,6 @@ export default function Page() {
     option: string,
     qrData: React.SetStateAction<string>
   ) => {
-    // const nextCookie = cookies()
-    // const token = nextCookie.get("admin-token")?.value
     const token = getCookie("admin-token");
     try {
       const response = await fetch(
@@ -44,30 +38,19 @@ export default function Page() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            // Authorization: `Bearer ${token}`,
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({ "eventID": qrData }),
         }
       )
-
-      // if (!response.ok) {
-      //   throw new Error(`HTTP error! Status: ${response.status}`)
-      // }
-
       let res = await response.json()
-      console.log(res)
-
       if (res.success) {
         alert("Data sent to the API successfully")
-        // Handle success if needed
       } else {
-        console.error(`API error: ${res.message}`)
-        // Handle error if needed
+        throw new Error(`Error: ${res.message}`)
       }
     } catch (error) {
       console.error("Error sending data to the API:", error)
-      // Handle error if needed
     }
   }
 
