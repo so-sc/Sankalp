@@ -3,9 +3,12 @@
 import { ColumnDef } from "@tanstack/react-table"
 
 import { THEMES } from "@/lib/constants"
-import { HackathonAdminApiResult } from "@/lib/types"
+import {
+  DatumDatumHackathonAdminApi,
+  HackathonAdminApiResult,
+} from "@/lib/types"
 
-export const hackathonColumns: ColumnDef<HackathonAdminApiResult>[] = [
+export const hackathonColumns: ColumnDef<DatumDatumHackathonAdminApi>[] = [
   {
     accessorKey: "id",
     header: "Id",
@@ -14,36 +17,32 @@ export const hackathonColumns: ColumnDef<HackathonAdminApiResult>[] = [
     },
   },
   {
-    accessorKey: "data.name",
+    accessorKey: "name",
     header: "Team name",
     cell: ({ row }) => {
       const hackathon = row.original
-      return (
-        <div className="text-left font-medium">{hackathon.data[0].name}</div>
-      )
+      return <div className="text-left font-medium">{hackathon.name}</div>
     },
   },
   {
-    accessorKey: "data.member.info.name",
+    accessorKey: "member.info.name",
     header: "Leader Name",
     cell: ({ row }) => {
       const hackathon = row.original
-      const leader = hackathon.data[0].member.filter(
-        (mem) => mem.lead === true
-      )[0]
+      const leader = hackathon.member.filter((mem) => mem.lead === true)[0]
       return (
         <div className="text-left font-medium w-36">{leader.info.name}</div>
       )
     },
   },
   {
-    accessorKey: "data.member.info.name",
+    accessorKey: "member.info.name",
     header: "Members Name",
     cell: ({ row }) => {
       const hackathon = row.original
       return (
         <div className="text-left font-medium w-36">
-          {hackathon.data[0].member.map((mem, index) => (
+          {hackathon.member.map((mem, index) => (
             <p key={index}>{mem.info.name}</p>
           ))}
         </div>
@@ -51,24 +50,22 @@ export const hackathonColumns: ColumnDef<HackathonAdminApiResult>[] = [
     },
   },
   {
-    accessorKey: "data.member.info.email",
+    accessorKey: "member.info.email",
     header: "Leader Email",
     cell: ({ row }) => {
       const hackathon = row.original
-      const leader = hackathon.data[0].member.filter(
-        (mem) => mem.lead === true
-      )[0]
+      const leader = hackathon.member.filter((mem) => mem.lead === true)[0]
       return <div className="text-left font-medium">{leader.info.email}</div>
     },
   },
   {
-    accessorKey: "data.member.info.email",
+    accessorKey: "member.info.email",
     header: "Members Email",
     cell: ({ row }) => {
       const hackathon = row.original
       return (
         <div className="text-left font-medium">
-          {hackathon.data[0].member.map((mem, index) => (
+          {hackathon.member.map((mem, index) => (
             <p key={index}>{mem.info.email}</p>
           ))}
         </div>
@@ -76,51 +73,45 @@ export const hackathonColumns: ColumnDef<HackathonAdminApiResult>[] = [
     },
   },
   {
-    accessorKey: "data.themeDesc",
+    accessorKey: "themeDesc",
     header: "Theme",
     cell: ({ row }) => {
       const hackathon = row.original
       return (
-        <div className="text-left font-medium w-48">
-          {hackathon.data[0].themeDesc}
-        </div>
+        <div className="text-left font-medium w-48">{hackathon.themeDesc}</div>
       )
     },
   },
-  {
-    accessorKey: "data.theme",
-    header: "Statement",
-    cell: ({ row }) => {
-      const hackathon = row.original
-      return (
-        <div className="text-left font-medium">
-          {THEMES[Number(hackathon.theme)]}
-        </div>
-      )
-    },
-  },
+  // {
+  //   accessorKey: "theme",
+  //   header: "Statement",
+  //   cell: ({ row }) => {
+  //     const hackathon = row.original
+  //     return (
+  //       <div className="text-left font-medium">
+  //         {THEMES[Number(hackathon.theme)]}
+  //       </div>
+  //     )
+  //   },
+  // },
 
   {
-    accessorKey: "data.member.info.PhNo",
+    accessorKey: "member.info.PhNo",
     header: "Leader Phone",
     cell: ({ row }) => {
       const hackathon = row.original
-      const leader = hackathon.data[0].member.filter(
-        (mem) => mem.lead === true
-      )[0]
+      const leader = hackathon.member.filter((mem) => mem.lead === true)[0]
       return (
         <div className="text-left font-medium w-36">{leader.info.PhNo}</div>
       )
     },
   },
   {
-    accessorKey: "data.member.info.name",
+    accessorKey: "member.info.name",
     header: "College",
     cell: ({ row }) => {
       const hackathon = row.original
-      const leader = hackathon.data[0].member.filter(
-        (mem) => mem.lead === true
-      )[0]
+      const leader = hackathon.member.filter((mem) => mem.lead === true)[0]
       return (
         <div className="text-left font-medium w-48">{leader.info.college}</div>
       )
