@@ -40,7 +40,6 @@ export const isAdmin = async (id: string) => {
         return (await AdminData.findOne({ _id: new mongo.Types.ObjectId(id) }))?true:false
     } catch (e) {
         console.log(e);
-        
         return false
     }
 }
