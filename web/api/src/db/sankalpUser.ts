@@ -671,8 +671,8 @@ export const TalkCount = async () => {
 }
 
 export const EventRegistersVerifyEvent = async (id: string) => {
-    if (await Event.find({ _id: new mongo.Types.ObjectId(id), verify: true})) {
-        return { success: false, message: 'Attendee is already verified.' }
+    if ((await Event.find({ _id: new mongo.Types.ObjectId(id), verify: true}))[0]) {
+        return { success: false, message: 'Attendee team is already verified.' }
     }else if (await Event.updateOne({ _id: new mongo.Types.ObjectId(id) }, { $set: { verify: true }})) {
         return { success: true }
     } else {
@@ -682,7 +682,7 @@ export const EventRegistersVerifyEvent = async (id: string) => {
 
 export const EventRegistersVerifyTalk = async (id: string, event: number) => {
     try {
-        if (await Event.find({ _id: id, 'talk.type.id': event, 'talk.type.verify': true})) {
+        if ((await Event.find({ _id: id, 'talk.type.id': event, 'talk.type.verify': true}))[0]) {
             return { success: false, message: 'Attendee is already verified.' }
         }else if (await Event.findOne(
             { _id: id, 'talk.type.id': event },
@@ -1063,7 +1063,7 @@ export const HackathonSendEmailAll = async (data: any) => {
 
 
 export const hackathonRegistersVerify = async (id: string) => {
-    if (await Hackathon.find({ _id: new mongo.Types.ObjectId(id), verify: true})) {
+    if ((await Hackathon.find({ _id: new mongo.Types.ObjectId(id), verify: true}))[0]) {
         return { success: false, message: 'Hackathon team is already verified.' }
     }else if (await Hackathon.updateOne({ _id: new mongo.Types.ObjectId(id) }, { $set: { verify: true }})) {
         return { success: true }
