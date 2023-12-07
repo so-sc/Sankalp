@@ -4,7 +4,7 @@ import express from "express";
 import jwt from "jsonwebtoken";
 import { verifyToken, adminVerifyToken } from "../workers/auth";
 import { decrypt } from "../workers/crypt";
-import { UserRegisterByID, UserRegister, UserRegistersVerifyByID, UserSigninChecker, UserRegistersGetIDByMail } from "../db/sankalpUser"; 
+import { UserDeleteByID, UserRegisterByID, UserRegister, UserRegistersVerifyByID, UserSigninChecker, UserRegistersGetIDByMail } from "../db/sankalpUser"; 
 import { AdminData, AdminRegister, AdminSigninChecker } from "../db/sankalpAdmin";
 import { AdminSiginModel, AdminSigupModel, SigninModal, SignupModal } from "../workers/model";
 import { sendUserVerifyMail } from "../workers/mail";
@@ -19,7 +19,7 @@ const router = express.Router();
 router.post("/signup", async(req, res) => {
     try {
         if (req.header('Authorization')) {
-            res.status(500).json({ success: false, message: "User has an active session." })
+            return res.status(500).json({ success: false, message: "User has an active session." })
         }
         const data: SignupModal = req.body;
         data.verify = false;
@@ -27,17 +27,19 @@ router.post("/signup", async(req, res) => {
         if (result.success) {
             var rs = await sendUserVerifyMail(data.email, result.id, data.name);
             if (rs.success) {
-                res.status(200).json({ success: true, id: result.id })
+                return res.status(200).json({ success: true, id: result.id })
             } else {
+                await UserDeleteByID(result.id);
                 console.log(`auth_api>signup>sendUserVerifyMail: ${rs.message}`);
-                res.status(500).json({ success: false, message: `Unable to send the mail, Check the mail id again!` })
+                return res.status(500).json({ success: false, message: `Unable to send the mail, Check the mail id again!` })
             }
         } else {
+            await UserDeleteByID(result.id);
             console.log(`auth_api>signup>UserRegister: ${result.message}`);
-            res.status(500).json({ success: false, message: `Registration Failed: ${result.message}` })
+            return res.status(500).json({ success: false, message: `Registration Failed: ${result.message}` })
         }
     } catch (e) {
-        res.status(500).json({ success: false, message: e.message })
+        return res.status(500).json({ success: false, message: e.message })
     }
 });
 
@@ -45,17 +47,17 @@ router.post("/signup", async(req, res) => {
 router.post("/signin", async(req, res) => {
     try {
         if (req.header('Authorization')) {
-            res.status(500).json({ success: false, message: "User has an active session." })
+            return res.status(500).json({ success: false, message: "User has an active session." })
         }
         const data: SigninModal = req.body;
         const result = await UserSigninChecker(data);
         if (result.success) {
-            res.status(200).json({ success: true, token: result.token, verify: result.verify })
+            return res.status(200).json({ success: true, token: result.token, verify: result.verify })
         } else {
-            res.status(500).json({ success: false, message: result.message })
+            return res.status(500).json({ success: false, message: result.message })
         }
     } catch (e) {
-        res.status(500).json({ success: false, message: e.message })
+        return res.status(500).json({ success: false, message: e.message })
     }
 });
 
@@ -95,16 +97,16 @@ router.get("/token-checker", async(req, res) => {
 router.post("/verify", verifyToken, async(req, res) => {
     try {
         if (!req.body.id) {
-            res.status(500).json({ success: false, message: "Loggin to the account before verifying." })
+            return res.status(500).json({ success: false, message: "Loggin to the account before verifying." })
         }
         const result = await UserRegistersVerifyByID(req.body.id);
         if (result.success) {
-            res.status(200).json({ success: true })
+            return res.status(200).json({ success: true })
         } else {
-            res.status(500).json({ success: true, message: result.message })
+            return res.status(500).json({ success: true, message: result.message })
         }
     } catch (e) {
-        res.status(500).json({ success: false, message: e.message })
+        return res.status(500).json({ success: false, message: e.message })
     }
 });
 
@@ -116,23 +118,23 @@ router.post("/signup-admin", adminVerifyToken, async(req, res) => {
     try {
         let adminRole = req.body.adminRole;
         if (!(adminRole === 1 || adminRole === 2)) {
-            res.status(500).json({ success: false, message: "You do not have privilege to add roles." })
+            return res.status(500).json({ success: false, message: "You do not have privilege to add roles." })
         }
         let rs = await UserRegistersGetIDByMail(req.body.email);
         delete req.body.id, req.body.email, req.body.adminRole;
         if (!rs.success) {
-            res.status(500).json({ success: false, message: rs.message })
+            return res.status(500).json({ success: false, message: rs.message })
         }
         req.body._id = rs.id;
         const data: AdminSigupModel = req.body;
         const result = await AdminRegister(data);
         if (result.success) {
-            res.status(200).json({ success: true })
+            return res.status(200).json({ success: true })
         } else {
-            res.status(500).json({ success: false, message: result.message })
+            return res.status(500).json({ success: false, message: result.message })
         }
     } catch (e) {
-        res.status(500).json({ success: false, message: e.message })
+        return res.status(500).json({ success: false, message: e.message })
     }
 });
 
@@ -140,17 +142,17 @@ router.post("/signup-admin", adminVerifyToken, async(req, res) => {
 router.post("/signin-admin", async(req, res) => {
     try {
         if (req.header('Authorization')) {
-            res.status(500).json({ success: false, message: "An active session exists." })
+            return res.status(500).json({ success: false, message: "An active session exists." })
         }
         const data: AdminSiginModel = req.body;
         const result = await AdminSigninChecker(data);
         if (result.success) {
-            res.status(200).json({ success: true, otp: result.otp, token: result.token })
+            return res.status(200).json({ success: true, otp: result.otp, token: result.token })
         } else {
-            res.status(500).json({ success: false, message: result.message })
+            return res.status(500).json({ success: false, message: result.message })
         }
     } catch (e) {
-        res.status(500).json({ success: false, message: e.message })
+        return res.status(500).json({ success: false, message: e.message })
     }
 });
 

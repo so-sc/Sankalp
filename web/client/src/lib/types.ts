@@ -1,8 +1,11 @@
 import {
+  adminLoginSchema,
+  adminRegisterSchema,
   eventSchema,
   leaderSchema,
   loginSchema,
   memberSchema,
+  otpSchema,
   registrationSchema,
   teamSchema,
 } from "@/lib/schemas"
@@ -23,6 +26,14 @@ export type LoginUser = z.infer<typeof loginSchema>
 export type Member = z.infer<typeof memberSchema>
 export type Leader = z.infer<typeof leaderSchema>
 export type Step = 1 | 2 | 3
+
+// Admin Types
+export type AdminRegister = z.infer<typeof adminRegisterSchema>
+export type AdminLogin = z.infer<typeof adminLoginSchema>
+export type OTPType = z.infer<typeof otpSchema>
+export type AdminLoginStatus = "login" | "verify"
+export type Purpose = "user" | "hackathon" | "event" // For tables
+// ------------------
 
 export type SignUp = {
   name: string
@@ -134,4 +145,71 @@ export interface EventRegistrationData {
     eve: number // This will be the event number mentioned ./constants.ts
     participant: HackathonMemberAPI[]
   }
+}
+
+export interface HackathonAdminApiResponse {
+  success: boolean
+  result: HackathonAdminApiResponseNested
+}
+export interface HackathonAdminApiResult {
+  theme: number
+  data: DatumDatumHackathonAdminApi[]
+}
+
+export interface HackathonAdminApiResponseNested {
+  success: boolean
+  data: HackathonAdminApiResult[]
+}
+
+export interface DatumDatumHackathonAdminApi {
+  name: string
+  themeDesc: string
+  member: HackathonAdminApiMember[]
+  verify: boolean
+}
+
+export interface HackathonAdminApiMember {
+  info: HackathonAdminApiUserInfo
+  lead?: boolean
+}
+
+export interface HackathonAdminApiUserInfo {
+  name: string
+  email: string
+  gender: number
+  verify: boolean
+  student: boolean
+  PhNo: string
+  college: string
+  branch: string
+  course: string
+  year: number
+}
+
+export interface UserAdminAPIResponse {
+  success: boolean
+  result: UserAdminAPIResult[]
+}
+
+export interface UserAdminAPIResult {
+  _id: string
+  stName: string
+  mail: string
+  college: string
+  branch: string
+  year: number
+  eventOpt: number[]
+  student: boolean
+  gender: number
+  verify: boolean
+  hack: UserAdminHackathonData
+  createdAt: Date | string
+  updatedAt: Date | string
+  __v: number
+}
+
+export interface UserAdminHackathonData {
+  team: string
+  isHack: boolean
+  leader?: boolean
 }

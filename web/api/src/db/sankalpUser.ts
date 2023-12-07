@@ -1,9 +1,9 @@
 //
 
 import mongo from "mongoose";
-import { EventModels, HackathonModel, Member, SigninModal, SignupModal, Talk, UserResponseModal, gender } from "../workers/model";
+import { paraCode, buttonCode, EventResponseModel, EventNameModel, TalkNameModel, HackathonNameModel, EventModels, HackathonModel, Member, SigninModal, SignupModal, Talk, UserResponseModal, gender, HackathonResponseModel } from "../workers/model";
 import { createToken } from "../workers/auth";
-
+import { sendAdminEventMail, sendAdminHackathonMail } from "../workers/mail";
 
 const userRegisteration = new mongo.Schema<SignupModal>({
     name: {
@@ -82,8 +82,34 @@ export const UserRegisterByID = async (id: String) => {
     return await User.findById(id);
 }
 
+export const UserRegisterForHackNEvent = async (id: String) => {
+    return await User.findById(id).select('-_id -hack -talk -event -__v');
+}
+
+export const UserRegisterGetDetails = async () => {
+    try {
+        let rs = await User.find({}).select('-_id -hack -event -talk')
+        return { success: true, data: rs}
+    } catch (e) {
+        return { success: true, message: 'Something went wrong.' }
+    }
+}
+
+export const UserRegisterGetInfoDetails = async (info: string) => {
+    try {
+        let rs = (info==='e')?(await User.find({}).select('name email -_id')):(await User.find({}).select('name PhNo -_id'))
+        return { success: true, data: rs }
+    } catch (e) {
+        return { success: true, message: 'Something went wrong.' }
+    }
+}
+
 export const UserRegisterByMail = async (email: string) => {
     return await User.findOne({ email: email })
+}
+
+export const UserRegisterMailByID = async (id: String) => {
+    return await User.findOne({ _id: id }).select('email')
 }
 
 export const UserRegisterTotal = async () => {
@@ -145,6 +171,15 @@ export const UserRegisterGetInfoByMail = async (email: string) => {
     } catch (e) {
         console.log(`db>sankalpUser>UserRegisterGetInfoByMail: ${e.message}`);
         return { success: false, message: 'Some error in fetching the data.' }
+    }
+}
+
+export const UserDeleteByID = async (id: string) => {
+    try {
+        await User.deleteOne({ _id: id })
+    } catch (e) {
+        console.log("EventDelete: Was unable to do");
+        
     }
 }
 
@@ -223,6 +258,21 @@ export const UserRegistersFindUser = async (id: String) => {
     }
 }
 
+export const UserRegistersPhoneNumber = async (values: any) => {
+    try {
+        let data = values.map((id: string) => new mongo.Types.ObjectId(id));
+        var res = (await User.aggregate([
+            { $match: { _id: { $in: data } } },
+            { $group: { _id: null, data: { $push: {name: "$name", phone: "$PhNo"} } } },
+            { $project: { _id: 0, data: "$data" } }
+        ]))[0]["data"];
+        return { success: true, data: res }
+    } catch(e) {
+        console.log();
+        return { success: false, message: "Something went wrong.." }
+    }
+}
+ 
 export const UserRegistersGetIDByMail = async (mail: string) => {
     if (await User.findOne({ email: mail })) {
         return { success: true, id: (await User.findOne({ email: mail }))._id.toString() }
@@ -351,22 +401,44 @@ export const EventRegisterFindDetailsByID = async (id: String) => {
     return await Event.findById(id);
 }
 
+export const EventDeleteByID = async (id: string) => {
+    try {
+        await Event.deleteOne({ _id: id })
+    } catch (e) {
+        console.log("EventDelete: Was unable to do");
+        
+    }
+}
+
 export const EventRegister = async (id: string, data: any) => {
     let info;
     try { 
-        if (data.isEvent) { 
-            data.event.participant.map((member: Member) => { 
+        if (data.isEvent) {
+            try {
+                if ((new Date()) > (new Date(EventNameModel[data.event.eve].due))) {
+                    return { success: false, message: `The registration is closed for ${EventNameModel[data.event.eve].name}.` }
+                }
+                if ((await Event.aggregate([
+                    { $match: { isEvent: {$exists: true, $eq: true}, 'event.eve': {$exists: true, $eq: data.event.eve } } },
+                    { $count: "count" }
+                ]))[0]["count"]+data.event.participant.length > Number(EventNameModel[data.event.eve]['max'])) {
+                    return { success: false, message: `The event registration of ${EventNameModel[data.event.eve]['name']} is closed.` }
+                }
+            } catch (e) {}
+            data.event.participant.map((member: Member) => {
                 if(!(User.findOne({ email: member.info }))){return { success: false, message: `The ${member.info} is not registered. Check your Email ID or Confirm whether the participant is registered in the platform.` } } 
             } );
             data.event.participant.push({ info: (await User.findOne({_id: id})).email, lead: true });
             for (const member of data.event.participant) {
                 let user = await User.findOne({ email: member.info });
-                if (user && user.event) {
+                if (user && user.event) { 
                     for (const event of user.event) {
                         const foundEvent = await Event.findOne({ _id: event });
-                        if (foundEvent.event.eve===data.event.eve) {
-                            return { success: false, message: `The ${member.info} is already in an event. Opt someone else.` };
-                        }
+                        try{
+                            if (foundEvent.event.eve===data.event.eve) {
+                                return { success: false, message: `The ${member.info} is already in an event. Opt someone else.` };
+                            }
+                        } catch (e) {}
                     }
                 }
             }
@@ -376,7 +448,19 @@ export const EventRegister = async (id: string, data: any) => {
                 participant.info = rs.id;
             }
             data.verify = false; 
-        } 
+        } else {
+            // if ((new Date())>(new Date(TalkNameModel[data.talk].due))) {
+            //     return { success: false, message: `The registration is closed for ${EventNameModel[data.eve].name}.` }
+            // }
+            for (const talk of data.talk) {
+                if ((await Event.aggregate([
+                    { $match: { isEvent: {$exists: true, $eq: false}, 'talk': { $elemMatch: { id: talk.id } } } },
+                    { $count: "count" }
+                ]))[0]["count"]+1 > Number(TalkNameModel[data.eve]['max'][0])) {
+                    return { success: false, message: `The talk registration of ${TalkNameModel[data.eve]['name']} is closed.` }
+                }
+            }
+        }
         const event = new Event(data);
         info = await event.save();
         if (data.isEvent) {
@@ -393,9 +477,13 @@ export const EventRegister = async (id: string, data: any) => {
         }
         return { success: true, id: info._id.toString() }
     } catch (e) {
-        console.log(`db>sankalpUser>EventRegister: ${e}`);
-        if (info._id.toString()) {
-            await Event.deleteOne({ _id: info._id.toString() })
+        console.log(e);
+        try {
+            if (info._id.toString()) {
+                await Event.deleteOne({ _id: info._id.toString() })
+            }
+        } catch (e) {
+            return { success: false, message: 'Application failed to register. Do check the provided fields.' }
         }
         return { success: false, message: 'Application failed to register. Do check the provided fields.' }
     }
@@ -406,6 +494,142 @@ export const EventQRAdder = async (id: string, qId: string) => {
         { _id: new mongo.Types.ObjectId(id) },
         { $set: { qrId: qId } }
     )
+}
+
+
+export const EventRegisterTeamScrapper = async (data: any) => {
+    try {  
+        var res = data;
+        for (const information of res) {
+            for (const member of information.participant) {
+                member.info = await UserRegisterForHackNEvent(member.info);
+            }
+        }
+        return { success: true, data: res }
+    } catch (e){
+        console.log(e, e.message);
+        return { success: false, messsage: "Fetching data went wrong.."}
+    }
+}
+
+export const EventRegisterAll = async () => {
+    try{
+        let rs: EventResponseModel[] = (await Event.aggregate([
+            { $match: { isEvent: true } },
+            { $group: { _id: "$event.eve", data: { $push: { verify: '$verify', qrId: '$qrId', participant: '$event.participant' } } } },
+            { $project: { _id: 0, theme: '$_id', data: "$data" } }
+        ]))
+        for (const rp of rs) {
+            var res = await EventRegisterTeamScrapper(rp.data);
+            if (!res.success) {
+                return { success: false, message: res.messsage }
+            }
+            rp.data = res.data;
+        }
+        return { success: true, data: rs }
+    } catch (e) {
+        console.log(`db>sankalpUser>EventRegisterAll: ${e.message}`);
+        return { success: false, message: 'Something went wrong' }
+    }
+}
+
+
+export const EventSendEmailAll = async (data: any) => {
+    try {
+        let unable = Array();
+        let res = (await Event.aggregate([
+            { $match:{ isEvent: true } },
+            { $group: { _id: null, data: { $push: { info: "$event.participant.info" } } } }, 
+            { $unwind: "$data" }, { $unwind: "$data.info" },  
+            { $group: { _id: 0, info: { $addToSet: "$data.info" } } },
+            { $project: { _id: 0, info: "$info" } }
+        ]))[0]['info'];
+        for (const reso of res) {
+            let result = await sendAdminEventMail((await UserRegisterMailByID(reso)).email, data.subject, await paraCode(data.p), await buttonCode(data.button.title, data.button.url));
+            if (!result.success) {
+                unable.push(reso);
+            }
+        }
+        return { success: true, data: unable.length?`Unable to send mail to ${unable.join(',')}`:`Sent mail to everyone successfully.`}
+    } catch (e) {
+        console.log(e);
+        return { success: false, message: 'Something went wrong.'}
+    }
+}
+
+export const EventSendEmailEve = async (eve: number, data: any) => {
+    try {
+        let unable = Array();
+        let res = (await Event.aggregate([
+            { $match:{ isEvent: true, "event.eve": eve } },
+            { $group: { _id: null, data: { $push: { info: "$event.participant.info" } } } }, 
+            { $unwind: "$data" }, { $unwind: "$data.info" },  
+            { $group: { _id: 0, info: { $addToSet: "$data.info" } } },
+            { $project: { _id: 0, info: "$info" } }
+        ]))[0]['info'];
+        for (const reso of res) {
+            let result = await sendAdminEventMail((await UserRegisterMailByID(reso)).email, data.subject, await paraCode(data.p), await buttonCode(data.button.title, data.button.url));
+            if (!result.success) {
+                unable.push(reso);
+            }
+        }
+        return { success: true, data: unable.length?`Unable to send mail to ${unable.join(',')}`:`Sent mail to everyone successfully.`}
+    } catch (e) {
+        console.log(e);
+        return { success: false, message: 'Something went wrong.'}
+    }
+}
+
+export const EventRegisterOfEvent = async (eve: number) => {
+    try {
+        let rs: any = (await Event.aggregate([
+            { $match: { isEvent: true, 'event.eve': eve } },
+            { $group: { _id: null, data: { $push: { verify: '$verify', qrId: '$qrId', participant: '$event.participant' } } } },
+            { $project: { _id: 0, data: "$data" } }
+        ]))[0]
+        var res = await EventRegisterTeamScrapper(rs.data);
+        if (!res.success) {
+            return { success: false, message: res.messsage }
+        }
+        return { success: true, data: res.data }
+    } catch (e) {
+        console.log(`db>sankalpUser>EventRegisterOfEvent: ${e.message}`);
+        return { success: false, message: 'Something went wrong' }
+    }
+}
+
+
+export const EventRegistersGetPhoneNo = async () => {
+    try {
+        var info = (await Event.aggregate([
+            { $match: { isEvent: true } },
+            { $unwind: "$event.participant" },
+            { $group: { _id: "$event.eve", info: { $push: "$event.participant.info" } } },
+            { $project: { _id: 0, info: "$info" } }
+        ]))
+        var data = await Promise.all(info.map(async (id) => { return (await UserRegistersPhoneNumber(id.info)).data }));
+        return { success: true, data: data }
+    } catch (e) {
+        return { success: false, message: "Something went wrong." }
+    }
+}
+
+export const EventRegistersGetEventPhoneNo = async (eve: number) => {
+    try {
+        var info = (await Event.aggregate([
+            { $match: { isEvent: true, 'event.eve': eve } },
+            { $unwind: "$event.participant" },
+            { $group: { _id: null, info: { $push: "$event.participant.info" } } },
+            { $project: { _id: 0, info: "$info" } }
+        ]))[0]['info']
+        var data = await UserRegistersPhoneNumber(info);
+        if (!data.success) {
+            return { success: false, message: data.message}
+        }
+        return { success: true, data: data.data }
+    } catch (e) {
+        return { success: false, message: "Something went wrong." }
+    }
 }
 
 export const EventCount = async () => {
@@ -506,6 +730,9 @@ export const EventRegisterAddParticipant = async (id: string, data: Array<string
             { _id: new mongo.Types.ObjectId(id), isEvent: true },
             { $addToSet: { 'event.participant': { $each: data } } },
         )
+        await User.updateMany(
+            // { _id:  }
+        )
         return { success: true }
     } catch (e) {
         return { success: false }
@@ -586,6 +813,41 @@ export const HackathonRegisterFindDetailsByID = async (id: string) => {
 
 }
 
+export const HackathonRegisterTeamScrapper = async (data: any) => {
+    try {  
+        var res = data;
+        for (const information of res) {
+            for (const member of information.member) {
+                member.info = await UserRegisterForHackNEvent(member.info);
+            }
+        }
+        return { success: true, data: res }
+    } catch (e){
+        console.log(e, e.message);
+        return { success: false, messsage: "Fetching data went wrong.."}
+    }
+}
+
+export const HackathonRegisterAll = async () => {
+    try {
+        let rs: HackathonResponseModel[] = (await Hackathon.aggregate([
+            { $group: { _id: "$theme", data: { $push: { name: '$name', themeDesc: '$themeDesc', member: '$member', verify: '$verify' } } } },
+            { $project: { _id: 0, theme: '$_id', data: "$data" } }
+        ]))
+        for (const rp of rs) {
+            var res = await HackathonRegisterTeamScrapper(rp.data);
+            if (!res.success) {
+                return { success: false, message: res.messsage }
+            }
+            rp.data = res.data;
+        }
+        return { success: true, data: rs }
+    } catch (e) {
+        console.log(`db>sankalpUser>HackathonRegisterAll: ${e.message}`);
+        return { success: false, message: 'Something went wrong' }
+    }
+}
+
 export const HackathonCount = async () => {
     var rs: any = { 
         teams: await Hackathon.countDocuments(), 
@@ -608,7 +870,9 @@ export const HackathonCount = async () => {
 
 export const HackathonRegistersDetails = async () => {
     try {
-        let data = await Hackathon.find();
+        let data = await Hackathon.aggregate([
+            { $group: { _id: "$theme" } }
+        ]);
         return { success: true }
     } catch (e) {
         console.log(`db>sankalpUser>HackathonRegistersDetails: ${e}`);
@@ -623,9 +887,12 @@ export const HackathonRegister = async (id: string, data: any) => {
         if (data.member.length<1 && data.member.length>3) {
             return { success: false, message: 'The size of an hackathon team should be strictly 2-4.' }
         }
-        data.member.map((member: Member) => { 
-            if(!(User.findOne({ email: member.info }))){return { success: false, message: `The ${member.info} is not registered. Check your Email ID or Confirm whether the participant is registered in the platform.` } } 
-        } );
+        for (const member of data.member){
+            if(!(await User.findOne({ email: member.info }))){return { success: false, message: `The ${member.info} is not registered. Check your Email ID or Confirm whether the participant is registered in the platform.` } } 
+        }
+        if (await Hackathon.findOne({ name: data.name })) {
+            return { success: false, message: "Team name is already taken" }
+        }
         data.verify = false;
         var rs;
         for (const member of data.member) {
@@ -642,6 +909,12 @@ export const HackathonRegister = async (id: string, data: any) => {
             member.info = rs.id;
         }
         data.member.push({ info: id, lead: true })
+        if ((await Hackathon.aggregate([
+            { $project: { size: { $size: '$member' } } },
+            { $group: { _id: null, size: { $sum: '$size' } } }
+        ]))[0]['size']+data.member.length > HackathonNameModel['max']) {
+            return { success: false, message: `As we have reached the maximum number of participants, the hackathon registration of is closed.` }
+        }
         const hackathon = new Hackathon(data);
         info = await hackathon.save();
         var ids = Array()
@@ -659,9 +932,11 @@ export const HackathonRegister = async (id: string, data: any) => {
         return { success: true, id: info._id.toString() }
     } catch (e) {
         console.log(`db>sankalpUser>HackathonRegister: ${e}`);
-        if (info._id.toString()) {
-            await Hackathon.deleteOne({ _id: info._id.toString() })
-        }
+        try{
+            if (info._id.toString()) {
+                await Hackathon.deleteOne({ _id: info._id.toString() })
+            }
+        } catch(e) {}
         return { success: false, message: 'The data is invalid.' }
     }
 }
@@ -672,6 +947,120 @@ export const HackathonQRAdder = async (id: string, qId: string) => {
         { $set: { qrId: qId } }
     )
 }
+
+
+export const HackathonGetLeaderPhoneNo = async () => {
+    try {
+        let res = (await Hackathon.aggregate([
+            { $unwind: "$member" },
+            { $match: { 'member.lead': { $exists: true, $eq: true } } },
+            { $group: { _id: null, data: { $push: "$member.info" } } },   
+            { $project: { _id: 0, info: "$data" } }
+        ]))[0]['info'];
+        let result = await UserRegistersPhoneNumber(res);
+        if (!result.success) {
+            return { success: false, message: result.message }
+        }
+        return { success: true, data: result.data }
+    } catch (e) {
+        console.log(e);
+        return { success: false, message: 'Something went wrong.'}
+    }
+}
+
+
+export const HackathonGetPhoneNo = async () => {
+    try {
+        let res = (await Hackathon.aggregate([
+            { $unwind: "$member" },
+            { $group: { _id: null, data: { $push: "$member.info" } } },   
+            { $project: { _id: 0, info: "$data" } }
+        ]))[0]['info'];
+        let result = await UserRegistersPhoneNumber(res);
+        if (!result.success) {
+            return { success: false, message: result.message }
+        }
+        return { success: true, data: result.data }
+    } catch (e) {
+        console.log(e);
+        return { success: false, message: 'Something went wrong.'}
+    }
+}
+
+export const HackathonGetTeamwiseDetails = async () => {
+    try {
+        let info = (await Hackathon.aggregate([
+            { $group: { _id: null, 
+              info: { $push: { teamName: "$name",  theme: "$theme", themeDesc: "$themeDesc", 
+              member: {
+                $map: { input: "$member", as: "m", in: { $toObjectId: "$$m.info" } }
+              } } } } }, { $project: { _id: 0, info: "$info"} }
+        ]))[0]['info'];
+        var data = await Promise.all(info.map(async (team: any) => {
+            team.member = (await User.aggregate([
+                { $match: { _id: { $in: team.member } } },
+                { $group: { _id: null, data: { $push: {name: "$name", phone: "$PhNo", email: "$email", batch: "$year", branch: "$branch", college: "$college" } } } },
+                { $project: { _id: 0, data: "$data" } }
+            ]))[0]["data"];
+            return team;            
+        }));
+        return { success: true, data: data }
+    } catch (e) {
+        console.log(e);
+        return { success: false, message: 'Something went wrong.'}
+    }
+}
+
+export const HackathonSendEmailLead = async (data: any) => {
+    try {
+        let unable = Array();
+        let res = (await Hackathon.aggregate([
+            { $unwind: "$member" },
+            { $match: {'member.lead': {$exists: true, $eq: true} }},
+            { $group: { _id: null, data: { $push: { info: "$member.info" } } } },   
+            { $project: { _id: 0, info: "$data.info" } }
+          ]))[0]['info'];
+        for (const reso of res) {
+            let result = await sendAdminHackathonMail((await UserRegisterMailByID(reso)).email, data.subject, await paraCode(data.p), await buttonCode(data.button.title, data.button.url));
+            if (!result.success) {
+                unable.push(reso);
+            }
+        }
+        return { success: true, data: unable.length?`Unable to send mail to ${unable.join(',')}`:`Sent mail to everyone successfully.`}
+    } catch (e) {
+        console.log(e);
+        return { success: false, message: 'Something went wrong.'}
+    }
+}
+
+
+export const HackathonSendEmailAll = async (data: any) => {
+    try {
+        let unable = Array();
+        let res = (await Hackathon.aggregate([
+            { $unwind: "$member" },
+            { $group: { _id: null, data: { $push: { info: "$member.info" } } } },   
+            { $project: { _id: 0, info: "$data.info" } }
+          ]))[0]['info'];
+        var button;
+        try { 
+            button = await buttonCode(data.button.title, data.button.url);
+        } catch (e) {
+            button = '';
+        }
+        for (const reso of res) {
+            let result = await sendAdminHackathonMail((await UserRegisterMailByID(reso)).email, data.subject, await paraCode(data.p), button);
+            if (!result.success) {
+                unable.push(reso);
+            }
+        }
+        return { success: true, data: unable.length?`Unable to send mail to ${unable.join(',')}`:`Sent mail to everyone successfully.`}
+    } catch (e) {
+        console.log(e);
+        return { success: false, message: 'Something went wrong.'}
+    }
+}
+
 
 export const hackathonRegistersVerify = async (id: string) => {
     if (await Hackathon.find({ _id: new mongo.Types.ObjectId(id), verify: true})) {

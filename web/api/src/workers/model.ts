@@ -1,6 +1,6 @@
 
 interface NameModel {
-    [key: string]: { name: string, date: string; venue: string };
+    [key: string]: { name: string, date: string; venue: string, max: any, due: string };
   }
   
 // Keys start from 1 guys sadly deveesh believes this is an array. May key value pair be with you..
@@ -8,32 +8,44 @@ export const EventNameModel: NameModel = {
     1: {
         name: "DeCode: Capture the flag",
         date: "9th December 2023 at 2:00PM to 3:00PM",
-        venue: "Digital Library First Floor"
+        venue: "Digital Library - First Floor",
+        max: 15,
+        due: "2023-12-06T22:30:00.234Z"
     },
     2: {
         name: "Open Source Fiesta",
         venue: "Online (Github)",
-        date: "6th to 8th December 2023"
+        date: "6th to 8th December 2023",
+        max: 100,
+        due: "2023-12-06T00:30:00.234Z"
     },
     3: {
         name: "BlindByte: Blind coding",
-        venue: "Women Empowerment lab",
-        date: "9th December 2023 at 11:30AM to 01:00PM"
+        venue: "CSE Lab 7",
+        date: "9th December 2023 at 10:00AM to 03:00PM",
+        max: 100,
+        due: "2023-12-09T15:50:00.234Z"
     },
     4: {
         name: "The Pitchers",
-        date: "Seminar Hall",
-        venue: "8th December 2023 at 9.30 AM to 10.30AM"
+        date: "CoE Board Room - Ground floor",
+        venue: "8th December 2023 at 9.30 AM to 10.30AM",
+        max: 100,
+        due: "2023-12-08T10:00:00.234Z"
     },
     5: {
         name: "TechMaze: Escape Room",
-        venue: "MBA Classrooms",
-        date: "8th December 2023 at 11:30AM to 01:00PM"
+        venue: "MBA Classrooms (3)",
+        date: "8th December 2023 at 11:30AM to 01:00PM",
+        max: 55,
+        due: "2023-12-08T13:30:00.234Z"
     },
     6: {
-        name: "The Wolf of Wall Street",
+        name: "The Wolf of Dalal Street",
         venue: "Online (StockGro)",
-        date: "8th December 2023 at 09:00AM to 03:30PM"
+        date: "8th December 2023 at 09:00AM to 03:30PM",
+        max: 100,
+        due: "2023-12-07T16:30:00.234Z"
     },
 }
 
@@ -41,39 +53,53 @@ export const TalkNameModel: NameModel = {
     1: {
         name: "",
         date: "",
-        venue: ""
+        venue: "Seminar Hall - First Floor",
+        max: [150, 500],
+        due: "2023-12-08T15:30:00.234Z"
     },
     2: {
         name: "",
         date: "",
-        venue: ""
+        venue: "",
+        max: 100,
+        due: "2023-12-05T08:30:00.234Z"
     },
     3: {
         name: "",
         date: "",
-        venue: ""
+        venue: "",
+        max: 100,
+        due: "2023-12-05T08:30:00.234Z"
     },
     4: {
         name: "",
         date: "",
-        venue: ""
+        venue: "",
+        max: 100,
+        due: "2023-12-05T08:30:00.234Z"
     },
     5: {
         name: "",
         date: "",
-        venue: ""
+        venue: "",
+        max: 100,
+        due: "2023-12-05T08:30:00.234Z"
     },
     6: {
         name: "",
         date: "",
-        venue: ""
+        venue: "",
+        max: 100,
+        due: "2023-12-05T08:30:00.234Z"
     },
 }
 
 export const HackathonNameModel = {
     name: "Codeblaze",
     date: "8th December 2023",
-    venue: "Sahyadri College of Engineering & Management"
+    venue: "Sahyadri College of Engineering & Management",
+    max: 400,
+    due: "2023-12-08T08:30:00.234Z"
 }
 
 export const YearModel = {
@@ -175,10 +201,13 @@ export const Role = {
 export interface AdminPrivilege {
     stats: [true, true, true, true, true, false],
     email: [true, true, true, true, true, false],
+    massEmail: [true, true, true, true, true, false],
+    allEmail: [true, true, true, false, false, false],
+    
 }
 
 export interface AdminSigupModel {
-    _id: string,
+    _id: any,
     username: string,
     role: number,
     volunter?: {
@@ -214,4 +243,75 @@ export interface UserResponseModal {
     hacks?: object,
     talks?: object,
     events?: Array<object>
+}
+
+
+export interface HackathonResponseModel {
+    theme: number,
+    data: Array<{
+        name: string,
+        themeDesc: string,
+        member: {
+            info: any,
+            lead?: boolean
+        }[],
+        verify?: Boolean
+    }>
+}
+
+export interface EventResponseModel {
+    eve: number,
+    data: Array<{
+        verify: boolean,
+        qrId: string,
+        participant: {
+            info: any,
+            lead?: boolean
+        }[]
+    }>
+}
+
+
+
+/* ------- HTML Base Code ----------- */
+
+export const buttonCode = async (title: any, url: any) => {
+    if (!(title && url)) {
+        return ''
+    }
+    return `<table align="center" width="100%" role="presentation" cellspacing="0" cellpadding="0" border="0" style="max-width:600px;margin-left:auto;margin-right:auto;padding:0.5rem">
+        <tbody>
+            <tr style="width:100%">
+                <td>
+                <table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin-bottom:20px;margin-top:0px;text-align:center">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <a href="${url}" target="_blank" style="border:2px solid #09dc43;line-height:1.25rem;text-decoration:none;display:inline-block;max-width:100%;padding:12px 34px;font-size:0.875rem;font-weight:500;text-decoration-line:none;background-color:rgb(9,220,67);color:rgb(239,239,239);border-color:rgb(9,220,67);border-radius:9999px"><span></span><span style="max-width:100%;display:inline-block;line-height:120%;mso-padding-alt:0px;mso-text-raise:9px">${title}</span><span></span></a></td>
+                        </tr>
+                    </tbody>
+                </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>`
+}
+
+export const paraCode = async (data: string[]) => {
+    var base = ``;
+    for (const text of data) {
+        base += `<p style="
+        font-size: 15px;
+        line-height: 24px;
+        margin: 16px 0;
+        margin-bottom: 20px;
+        margin-top: 0px;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-align: left;
+    ">
+            ${text}   
+        </p>`
+    }
+    return base
 }

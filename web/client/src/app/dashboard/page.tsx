@@ -14,6 +14,9 @@ export const metadata: Metadata = {
   description: `Dashboard for ${MAIN_EVENT_NAME}, checkout the events available`,
 }
 
+export const dynamic = "force-dynamic"
+export const revalidate = 0
+
 export async function getUser() {
   const token = cookies().get("token")?.value
   if (!token) {
@@ -43,11 +46,11 @@ export async function getUser() {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-      cache: "no-store",
     }
   )
   revalidatePath("/dashboard")
-  return response.json()
+  const data = response.json()
+  return data
 }
 
 export default async function DashboardPage() {

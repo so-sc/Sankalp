@@ -310,6 +310,30 @@ export default function EventRegistration({
                 members (including you)
               </p>
               <div>
+                <p className="mb-2">Team Leader</p>
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          type="text"
+                          placeholder="Team leader email ID"
+                          readOnly
+                          {...field}
+                          value={user.email}
+                          className="read-only:bg-foreground/10"
+                        />
+                      </FormControl>
+                      {form.formState.errors.email?.message && (
+                        <p className="text-red-500">
+                          {form.formState.errors.email?.message}
+                        </p>
+                      )}
+                    </FormItem>
+                  )}
+                />
                 {Array.from(Array(totalMembers! - 1).keys()).map((i) => (
                   <>
                     <p className="mt-5 mb-2">Team Member {i + 1}</p>

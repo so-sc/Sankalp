@@ -25,15 +25,19 @@ export const adminVerifyToken = async (req: Request, res: Response, next: () => 
     }
     try {
         let decoded = jwt.verify(token, process.env.KEY) as { id: string };
-        if (await isAdmin(await decrypt(decoded.id))) {
-            req.body.id = await decrypt(decoded.id);
-            req.body.adminRole = Number(await AdminRole(await decrypt(decoded.id)));
+        let rypt = await decrypt(decoded.id);
+        console.log(rypt);
+        
+        if (await isAdmin(rypt)) {
+            req.body.id = rypt;
+            req.body.adminRole = Number(await AdminRole(rypt));
             next();
         } else {
             return res.status(401).json({ success: false, message: 'Not an admin.' });
         }
     } catch (error) {
-        return res.status(401).json({ success: false, message: 'Authentication failed' });
+        console.log(error);
+        return res.status(401).json({ success: false, message: 'Authentication failed. Due to some internal issue.' });
     }
 }
 

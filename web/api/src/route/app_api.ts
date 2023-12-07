@@ -1,9 +1,9 @@
-import express from "express";
-import { UserRegisterGetInfoByMail, UserRegisterByMail, UserRegistersFindUser, HackathonRegisterFindDetailsByID, UserRegisterByID, hackathonRegisterGetLeadEmail, EventRegisterFindDetailsByID, EventRegister, HackathonRegister, EventQRAdder, HackathonQRAdder } from "../db/sankalpUser";
+import express from "express";//HackathonRegisterAll
+import { EventDeleteByID, UserRegisterGetInfoByMail, UserRegisterByMail, UserRegistersFindUser, HackathonRegisterFindDetailsByID, UserRegisterByID, hackathonRegisterGetLeadEmail, EventRegisterFindDetailsByID, EventRegister, HackathonRegister, EventQRAdder, HackathonQRAdder, HackathonRegisterAll, EventRegisterAll } from "../db/sankalpUser";
 import { EventModels, HackathonModel, Member } from "../workers/model";
 import { qrCreator, formID } from "../workers/qrcode";
 import { sendCopyMail } from "../workers/mail";
-import { verifyToken } from "../workers/auth";
+import { adminVerifyToken, verifyToken } from "../workers/auth";
 const router = express.Router();
 
 /* --- Form --- */
@@ -31,6 +31,7 @@ router.post("/registration/:info", verifyToken, async(req, res) => {
         }
         var dt = await qrCreator(register?.id);
         if (!dt.success) {
+            await EventDeleteByID(register?.id)
             res.status(500).json({ success: false, message: dt.message })
             return
         }
@@ -38,6 +39,7 @@ router.post("/registration/:info", verifyToken, async(req, res) => {
         const qr: any =  {'e': 0, 't': 1, 'h': 2 };
         const mail = (info==='e' || info == 't')? (await UserRegisterByID(id))?.email : await hackathonRegisterGetLeadEmail(register.id);
         if (!mail) {
+            await EventDeleteByID(register?.id)
             res.status(500).json({ success: false, message: "Issue with fetching the Email ID." })
             return
         }
@@ -45,20 +47,24 @@ router.post("/registration/:info", verifyToken, async(req, res) => {
         if (info==='h') {
             name=data.name;
         } else {
-            // for (const participant of data.event.participant) { 
-            //     (participant.lead)? name=UserRegisterByMail(participant.info): {}
-            // }
             name=(await UserRegisterByID(id)).name;
         }
         var rs = await sendCopyMail(qr[info], (info==='h')? null: data.event.eve, mail, name, dt.id);
         if (!rs['success']===true) {
-            console.log("Mailed failed");
-            res.status(500).json({ success: false, message: rs.message });
+            console.log("Mailed failed\nError:"+rs["message"]);
+            await EventDeleteByID(register?.id)
+            res.status(500).json({ success: false, message: "Failed to send email or had some issue" });
             return
         }
         res.status(200).json({ success: true, dl: dt.link })
+        return
     } catch (e) {
+        console.log(e);
+        try{
+            await EventDeleteByID(register?.id)
+        } catch (e) {}
         res.status(500).json({ success: false, message: "Application faced some error. Check your data. Contact Maintainers." })
+        return
     }
 });
 
@@ -73,9 +79,11 @@ router.get("/form-info-helper/:info", async(req, res) => {
             result = await UserRegisterGetInfoByMail(data.email);
         };
         res.status(200).json(result);
+        return
     } catch (e) {
         console.log(e);
         res.status(500).json({ success: false, message: e.message })
+        return
     }
 });
 
@@ -103,17 +111,23 @@ router.get("/info/:info", verifyToken, async(req, res) => {
             return
         }
         res.status(200).json(register)
+        return
     } catch (e) {
         res.status(500).json({ success: false, message: e.message })
+        return
     }
 })
 
 // Modifier
 // router.post("/modifier/:info", verifyToken, async(req, res) => {
 //     try {
-//         const info = Number(req.params.info);
-//         var modify;
-        
+//         const info = req.params.info;
+//         var modify, data;
+//         if (info==='e' || info==='t') {
+//             modify = await ();
+//         } else if (info==='') {
+//             modify = await ();
+//         }
 //         if (!modify.success) {
 //             res.status(500).json({ success: false, message: 'No info on this data.' })
 //         } else {
@@ -123,5 +137,12 @@ router.get("/info/:info", verifyToken, async(req, res) => {
 //         res.status(500).json({ success: false, message: e.message })
 //     }
 // })
+
+// testing
+router.get("/tester", async(req, res) => {
+    const currentDate: Date = new Date();
+    const specificTime: Date = new Date("2023-12-07T16:30:00.234Z");
+    res.json({current: currentDate, specific: specificTime })
+});
 
 export const App = router

@@ -33,6 +33,7 @@
         "jsonwebtoken": "^9.0.2",
         "mongoose": "^7.6.0",
         "node-fetch": "^3.3.2",
-        "nodemailer": "^6.9.5"
+        "nodemailer": "^6.9.5",
+        "xlsx": "^0.18.5"
     }
 }

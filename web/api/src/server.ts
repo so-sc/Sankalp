@@ -56,6 +56,7 @@ if (process.env.PRODUCTION==="true") {
 
 app.get("/", async(req, res) => {
     res.status(200).json({success: true})
+    return
 })
 
 // User Interface API routes
