@@ -37,7 +37,7 @@ export const EventNameModel: NameModel = {
         name: "TechMaze: Escape Room",
         venue: "MBA Classrooms (3)",
         date: "8th December 2023 at 11:30AM to 01:00PM",
-        max: 55,
+        max: 63,
         due: "2023-12-08T13:30:00.234Z"
     },
     6: {
@@ -98,7 +98,7 @@ export const HackathonNameModel = {
     name: "Codeblaze",
     date: "8th December 2023",
     venue: "Sahyadri College of Engineering & Management",
-    max: 400,
+    max: 403,
     due: "2023-12-08T08:30:00.234Z"
 }
 

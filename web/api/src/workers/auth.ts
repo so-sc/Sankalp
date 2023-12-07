@@ -26,8 +26,6 @@ export const adminVerifyToken = async (req: Request, res: Response, next: () => 
     try {
         let decoded = jwt.verify(token, process.env.KEY) as { id: string };
         let rypt = await decrypt(decoded.id);
-        console.log(rypt);
-        
         if (await isAdmin(rypt)) {
             req.body.id = rypt;
             req.body.adminRole = Number(await AdminRole(rypt));
