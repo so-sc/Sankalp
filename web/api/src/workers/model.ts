@@ -37,7 +37,7 @@ export const EventNameModel: NameModel = {
         name: "TechMaze: Escape Room",
         venue: "MBA Classrooms (3)",
         date: "8th December 2023 at 11:30AM to 01:00PM",
-        max: 56,
+        max: 59,
         due: "2023-12-08T13:30:00.234Z"
     },
     6: {
