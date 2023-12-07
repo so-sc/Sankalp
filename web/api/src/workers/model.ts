@@ -98,7 +98,7 @@ export const HackathonNameModel = {
     name: "Codeblaze",
     date: "8th December 2023",
     venue: "Sahyadri College of Engineering & Management",
-    max: 400,
+    max: 401,
     due: "2023-12-08T08:30:00.234Z"
 }
 
