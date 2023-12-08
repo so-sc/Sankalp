@@ -15,10 +15,10 @@ export default function Page() {
   useEffect(() => {
     console.log("selectedOption changed -->", selectedOption)
   }, [selectedOption])
-  
+
   const handleScannerOutput = (res: React.SetStateAction<string>) => {
     console.log("response of qr code scanner -->", res)
-    console.log('option: '+selectedOption)
+    console.log("option: " + selectedOption)
     sendDataToAPI(selectedOption, res)
     // Redirect should be performed after the state has been updated
     // redirect(`/hackathon/qrcode/${res}`)
@@ -30,7 +30,7 @@ export default function Page() {
     option: string,
     qrData: React.SetStateAction<string>
   ) => {
-    const token = getCookie("admin-token");
+    const token = getCookie("admin-token")
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/verify/${option}`,
@@ -40,13 +40,14 @@ export default function Page() {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ "eventID": qrData }),
+          body: JSON.stringify({ eventID: qrData }),
         }
       )
       let res = await response.json()
       if (res.success) {
         alert("Data sent to the API successfully")
       } else {
+        alert("Already registered")
         throw new Error(`Error: ${res.message}`)
       }
     } catch (error) {
