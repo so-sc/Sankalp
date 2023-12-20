@@ -56,10 +56,10 @@ export default function Navbar() {
                 Dashboard
               </Link>
               <Link
-                href="/hackathon"
+                href="/talks"
                 className="hover:underline underline-offset-2"
               >
-                Hackathon
+                Talks
               </Link>
             </>
           ) : (

@@ -48,16 +48,16 @@ export default function HackathonDashboard({ user }: HackathonDashboardProps) {
               </span>{" "}
               on various themes!
             </p>
-            <p className="flex gap-3 justify-center flex-wrap my-4">
+            <ul className="flex flex-col justify-center">
               {THEMES.map((theme) => (
-                <span
+                <li
                   key={theme}
                   className="px-5 py-2 outline rounded-full outline-1 outline-foreground/20 bg-foreground/10"
                 >
                   {theme}
-                </span>
+                </li>
               ))}
-            </p>
+            </ul>
             <div className="flex w-full items-center flex-col gap-4 mt-5">
               <Button asChild className="w-1/2 mx-auto">
                 <Link href="/hackathon" target="_blank">

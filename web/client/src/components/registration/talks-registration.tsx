@@ -1,3 +1,5 @@
+"use client"
+
 // This is the one we made for talks registration for DevHost
 
 import { CommonRegistrationProps } from "@/components/registration/register"
@@ -18,26 +20,22 @@ import { useForm } from "react-hook-form"
 import { TbCaretLeftFilled, TbCaretRightFilled } from "react-icons/tb"
 
 interface TalksRegistrationProps extends CommonRegistrationProps {
-  registrationData: UserProfile
+  registrationData?: UserProfile
   isUpdation?: boolean
 }
 
 export default function TalksRegistration({
-  setRegistrationData,
-  setStep,
-  registrationData,
   isUpdation = false,
 }: TalksRegistrationProps) {
   const form = useForm<Event>({
     resolver: zodResolver(talksSchema),
-    defaultValues: {
-      ...registrationData.event,
-    },
+    defaultValues: {},
   })
 
   async function onRegister(values: Event) {
-    setRegistrationData((prev: UserProfile) => ({ ...prev, event: values }))
-    if (!isUpdation) setStep!((prev: Step) => (prev + 1) as Step)
+    // setRegistrationData((prev: UserProfile) => ({ ...prev, event: values }))
+    // if (!isUpdation) setStep!((prev: Step) => (prev + 1) as Step)
+    console.log(values)
   }
 
   return (
@@ -46,7 +44,7 @@ export default function TalksRegistration({
         <Button
           className="flex gap-2"
           variant="outline"
-          onClick={() => setStep!((prev: Step) => (prev - 1) as Step)}
+          // onClick={() => setStep!((prev: Step) => (prev - 1) as Step)}
         >
           <TbCaretLeftFilled /> Prev
         </Button>
@@ -113,7 +111,7 @@ export default function TalksRegistration({
               </div>
             )}
           />
-          <div className="text-center mt-2">
+          {/* <div className="text-center mt-2">
             {isUpdation ? (
               <p className="font-bold">eSports Events</p>
             ) : (
@@ -172,7 +170,7 @@ export default function TalksRegistration({
                 ))}
               </div>
             )}
-          />
+          /> */}
           <Button className="mt-4 w-full flex items-center gap-1">
             {isUpdation ? (
               <p>Update Selection</p>

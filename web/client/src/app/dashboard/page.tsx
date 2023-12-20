@@ -1,4 +1,5 @@
 import HackathonDashboard from "@/components/dashboard/hackathon-dashboard"
+import TalksDashboard from "@/components/dashboard/talk-dashboard"
 import UserDashboard from "@/components/dashboard/user-dashboard"
 import Logout from "@/components/logout"
 import { H1, H2 } from "@/components/ui/typography"
@@ -71,7 +72,8 @@ export default async function DashboardPage() {
         <div className="grid md:grid-cols-2 md:pb-0 pb-10 tracking-wide mt-4 gap-10">
           <UserDashboard user={user.data} />
           <div className="pt-4 mt-8 md:pt-0 md:mt-0">
-            <HackathonDashboard user={user.data} />
+            {/* <HackathonDashboard user={user.data} /> */}
+            <TalksDashboard />
           </div>
         </div>
       </>

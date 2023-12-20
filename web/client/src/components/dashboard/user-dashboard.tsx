@@ -79,7 +79,7 @@ export default function UserDashboard({ user }: UserDashboardProps) {
           </p>
         </>
       )}
-      {user.hacks ? (
+      {/* {user.hacks ? (
         <>
           <p className="font-semibold border-b-2 border-foreground text-lg pt-4 pb-2">
             Register for {HACKATHON_NAME} Hackathon
@@ -103,7 +103,7 @@ export default function UserDashboard({ user }: UserDashboardProps) {
         </>
       ) : (
         <p></p>
-      )}
+      )} */}
       {/* <TalksRegistration
           setRegistrationData={setCurrentData}
           registrationData={currentData}
