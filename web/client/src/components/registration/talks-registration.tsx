@@ -10,7 +10,7 @@ import {
   FormLabel,
 } from "@/components/ui/form"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { ESPORTS, TALKS, TOTAL_ESPORTS, TOTAL_TALKS } from "@/lib/constants"
+import { ESPORTS, TALKS } from "@/lib/constants"
 import { talksSchema } from "@/lib/schemas"
 import { Event, Step, UserProfile } from "@/lib/types"
 import { zodResolver } from "@hookform/resolvers/zod"

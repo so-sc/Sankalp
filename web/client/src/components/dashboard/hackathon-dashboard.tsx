@@ -1,23 +1,13 @@
 import EventDashboard from "@/components/dashboard/event-dashboard"
 import { Button } from "@/components/ui/button"
-import Notification from "@/components/ui/notification"
 import {
-  EVENTS_DETAILS,
   HACKATHON_NAME,
-  MAIN_EVENT_NAME,
   MAIN_EVENT_WEBSITE,
   MAX_MEMBERS,
   MIN_MEMBERS,
   THEMES,
-  numberDisplay,
 } from "@/lib/constants"
-import {
-  HackathonAPIResponse,
-  HackathonDashboard,
-  HackathonTeam,
-  UserDashboardProfile,
-} from "@/lib/types"
-import { ExternalLink } from "lucide-react"
+import { UserDashboardProfile } from "@/lib/types"
 import Link from "next/link"
 import { TbExternalLink } from "react-icons/tb"
 

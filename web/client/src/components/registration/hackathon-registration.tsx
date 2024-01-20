@@ -21,7 +21,6 @@ import { Textarea } from "@/components/ui/textarea"
 import { H3 } from "@/components/ui/typography"
 import { useToast } from "@/components/ui/use-toast"
 import {
-  MAIN_EVENT_WEBSITE,
   MAX_MEMBERS,
   MIN_MEMBERS,
   THEMES,
@@ -31,7 +30,6 @@ import { teamSchema } from "@/lib/schemas"
 import {
   HackathonRegistration,
   HackathonTeam,
-  Leader,
   UserDashboardProfile,
 } from "@/lib/types"
 import { zodResolver } from "@hookform/resolvers/zod"

@@ -1,10 +1,7 @@
 "use client"
 
 import LoginForm from "@/components/forms/login-form"
-import { Button } from "@/components/ui/button"
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { H1, H2 } from "@/components/ui/typography"
+import { H1 } from "@/components/ui/typography"
 import { MAIN_EVENT_NAME } from "@/lib/constants"
 import { loginSchema } from "@/lib/schemas"
 import { LoginUser, SignIn } from "@/lib/types"
@@ -14,7 +11,6 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
-import { TbLoader2 } from "react-icons/tb"
 
 interface LoginProps {
   isVerify?: boolean

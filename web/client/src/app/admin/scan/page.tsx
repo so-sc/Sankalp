@@ -1,8 +1,7 @@
 "use client"
-import React, { useEffect, useState } from "react"
 import { getCookie } from "cookies-next"
+import React, { useEffect, useState } from "react"
 import { QrReader } from "react-qr-reader"
-import { redirect } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
 
@@ -77,7 +76,7 @@ export default function Page() {
         <div>
           {/* @ts-ignore */}
           <QrReader
-            onResult={(result) => {
+            onResult={(result: any) => {
               if (!!result) {
                 // @ts-ignore
                 handleScannerOutput(result?.text)

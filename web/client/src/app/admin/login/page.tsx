@@ -1,22 +1,18 @@
 "use client"
 
-import LoginForm from "@/components/forms/login-form"
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { H1 } from "@/components/ui/typography"
 import { useToast } from "@/components/ui/use-toast"
-import { ADMIN_ROLES, MAIN_EVENT_NAME } from "@/lib/constants"
-import { adminLoginSchema, adminRegisterSchema, otpSchema } from "@/lib/schemas"
+import { MAIN_EVENT_NAME } from "@/lib/constants"
+import { adminLoginSchema } from "@/lib/schemas"
 import {
   AdminLogin,
-  AdminLoginStatus,
-  AdminRegister,
-  OTPType,
+  AdminLoginStatus
 } from "@/lib/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { CookieValueTypes, getCookie, setCookie } from "cookies-next"
-import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { FormEvent, useCallback, useEffect, useState } from "react"
 import { useForm } from "react-hook-form"

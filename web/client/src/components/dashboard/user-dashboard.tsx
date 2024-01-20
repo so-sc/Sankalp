@@ -1,16 +1,12 @@
 "use client"
 
-import EventDashboard from "@/components/dashboard/event-dashboard"
-import TalksRegistration from "@/components/registration/talks-registration"
-import Notification from "@/components/ui/notification"
-import UserDisplay from "@/components/user-display"
 import {
   EVENTS_DETAILS,
   HACKATHON_NAME,
   genders,
   numberDisplay,
 } from "@/lib/constants"
-import { EventEvent, UserDashboardProfile, UserProfile } from "@/lib/types"
+import { UserDashboardProfile } from "@/lib/types"
 import { ExternalLink } from "lucide-react"
 import Link from "next/link"
 

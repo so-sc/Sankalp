@@ -1,5 +1,5 @@
 import { numberDisplay } from "@/lib/constants"
-import { User, UserDashboardProfile } from "@/lib/types"
+import { User } from "@/lib/types"
 
 interface UserDisplayProps {
   user: User

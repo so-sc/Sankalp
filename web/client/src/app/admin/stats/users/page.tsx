@@ -4,8 +4,6 @@ import DataTable from "@/components/tables/data-table"
 import { H1, H2 } from "@/components/ui/typography"
 import { MAIN_EVENT_NAME } from "@/lib/constants"
 import { userAdminResponse } from "@/lib/placeholder"
-import { cookies } from "next/headers"
-import { redirect } from "next/navigation"
 
 export default async function HackathonTeamsPage() {
   await isAdminLoggedIn()

@@ -1,9 +1,8 @@
 import { hackathonColumns } from "@/components/tables/columns/hackathon-columns"
 import DataTable from "@/components/tables/data-table"
-import { H1, H2, H3 } from "@/components/ui/typography"
+import { H1 } from "@/components/ui/typography"
 import { MAIN_EVENT_NAME } from "@/lib/constants"
-import { hackathonAdminResponse } from "@/lib/placeholder"
-import { HackathonAPIResponse, HackathonAdminApiResponse } from "@/lib/types"
+import { HackathonAdminApiResponse } from "@/lib/types"
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 
