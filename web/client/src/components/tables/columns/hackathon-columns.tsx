@@ -2,11 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table"
 
-import { THEMES } from "@/lib/constants"
-import {
-  DatumDatumHackathonAdminApi,
-  HackathonAdminApiResult,
-} from "@/lib/types"
+import { DatumDatumHackathonAdminApi } from "@/lib/types"
 
 export const hackathonColumns: ColumnDef<DatumDatumHackathonAdminApi>[] = [
   {

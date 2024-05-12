@@ -1,7 +1,6 @@
 "use client"
 
 import RegistrationDisplay from "@/components/registration-display"
-import TalksRegistration from "@/components/registration/talks-registration"
 import UserRegistration from "@/components/registration/user-registration"
 import { H1 } from "@/components/ui/typography"
 import { MAIN_EVENT_NAME } from "@/lib/constants"

@@ -1,6 +1,5 @@
 "use client"
 
-import { CommonRegistrationProps } from "@/components/registration/register"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -11,7 +10,6 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import Notification from "@/components/ui/notification"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import {
   Select,
   SelectContent,
@@ -22,20 +20,13 @@ import {
 import { H3 } from "@/components/ui/typography"
 import { useToast } from "@/components/ui/use-toast"
 import {
-  ESPORTS,
-  EVENTS_DETAILS,
-  TALKS,
-  TOTAL_ESPORTS,
-  TOTAL_TALKS,
+  EVENTS_DETAILS
 } from "@/lib/constants"
-import { eventSchema, talksSchema } from "@/lib/schemas"
+import { eventSchema } from "@/lib/schemas"
 import {
-  Event,
   EventForm,
   EventRegistrationData,
-  Step,
-  UserDashboardProfile,
-  UserProfile,
+  UserDashboardProfile
 } from "@/lib/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { getCookie } from "cookies-next"
@@ -44,9 +35,7 @@ import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import {
-  TbCaretLeftFilled,
-  TbCaretRightFilled,
-  TbLoader2,
+  TbLoader2
 } from "react-icons/tb"
 
 interface EventRegistrationProps {
