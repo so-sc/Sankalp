@@ -48,3 +48,28 @@ export const createToken = async (id: string) => {
         return { success: false, message: 'Authentication failed' };
     }
 }
+
+
+export const checkPassword = async (password: string) => {
+    try {
+        if (password.length < 8) {
+            return { success: false, message: 'Password must be at least 8 characters.' }
+        }
+        if (!/[a-z]/.test(password)) {
+            return { success: false, message: "At least one lowercase letter is required." }
+        }
+        if (!/[A-Z]/.test(password)) {
+            return { success: false, message: "At least one uppercase letter is required." }
+        }
+        if (!/\d/.test(password)) {
+            return { success: false, message: "At least one digit is required." }
+        }
+        if (!/[!@#$%^&*()-_=+[\]{};':"\\|,.<>/?]/.test(password)) {
+            return { success: false, message: "At least one special character is required." }
+        }
+        return { success: true }
+    } catch (e) {
+        console.log(`checkPassword: ${e}`)
+        return { success: false, message: 'The data provided is invalid. Check the fields again.' }
+    }
+}

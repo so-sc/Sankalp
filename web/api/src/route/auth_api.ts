@@ -3,7 +3,7 @@
 import express from "express";
 import jwt from "jsonwebtoken";
 import { verifyToken, adminVerifyToken } from "../workers/auth";
-import { decrypt } from "../workers/crypt";
+import { decrypt, encrypt } from "../workers/crypt";
 import { UserDeleteByID, UserRegisterByID, UserRegister, UserRegistersVerifyByID, UserSigninChecker, UserRegistersGetIDByMail } from "../db/sankalpUser"; 
 import { AdminData, AdminRegister, AdminSigninChecker } from "../db/sankalpAdmin";
 import { AdminSiginModel, AdminSigupModel, SigninModal, SignupModal } from "../workers/model";
@@ -25,6 +25,7 @@ router.post("/signup", async(req, res) => {
         data.verify = false;
         var result = await UserRegister(data);
         if (result.success) {
+            result.id = await encrypt(result.id);
             var rs = await sendUserVerifyMail(data.email, result.id, data.name);
             if (rs.success) {
                 return res.status(200).json({ success: true, id: result.id })

@@ -8,13 +8,82 @@ require('dotenv').config();
 
 
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    secure: true,
-    auth: {
-        user: process.env.EMAIL,
-        pass: process.env.PASS,
-    },
+  host: 'smtp.gmail.com', //'gmail',
+  port: 465,
+  service: 'gmail',
+  secure: true,
+  auth: {
+      // type: "login
+      user: process.env.EMAIL,
+      pass: process.env.PASS,
+  },
 });
+
+
+export const sendUserVerifyMail = async (mail: string, id: string, name: string) => {
+  try {
+    const replacements = {
+      '${name}': name,
+      '${verify}': `https://${process.env.URL}/verify/${id}`,
+    };
+    let html = fs.readFileSync('./src/workers/template/verify.html', 'utf8');
+    for (const [key, value] of Object.entries(replacements)) {
+      const regex = new RegExp(`\\${key}`, 'g');
+      html = html.replace(regex, value);
+    }   
+     const result = await transporter.sendMail({
+      from: process.env.EMAIL,
+      to: mail,
+      subject: `${process.env.COMPANY} - Email Verification`,
+      envelope: {
+          from: `${process.env.COMPANY} ${process.env.EMAIL}`,
+          to: `${mail}`
+      },
+      html: String(html),
+    });
+    if (!result) {
+      console.error('Error sending email');
+      return { success: false, message: `Error: Error sending email` }
+    } else {
+      return { success: true, message: result.response }
+    }
+  } catch (e) {
+    return { success: false, message: `Error: ${e.message}` }
+  }
+}
+
+
+export const sendChangePasswordMail = async (mail: string, otp: string, name: string) => {
+  try {
+    const replacements = {
+      '${name}': name,
+      '${otp}': otp
+    };
+    let html = fs.readFileSync('./src/workers/template/otp.html', 'utf8');
+    for (const [key, value] of Object.entries(replacements)) {
+      const regex = new RegExp(`\\${key}`, 'g');
+      html = html.replace(regex, value);
+    }   
+     const result = await transporter.sendMail({
+      from: process.env.EMAIL,
+      to: mail,
+      subject: `${process.env.COMPANY} - Email Verification`,
+      envelope: {
+          from: `${process.env.COMPANY} ${process.env.EMAIL}`,
+          to: `${mail}`
+      },
+      html: String(html),
+    });
+    if (!result) {
+      console.error('Error sending email');
+      return { success: false, message: `Error: Error sending email` }
+    } else {
+      return { success: true, message: result.response }
+    }
+  } catch (e) {
+    return { success: false, message: `Error: ${e.message}` }
+  }
+}
 
 
 export const sendAdminHackathonMail = async (mail: string, subject: string, para: string, button: string) => {
@@ -83,40 +152,6 @@ export const sendAdminEventMail = async (mail: string, subject: string, para: st
   } catch (e) {
     console.log(e.message);
     return { success: false, message: `Something went wrong, when mailing.` }
-  }
-}
-
-
-export const sendUserVerifyMail = async (mail: string, id: string, name: string) => {
-  try {
-    const replacements = {
-      '${name}': name,
-      '${id}': id,
-      '${verify}': `${process.env.DOMAIN}/verify`
-    };
-    let html = fs.readFileSync('./src/workers/template/user_registration.html', 'utf8');
-    for (const [key, value] of Object.entries(replacements)) {
-      const regex = new RegExp(`\\${key}`, 'g');
-      html = html.replace(regex, value);
-    }   
-     const result = await transporter.sendMail({
-      from: process.env.EMAIL,
-      to: mail,
-      subject: `SOSC: You have registered to sankalp successfully`,
-      envelope: {
-          from: `SOSC ${process.env.EMAIL}`,
-          to: `${mail}`
-      },
-      html: String(html),
-    });
-    if (!result) {
-      console.error('Error sending email');
-      return { success: false, message: `Error: Error sending email` }
-    } else {
-      return { success: true, message: result.response }
-    }
-  } catch (e) {
-    return { success: false, message: `Error: ${e.message}` }
   }
 }
 

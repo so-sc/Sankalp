@@ -6,96 +6,33 @@ interface NameModel {
 // Keys start from 1 guys sadly deveesh believes this is an array. May key value pair be with you..
 export const EventNameModel: NameModel = {
     1: {
-        name: "DeCode: Capture the flag",
-        date: "9th December 2023 at 2:00PM to 3:00PM",
-        venue: "Digital Library - First Floor",
-        max: 15,
-        due: "2023-12-06T22:30:00.234Z"
-    },
-    2: {
-        name: "Open Source Fiesta",
-        venue: "Online (Github)",
-        date: "6th to 8th December 2023",
-        max: 100,
-        due: "2023-12-06T00:30:00.234Z"
-    },
-    3: {
-        name: "BlindByte: Blind coding",
-        venue: "CSE Lab 7",
-        date: "9th December 2023 at 10:00AM to 03:00PM",
-        max: 100,
-        due: "2023-12-09T15:50:00.234Z"
-    },
-    4: {
-        name: "The Pitchers",
-        date: "CoE Board Room - Ground floor",
-        venue: "8th December 2023 at 9.30 AM to 10.30AM",
-        max: 100,
-        due: "2023-12-08T10:00:00.234Z"
-    },
-    5: {
-        name: "TechMaze: Escape Room",
-        venue: "MBA Classrooms (3)",
-        date: "8th December 2023 at 11:30AM to 01:00PM",
-        max: 63,
-        due: "2023-12-08T13:30:00.234Z"
-    },
-    6: {
-        name: "The Wolf of Dalal Street",
-        venue: "Online (StockGro)",
-        date: "8th December 2023 at 09:00AM to 03:30PM",
-        max: 100,
-        due: "2023-12-07T16:30:00.234Z"
+        name: "",
+        date: "",
+        venue: "",
+        max: 0,
+        due: ""
     },
 }
 
 export const TalkNameModel: NameModel = {
     1: {
-        name: "",
-        date: "",
-        venue: "Seminar Hall - First Floor",
+        name: "Tech Talk: by ",
+        date: "9th December 2023 at 2:00PM to 3:00PM",
+        venue: "Seminar Hall - Ground Floor",
         max: [150, 500],
-        due: "2023-12-08T15:30:00.234Z"
+        due: "2024-06-08T15:30:00.234Z"
     },
     2: {
-        name: "",
-        date: "",
-        venue: "",
-        max: 100,
-        due: "2023-12-05T08:30:00.234Z"
-    },
-    3: {
-        name: "",
-        date: "",
-        venue: "",
-        max: 100,
-        due: "2023-12-05T08:30:00.234Z"
-    },
-    4: {
-        name: "",
-        date: "",
-        venue: "",
-        max: 100,
-        due: "2023-12-05T08:30:00.234Z"
-    },
-    5: {
-        name: "",
-        date: "",
-        venue: "",
-        max: 100,
-        due: "2023-12-05T08:30:00.234Z"
-    },
-    6: {
-        name: "",
-        date: "",
-        venue: "",
-        max: 100,
-        due: "2023-12-05T08:30:00.234Z"
+        name: "Tech Talk: by ",
+        date: "9th December 2023 at 2:00PM to 3:00PM",
+        venue: "Seminar Hall - Ground Floor",
+        max: [150, 500],
+        due: "2024-06-08T15:30:00.234Z"
     },
 }
 
 export const HackathonNameModel = {
-    name: "Codeblaze",
+    name: "DevHost",
     date: "8th December 2023",
     venue: "Sahyadri College of Engineering & Management",
     max: 403,
@@ -138,7 +75,6 @@ export interface Talk {
 
 // Event & Talk & Hackathon Interfaces & types
 export interface EventModels {
-    verify?: boolean,
     qrId?: string,
     isEvent: boolean,
     // Talk
@@ -146,7 +82,8 @@ export interface EventModels {
     // Event
     event?: {
         eve?: number,
-        participant?: Array<Member>
+        participant?: Array<Member>,
+        verify?: boolean
     }
 }
 
@@ -155,6 +92,7 @@ export interface HackathonModel {
     theme: number,
     themeDesc: string,
     member: Array<Member>,
+    shortlisted: Boolean,
     verify?: Boolean,
     qrId?: string,
 }
@@ -168,6 +106,7 @@ export interface SignupModal {
     verify: boolean,
     student: boolean,
     PhNo: string,
+    password: string,
     // Employee
     company?: string,
     designation?: string,
@@ -175,16 +114,12 @@ export interface SignupModal {
     college?: string,
     branch?: string,
     course?: string,
-    year?: number,
-    // Auto added
-    hack?: string,
-    talk?: string,
-    event?: Array<string>
+    year?: number
 }
 
 export interface SigninModal {
     email: string,
-    id: string
+    password: string
 }
 
 // Admin Model
@@ -239,10 +174,10 @@ export interface UserResponseModal {
     branch?: string,
     course?: string,
     year?: number,
-    // Auto added
-    hacks?: object,
-    talks?: object,
-    events?: Array<object>
+    // other data
+    hacks?: any,
+    events?: any,
+    talks?: any
 }
 
 
