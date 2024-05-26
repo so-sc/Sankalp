@@ -1,5 +1,5 @@
 export const MAIN_EVENT_NAME = "Codeblaze"
-export const MAIN_EVENT_WEBSITE = "https://codeblaze.sosc.org.in"
+export const MAIN_EVENT_WEBSITE = "https://devhost.sosc.org.in/"
 
 export const numberDisplay = ["1st", "2nd", "3rd", "4th", "5th"]
 export const genders = ["male", "female", "non-binary", "other"] as const

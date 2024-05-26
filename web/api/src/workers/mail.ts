@@ -24,7 +24,7 @@ export const sendUserVerifyMail = async (mail: string, id: string, name: string)
   try {
     const replacements = {
       '${name}': name,
-      '${verify}': `https://${process.env.URL}/verify/${id}`,
+      '${verify}': `https://${process.env.URL}/api/auth/verify/${id}`,
     };
     let html = fs.readFileSync('./src/workers/template/verify.html', 'utf8');
     for (const [key, value] of Object.entries(replacements)) {
@@ -34,9 +34,9 @@ export const sendUserVerifyMail = async (mail: string, id: string, name: string)
      const result = await transporter.sendMail({
       from: process.env.EMAIL,
       to: mail,
-      subject: `${process.env.COMPANY} - Email Verification`,
+      subject: `SOSC: Email Verification`,
       envelope: {
-          from: `${process.env.COMPANY} ${process.env.EMAIL}`,
+          from: `SOSC ${process.env.EMAIL}`,
           to: `${mail}`
       },
       html: String(html),
@@ -51,7 +51,6 @@ export const sendUserVerifyMail = async (mail: string, id: string, name: string)
     return { success: false, message: `Error: ${e.message}` }
   }
 }
-
 
 export const sendChangePasswordMail = async (mail: string, otp: string, name: string) => {
   try {
@@ -84,7 +83,6 @@ export const sendChangePasswordMail = async (mail: string, otp: string, name: st
     return { success: false, message: `Error: ${e.message}` }
   }
 }
-
 
 export const sendAdminHackathonMail = async (mail: string, subject: string, para: string, button: string) => {
   try {
@@ -120,7 +118,6 @@ export const sendAdminHackathonMail = async (mail: string, subject: string, para
   }
 }
 
-
 export const sendAdminEventMail = async (mail: string, subject: string, para: string, button: string) => {
   try {
     const replacements = {
@@ -154,7 +151,6 @@ export const sendAdminEventMail = async (mail: string, subject: string, para: st
     return { success: false, message: `Something went wrong, when mailing.` }
   }
 }
-
 
 export const sendAdminVerifyMail = async (mail: string, otp: string) => {
   try {
@@ -297,6 +293,34 @@ export const sendVerifyMail = async (mail: string, event: string) => {
           </body>
           </html>
         `,
+      });
+      if (result.response) {
+        return { success: true, message: result.response }
+      } else {
+          console.error('Error sending email');
+        return { success: false, message: `Error: Error sending email` }
+      }
+  } catch (e) {
+    return { success: false, message: `Error: ${e.message}` }
+  }
+}
+
+export const sendAnnouncementMail = async (mails: string[], subject: string, data: string, button: string) => {
+  try {
+    let html = fs.readFileSync('./src/workers/template/verify.html', 'utf8');
+    var replacements = {
+      '${data}': data,
+      '${button}': button
+    }
+    for (const [key, value] of Object.entries(replacements)) {
+      const regex = new RegExp(`\\${key}`, 'g');
+      html = html.replace(regex, value);
+    }   
+    const result = await transporter.sendMail({
+        from: process.env.EMAIL,
+        to: mails.join(','),
+        subject: `SOSC: ${subject}`,
+        html: html
       });
       if (result.response) {
         return { success: true, message: result.response }

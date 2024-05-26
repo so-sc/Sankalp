@@ -41,7 +41,7 @@ export const adminVerifyToken = async (req: Request, res: Response, next: () => 
 
 export const createToken = async (id: string) => {
     try { 
-        const token = jwt.sign({ id: await encrypt(id) }, process.env.KEY, { expiresIn: '24h' });
+        const token = jwt.sign({ id: await encrypt(id) }, process.env.KEY, { expiresIn: '7d' });
         return { success: true, token: token }
     } catch (error) {
         console.log(`createToken: ${error}`);

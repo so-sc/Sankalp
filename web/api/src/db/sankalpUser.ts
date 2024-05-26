@@ -3,8 +3,8 @@
 import mongo from "mongoose";
 import { paraCode, buttonCode, EventResponseModel, EventNameModel, TalkNameModel, HackathonNameModel, EventModels, HackathonModel, Member, SigninModal, SignupModal, Talk, UserResponseModal, gender, HackathonResponseModel } from "../workers/model";
 import { checkPassword, createToken } from "../workers/auth";
-import { sendAdminEventMail, sendAdminHackathonMail, sendChangePasswordMail } from "../workers/mail";
-import { decrypt, encrypt } from "workers/crypt";
+import { sendAdminEventMail, sendAdminHackathonMail, sendChangePasswordMail, sendAnnouncementMail } from "../workers/mail";
+import { decrypt, encrypt } from "../workers/crypt";
 
 const userRegisteration = new mongo.Schema<SignupModal>({
     name: {
@@ -282,10 +282,22 @@ export const UserRegister = async (data: any) => {
         data.password = await encrypt(data.password);
         const user = new User(data);
         const info = await user.save();
-        return { success: true }
+        return { success: true, id: info._id.toString() }
     } catch (e) {
         console.log(`db>sankalpUser>UserRegister: ${e}`)
         return { success: false, message: 'The data provided is invalid. Check the fields again.' }
+    }
+}
+
+export const UserRegistersVerifyByID = async (id: string) => {
+    const rs = await User.findOne({ _id: new mongo.Types.ObjectId(id)});
+    if (rs && !rs.verify) {
+        await User.updateOne({ _id: new mongo.Types.ObjectId(id) }, { $set: { verify: true }})
+        return { success: true }
+    } else if (rs.verify) {
+        return { success: false, message: "Already verified.." }
+    } else {
+        return { success: false, message: 'The data is invalid.' }
     }
 }
 
@@ -302,7 +314,7 @@ export const UserSigninChecker = async (data: SigninModal) => {
                 if (!result.verify) {
                     return { success: false, message: "User not verified."};
                 }
-                return { success: true, token: rs.token };
+                return { success: true, token: rs.token, verify: result.verify };
             } else {
                 return { success: false, message: rs.message }
             }
@@ -328,7 +340,7 @@ export const VerifyUserChangePassword= async (data: any) => {
             if (rs) {
                 // Mail to user
                 result.id = await encrypt(result.id);
-                var rsp = await sendChangePasswordMail(data.email, otp.toString(), data.name);
+                var rsp = await sendChangePasswordMail(data.email, otp.toString(), result.name);
                 if (rsp.success) {
                     return { success: true }
                 } else {
@@ -375,6 +387,35 @@ export const UserChangePassword = async (data: any) => {
     }
 }
 
+export const SendMail = async (data: any, toDo: number, subject: string, body: string, button: string) => {
+    try {
+        var agg = []
+        if (toDo === 1) {
+            agg.push({ $match: { gender: { $eq: { $or: [{ $eq: 1 }, { $eq: 3 }] } } } })
+        } else if (toDo === 2) {
+            agg.push({ $match: { gender: { $eq: { $or: [{ $eq: 2 }, { $eq: 4 }] } } } })
+        }
+        agg.push({ $group: {
+            _id: null, 
+            mails: { $push: '$email' }, 
+            id: { $push: '$_id' }
+        } })
+        var result = (await User.aggregate(agg))[0]
+        data = result.mails
+        var mails = [];
+        if (toDo === 3) {
+            
+        } else if (toDo === 4) {
+
+        } else if (toDo === 5) {
+
+        }
+        await sendAnnouncementMail(result['mails'], subject, data, button)
+    } catch (e) {
+        console.log(`db>dbAuth>UserChangePassword: ${e}`)
+        return { success: false, message: 'Something went wrong.' }
+    }
+}
 
 
 const otpDumpCollection = new mongo.Schema({
@@ -395,8 +436,6 @@ const otpDumpCollection = new mongo.Schema({
 })
 
 const otpDump = mongo.model('otpDump', otpDumpCollection);
-
-
 
 const eventRegistration = new mongo.Schema<EventModels>({
     isEvent: {
@@ -483,7 +522,6 @@ export const EventDeleteByID = async (id: string) => {
     }
 }
 
-
 export const EventGetTeamwiseDetails = async (eve: number) => {
     try {
         if (!eve) {
@@ -511,73 +549,74 @@ export const EventGetTeamwiseDetails = async (eve: number) => {
     }
 }
 
-
-// export const EventRegister = async (id: string, data: any) => {
-//     let info;
-//     try { 
-//         if (data.isEvent) {
-//             try {
-//                 if ((new Date()) > (new Date(EventNameModel[data.event.eve].due))) {
-//                     return { success: false, message: `The registration is closed for ${EventNameModel[data.event.eve].name}.` }
-//                 }
-//                 if ((await Event.aggregate([
-//                     { $match: { isEvent: {$exists: true, $eq: true}, 'event.eve': {$exists: true, $eq: data.event.eve } } },
-//                     { $count: "count" }
-//                 ]))[0]["count"]+data.event.participant.length > Number(EventNameModel[data.event.eve]['max'])) {
-//                     return { success: false, message: `The event registration of ${EventNameModel[data.event.eve]['name']} is closed.` }
-//                 }
-//             } catch (e) {}
-//             data.event.participant.map((member: Member) => {
-//                 if(!(User.findOne({ email: member.info }))){return { success: false, message: `The ${member.info} is not registered. Check your Email ID or Confirm whether the participant is registered in the platform.` } } 
-//             } );
-//             data.event.participant.push({ info: (await User.findOne({_id: id})).email, lead: true });
-//             for (const member of data.event.participant) {
-//                 let user = await User.findOne({ email: member.info });
-//                 if (user && user.event) { 
-//                     for (const event of user.event) {
-//                         const foundEvent = await Event.findOne({ _id: event });
-//                         try{
-//                             if (foundEvent.event.eve===data.event.eve) {
-//                                 return { success: false, message: `The ${member.info} is already in an event. Opt someone else.` };
-//                             }
-//                         } catch (e) {}
-//                     }
-//                 }
-//             }
-//             for (const participant of data.event.participant) {
-//                 const rs = await UserRegistersGetIDByMail(participant.info);
-//                 if (!rs.success) { return rs; }
-//                 participant.info = rs.id;
-//             }
-//             data.verify = false; 
-//         } else {
-//             if ((new Date())>(new Date(TalkNameModel[data.talk].due))) {
-//                 return { success: false, message: `The registration is closed for ${TalkNameModel[data.eve].name}.` }
-//             }
-//             for (const talk of data.talk) {
-//                 if ((await Event.aggregate([
-//                     { $match: { isEvent: {$exists: true, $eq: false}, 'talk': { $elemMatch: { id: talk.id } } } },
-//                     { $count: "count" }
-//                 ]))[0]["count"]+1 > Number(TalkNameModel[data.eve]['max'][0])) {
-//                     return { success: false, message: `The talk registration of ${TalkNameModel[data.eve]['name']} is closed.` }
-//                 }
-//             }
-//         }
-//         const event = new Event(data);
-//         info = await event.save();
-//         return { success: true, id: info._id.toString() }
-//     } catch (e) {
-//         console.log(e);
-//         try {
-//             if (info._id.toString()) {
-//                 await Event.deleteOne({ _id: info._id.toString() })
-//             }
-//         } catch (e) {
-//             return { success: false, message: 'Application failed to register. Do check the provided fields.' }
-//         }
-//         return { success: false, message: 'Application failed to register. Do check the provided fields.' }
-//     }
-// }
+export const EventRegister = async (id: string, data: any) => {
+    let info;
+    try { 
+        if (data.isEvent) {
+            try {
+                if ((new Date()) > (new Date(EventNameModel[data.event.eve].due))) {
+                    return { success: false, message: `The registration is closed for ${EventNameModel[data.event.eve].name}.` }
+                }
+                if ((await Event.aggregate([
+                    { $match: { isEvent: {$exists: true, $eq: true}, 'event.eve': {$exists: true, $eq: data.event.eve } } },
+                    { $count: "count" }
+                ]))[0]["count"]+data.event.participant.length > Number(EventNameModel[data.event.eve]['max'])) {
+                    return { success: false, message: `The event registration of ${EventNameModel[data.event.eve]['name']} is closed.` }
+                }
+            } catch (e) {}
+            data.event.participant.map((member: Member) => {
+                if(!(User.findOne({ email: member.info }))){return { success: false, message: `The ${member.info} is not registered. Check your Email ID or Confirm whether the participant is registered in the platform.` } } 
+            } );
+            data.event.participant.push({ info: (await User.findOne({_id: id})).email, lead: true });
+            data.event.participant = await Promise.all(data.event.participant.map(async (member: Member) => {
+                let user = await User.findOne({ email: member.info })
+                if (user) {
+                    var eventParticipate: any = await Event.aggregate([
+                        { $match : { isEvent: true, 'event.eve': {$exists: true, $eq: data.event.eve }, 'event.participant.info': {$exists: true, $eq: user._id } } },
+                    ])
+                    if (eventParticipate.length <= 0) {
+                        return { success: false, message: `The ${member.info} is already in an event. Opt someone else.` };
+                    }
+                }
+                const rs = await UserRegistersGetIDByMail(member.info);
+                if (!rs.success) { return rs; }
+                member.info = rs.id;
+            }))
+            // for (const participant of data.event.participant) {
+            //     const rs = await UserRegistersGetIDByMail(participant.info);
+            //     if (!rs.success) { return rs; }
+            //     participant.info = rs.id;
+            // }
+            data.verify = false; 
+        } else {
+            console.log(TalkNameModel[data.talk])
+            if ((new Date())>(new Date(TalkNameModel[data.talk].due))) {
+                return { success: false, message: `The registration is closed for ${TalkNameModel[data.eve].name}.` }
+            }
+            for (const talk of data.talk) {
+                if ((await Event.aggregate([
+                    { $match: { isEvent: {$exists: true, $eq: false}, 'talk': { $elemMatch: { id: talk.id } } } },
+                    { $count: "count" }
+                ]))[0]["count"]+1 > Number(TalkNameModel[data.eve]['max'][0])) {
+                    return { success: false, message: `The talk registration of ${TalkNameModel[data.eve]['name']} is closed.` }
+                }
+            }
+        }
+        const event = new Event(data);
+        info = await event.save();
+        return { success: true, id: info._id.toString() }
+    } catch (e) {
+        console.log(e);
+        try {
+            if (info._id.toString()) {
+                await Event.deleteOne({ _id: info._id.toString() })
+            }
+        } catch (e) {
+            return { success: false, message: 'Application failed to register. Do check the provided fields.' }
+        }
+        return { success: false, message: 'Application failed to register. Do check the provided fields.' }
+    }
+}
 
 export const EventQRAdder = async (id: string, qId: string) => {
     await Event.updateOne(
@@ -622,7 +661,6 @@ export const EventRegisterAll = async () => {
         return { success: false, message: 'Something went wrong' }
     }
 }
-
 
 export const EventSendEmailAll = async (data: any) => {
     try {
@@ -687,7 +725,6 @@ export const EventRegisterOfEvent = async (eve: number) => {
         return { success: false, message: 'Something went wrong' }
     }
 }
-
 
 export const EventRegistersGetPhoneNo = async () => {
     try {
@@ -975,9 +1012,9 @@ export const HackathonRegistersDetails = async () => {
     }
 }
 
-
 export const HackathonRegister = async (id: string, data: any) => {
     let info;
+    data.name = data.name.strip();
     try {
         if (data.member.length<1 && data.member.length>3) {
             return { success: false, message: 'The size of an hackathon team should be strictly 2-4.' }
@@ -1031,7 +1068,6 @@ export const HackathonQRAdder = async (id: string, qId: string) => {
     )
 }
 
-
 export const HackathonGetLeaderPhoneNo = async () => {
     try {
         let res = (await Hackathon.aggregate([
@@ -1050,7 +1086,6 @@ export const HackathonGetLeaderPhoneNo = async () => {
         return { success: false, message: 'Something went wrong.'}
     }
 }
-
 
 export const HackathonGetPhoneNo = async () => {
     try {
@@ -1116,7 +1151,6 @@ export const HackathonSendEmailLead = async (data: any) => {
     }
 }
 
-
 export const HackathonSendEmailAll = async (data: any) => {
     try {
         let unable = Array();
@@ -1124,7 +1158,7 @@ export const HackathonSendEmailAll = async (data: any) => {
             { $unwind: "$member" },
             { $group: { _id: null, data: { $push: { info: "$member.info" } } } },   
             { $project: { _id: 0, info: "$data.info" } }
-          ]))[0]['info'];
+        ]))[0]['info'];
         var button;
         try { 
             button = await buttonCode(data.button.title, data.button.url);
@@ -1143,7 +1177,6 @@ export const HackathonSendEmailAll = async (data: any) => {
         return { success: false, message: 'Something went wrong.'}
     }
 }
-
 
 export const hackathonRegistersVerify = async (id: string) => {
     if (!(await Hackathon.findOne({ _id: new mongo.Types.ObjectId(id) }))) {

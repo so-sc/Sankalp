@@ -314,6 +314,20 @@ router.post("/event-mail-all", adminVerifyToken, async(req, res) => {
     }
 });
 
+// send mail to all
+router.post("/send-mail", adminVerifyToken, async(req, res) => {
+    try {
+        let data = req.body;
+        let result = await EventSendEmailAll(data);
+        if (!result.success) {
+            return res.status(500).json({ success: false, message: result.message })
+        }
+        return res.status(200).json({ success: true, result: result.data })
+    } catch (e) {
+        return res.status(500).json({ success: false, message: e.message })
+    }
+});
+
 
 /* ----------------- Feedback ------------------------ */
 

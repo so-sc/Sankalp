@@ -1,7 +1,7 @@
 
 interface NameModel {
     [key: string]: { name: string, date: string; venue: string, max: any, due: string };
-  }
+}
   
 // Keys start from 1 guys sadly deveesh believes this is an array. May key value pair be with you..
 export const EventNameModel: NameModel = {
@@ -33,7 +33,7 @@ export const TalkNameModel: NameModel = {
 
 export const HackathonNameModel = {
     name: "DevHost",
-    date: "8th December 2023",
+    date: "15th June 2024",
     venue: "Sahyadri College of Engineering & Management",
     max: 403,
     due: "2023-12-08T08:30:00.234Z"
@@ -52,6 +52,15 @@ export const gender = {
     2: "Female",
     3: "Non Binary",
     4: "Other"
+}
+
+export const toDo = {
+    0: "All users",
+    1: "Male users",
+    2: "Female users",
+    3: "Event",
+    4: "Talk",
+    5: "Hackathon"
 }
 
 export const Theme = {
@@ -138,7 +147,6 @@ export interface AdminPrivilege {
     email: [true, true, true, true, true, false],
     massEmail: [true, true, true, true, true, false],
     allEmail: [true, true, true, false, false, false],
-    
 }
 
 export interface AdminSigupModel {

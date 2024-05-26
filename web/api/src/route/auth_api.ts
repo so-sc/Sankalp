@@ -4,7 +4,7 @@ import express from "express";
 import jwt from "jsonwebtoken";
 import { verifyToken, adminVerifyToken } from "../workers/auth";
 import { decrypt, encrypt } from "../workers/crypt";
-import { UserDeleteByID, UserRegisterByID, UserRegister, UserRegistersVerifyByID, UserSigninChecker, UserRegistersGetIDByMail } from "../db/sankalpUser"; 
+import { UserDeleteByID, UserRegisterByID, UserRegister, UserRegistersVerifyByID, UserSigninChecker, UserRegistersGetIDByMail, VerifyUserChangePassword, UserChangePassword } from "../db/sankalpUser"; 
 import { AdminData, AdminRegister, AdminSigninChecker } from "../db/sankalpAdmin";
 import { AdminSiginModel, AdminSigupModel, SigninModal, SignupModal } from "../workers/model";
 import { sendUserVerifyMail } from "../workers/mail";
@@ -62,6 +62,23 @@ router.post("/signin", async(req, res) => {
     }
 });
 
+// Change password
+router.post("/change-password", async(req, res) => {
+    try {
+        const data = req.body;
+        var result;
+        if (data.stage === 1) {
+            result = await VerifyUserChangePassword(data);
+        } else if (data.stage === 2) {
+            result = await UserChangePassword(data);
+        }
+        return res.status(200).json(result)
+    } catch (e) {
+        return res.status(500).json({ success: false, message: e.message })
+    }
+});
+
+// Token checker
 router.get("/token-checker", async(req, res) => {
     try {
         if (req.body.token) {
@@ -95,22 +112,17 @@ router.get("/token-checker", async(req, res) => {
 });
 
 // Verify the user
-router.post("/verify", verifyToken, async(req, res) => {
+router.post("/verify/:id", async(req, res) => {
     try {
-        if (!req.body.id) {
-            return res.status(500).json({ success: false, message: "Loggin to the account before verifying." })
-        }
+        const token = req.params.id;
+        req.body.id = await decrypt(token);
         const result = await UserRegistersVerifyByID(req.body.id);
-        if (result.success) {
-            return res.status(200).json({ success: true })
-        } else {
-            return res.status(500).json({ success: true, message: result.message })
-        }
+        return res.status(200).json(result)
     } catch (e) {
-        return res.status(500).json({ success: false, message: e.message })
+        console.log(e)
+        return res.status(500).json({ success: false, message: "Something went wrong." })
     }
 });
-
 
 /* -------- Admin -------- */
 
