@@ -50,11 +50,7 @@ export default function LoginForm({
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input
-                    type="password"
-                    placeholder="Password (Authorization ID which you got in mail)"
-                    {...field}
-                  />
+                  <Input type="password" placeholder="Password" {...field} />
                 </FormControl>
                 {form.formState.errors.password?.message && (
                   <p className="text-red-500">

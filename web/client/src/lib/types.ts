@@ -38,6 +38,7 @@ export type Purpose = "user" | "hackathon" | "event" // For tables
 export type SignUp = {
   name: string
   email: string
+  password: string
   gender: number
   student: boolean
   PhNo: string

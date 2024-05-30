@@ -31,6 +31,8 @@ export default function UserRegistration({
     defaultValues: {
       name: "",
       email: "",
+      password: "",
+      confirmPassword: "",
       phone: "",
       gender: "male",
       role: {
@@ -44,8 +46,14 @@ export default function UserRegistration({
   })
 
   const userRole = form.watch("role.role")
+  const password = form.watch("password")
+  const confirmPassword = form.watch("confirmPassword")
 
   function onNextStep(values: User) {
+    if (password !== confirmPassword) {
+      alert("Passwords don't match")
+    }
+
     setRegistrationData((prev: UserProfile) => ({ ...prev, user: values }))
     setStep!((prev: Step) => (prev + 1) as Step)
   }
@@ -80,6 +88,46 @@ export default function UserRegistration({
               <FormItem>
                 <FormControl>
                   <Input type="email" placeholder="Email" {...field} />
+                </FormControl>
+                {form.formState.errors.email?.message && (
+                  <p className="text-red-500">
+                    {form.formState.errors.email?.message}
+                  </p>
+                )}
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input
+                    type="password"
+                    placeholder="Password (use lowercase, uppercase, and digits)"
+                    {...field}
+                  />
+                </FormControl>
+                {form.formState.errors.email?.message && (
+                  <p className="text-red-500">
+                    {form.formState.errors.email?.message}
+                  </p>
+                )}
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="confirmPassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input
+                    type="password"
+                    placeholder="Confirm Password"
+                    {...field}
+                  />
                 </FormControl>
                 {form.formState.errors.email?.message && (
                   <p className="text-red-500">

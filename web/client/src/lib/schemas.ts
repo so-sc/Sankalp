@@ -53,6 +53,8 @@ export const employeeSchema = z.object({
 export const userSchema = z.object({
   name: z.string().min(3).max(48),
   email: z.string().email(),
+  password: z.string().min(8).max(24),
+  confirmPassword: z.string().min(8).max(24),
   phone: z.string().length(10),
   gender: z.enum(genders),
   role: z.union([studentSchema, employeeSchema]),

@@ -98,6 +98,7 @@ export default function Login({ isVerify }: LoginProps) {
             setError("Verification Failed")
           }
         } else {
+          router.refresh()
           router.push("/dashboard")
         }
       } else {

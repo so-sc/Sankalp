@@ -28,6 +28,8 @@ export default function Register() {
     user: {
       name: "",
       email: "",
+      password: "",
+      confirmPassword: "",
       phone: "",
       gender: "male",
       role: {

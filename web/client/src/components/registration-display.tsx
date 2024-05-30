@@ -32,6 +32,7 @@ export default function RegistrationDisplay({
     const signUpData: SignUp = {
       name: registrationData.user.name,
       email: registrationData.user.email,
+      password: registrationData.user.password,
       gender:
         genders.findIndex((gender) => gender === registrationData.user.gender) +
         1, // Hate you Akkil for taking gender as number and using 1 indexing
@@ -138,10 +139,8 @@ export default function RegistrationDisplay({
       {error && <p className="text-red-500 text-center mt-2">{error}</p>}
       <Notification variant="info" className="mt-2">
         <p>
-          After clicking this button, a verification mail with a unique ID will
-          be sent to your registered mail id. This unique Id will be your
-          password to the dashboard. Double check your mail, and make sure to
-          check your spam folder too!
+          After clicking this button, a verification mail will be sent to your
+          registered email id.
         </p>
       </Notification>
       <Button
