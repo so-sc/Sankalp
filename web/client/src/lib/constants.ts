@@ -1,4 +1,4 @@
-export const MAIN_EVENT_NAME = "Codeblaze"
+export const MAIN_EVENT_NAME = "Devhost 2024"
 export const MAIN_EVENT_WEBSITE = "https://devhost.sosc.org.in/"
 
 export const numberDisplay = ["1st", "2nd", "3rd", "4th", "5th"]
@@ -22,9 +22,9 @@ export const ESPORTS = ["Ludo 1v1v1v1", "Candy Crush Saga"]
 // Hackathon registration
 export const MIN_MEMBERS = 2 // Including the leader
 export const MAX_MEMBERS = 4 // Including the leader
-export const THEMES = ["Company Specific", "Open Theme"] as const
+export const THEMES = ["Company Specific"] as const
 
-export const HACKATHON_NAME = "Codeblaze"
+export const HACKATHON_NAME = "Devhost"
 
 // Event: Codeblaze
 // Event order should be same always - don't change
@@ -94,4 +94,4 @@ export const ADMIN_ROLES = [
   "Volunteer Head",
   "Leads",
   "Volunteers",
-] as const  
+] as const

@@ -56,7 +56,8 @@ export default function Navbar() {
                 Dashboard
               </Link>
               <Link
-                href="/hackathon"
+                href="https://unstop.com/o/8SGos2D?lb=ZReY3Op"
+                target="_blank"
                 className="hover:underline underline-offset-2"
               >
                 Hackathon
