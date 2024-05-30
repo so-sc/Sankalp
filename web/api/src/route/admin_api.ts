@@ -1,7 +1,8 @@
 
 import express from "express";
-import { UserRegisterTotal, HackathonCount, TalkCount, EventCount, UserRegisterYear, UserRegisterStudent, UserRegisterGender, EventRegisters, HackathonRegistersDetails, EventRegistersVerifyTalk, EventRegistersVerifyEvent, hackathonRegistersVerify, User, EventRegisterAll, HackathonRegisterAll, EventRegisterOfEvent, UserRegisterGetDetails, EventSendEmailEve, EventSendEmailAll, HackathonSendEmailLead, HackathonSendEmailAll, HackathonGetPhoneNo, HackathonGetLeaderPhoneNo, EventRegistersGetEventPhoneNo, EventRegistersGetPhoneNo, UserRegisterGetInfoDetails, HackathonGetTeamwiseDetails, EventGetTeamwiseDetails } from '../db/sankalpUser';
+import { UserRegisterTotal, HackathonCount, TalkCount, EventCount, UserRegisterYear, UserRegisterStudent, UserRegisterGender, EventRegisters, HackathonRegistersDetails, EventRegistersVerifyTalk, EventRegistersVerifyEvent, hackathonRegistersVerify, User, EventRegisterAll, HackathonRegisterAll, EventRegisterOfEvent, UserRegisterGetDetails, HackathonGetPhoneNo, HackathonGetLeaderPhoneNo, EventRegistersGetEventPhoneNo, EventRegistersGetPhoneNo, UserRegisterGetInfoDetails, HackathonGetTeamwiseDetails, EventGetTeamwiseDetails, SendMail } from '../db/sankalpUser';
 import { adminVerifyToken } from "../workers/auth";
+import { toDo } from "workers/model";
 
 const router = express.Router();
 
@@ -262,25 +263,25 @@ router.get("/event-teamwise/:eve", adminVerifyToken, async (req, res) => {
 router.post("/hackathon-mail-leader", adminVerifyToken, async(req, res) => {
     try {
         let data = req.body;
-        let result = await HackathonSendEmailLead(data);
+        let result = await SendMail(data, 1);
         if (!result.success) {
             return res.status(500).json({ success: false, message: result.message })
         }
-        return res.status(200).json({ success: true, result: result.data })
+        return res.status(200).json({ success: true })
     } catch (e) {
         return res.status(500).json({ success: false, message: e.message })
     }
 });
 
 
-router.post("/event-mail/:eve", adminVerifyToken, async(req, res) => {
+router.post("/event-mail", adminVerifyToken, async(req, res) => {
     try {
         let data = req.body;
-        let result = await EventSendEmailEve(Number(req.params.eve), data);
+        let result = await SendMail(data, 3);
         if (!result.success) {
             return res.status(500).json({ success: false, message: result.message })
         }
-        return res.status(200).json({ success: true, result: result.data })
+        return res.status(200).json({ success: true })
     } catch (e) {
         return res.status(500).json({ success: false, message: e.message })
     }
@@ -290,11 +291,11 @@ router.post("/event-mail/:eve", adminVerifyToken, async(req, res) => {
 router.post("/hackathon-mail-all", adminVerifyToken, async(req, res) => {
     try {
         let data = req.body;
-        let result = await HackathonSendEmailAll(data);
+        let result = await SendMail(data, 2);
         if (!result.success) {
             return res.status(500).json({ success: false, message: result.message })
         }
-        return res.status(200).json({ success: true, result: result.data })
+        return res.status(200).json({ success: true })
     } catch (e) {
         return res.status(500).json({ success: false, message: e.message })
     }
@@ -304,11 +305,11 @@ router.post("/hackathon-mail-all", adminVerifyToken, async(req, res) => {
 router.post("/event-mail-all", adminVerifyToken, async(req, res) => {
     try {
         let data = req.body;
-        let result = await EventSendEmailAll(data);
+        let result = await SendMail(data, 4);
         if (!result.success) {
             return res.status(500).json({ success: false, message: result.message })
         }
-        return res.status(200).json({ success: true, result: result.data })
+        return res.status(200).json({ success: true })
     } catch (e) {
         return res.status(500).json({ success: false, message: e.message })
     }
@@ -318,11 +319,11 @@ router.post("/event-mail-all", adminVerifyToken, async(req, res) => {
 router.post("/send-mail", adminVerifyToken, async(req, res) => {
     try {
         let data = req.body;
-        let result = await EventSendEmailAll(data);
+        let result = await SendMail(data, 5);
         if (!result.success) {
             return res.status(500).json({ success: false, message: result.message })
         }
-        return res.status(200).json({ success: true, result: result.data })
+        return res.status(200).json({ success: true })
     } catch (e) {
         return res.status(500).json({ success: false, message: e.message })
     }

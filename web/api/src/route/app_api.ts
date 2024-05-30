@@ -49,9 +49,9 @@ router.post("/registration/:info", verifyToken, async(req, res) => {
         } else {
             name=(await UserRegisterByID(id)).name;
         }
-        var rs = await sendCopyMail(qr[info], (info==='h')? null: data.event.eve, mail, name, dt.id);
+        var rs = await sendCopyMail(qr[info], (info==='h')? null: (info==='t')? Array.from(new Set(data.talk.map((talk: any) => talk.id))): data.event.eve, mail, name, dt.id);
         if (!rs['success']===true) {
-            console.log("Mailed failed\nError:"+rs["message"]);
+            console.log("Mailed failed\n"+rs["message"]);
             await EventDeleteByID(register?.id)
             res.status(500).json({ success: false, message: "Failed to send email or had some issue" });
             return
@@ -61,7 +61,7 @@ router.post("/registration/:info", verifyToken, async(req, res) => {
     } catch (e) {
         console.log(e);
         try{
-            await EventDeleteByID(register?.id)
+            // await EventDeleteByID(register?.id)
         } catch (e) {}
         res.status(500).json({ success: false, message: "Application faced some error. Check your data. Contact Maintainers." })
         return
@@ -137,12 +137,5 @@ router.get("/info/:info", verifyToken, async(req, res) => {
 //         res.status(500).json({ success: false, message: e.message })
 //     }
 // })
-
-// testing
-router.get("/tester", async(req, res) => {
-    const currentDate: Date = new Date();
-    const specificTime: Date = new Date("2023-12-07T16:30:00.234Z");
-    res.json({current: currentDate, specific: specificTime })
-});
 
 export const App = router

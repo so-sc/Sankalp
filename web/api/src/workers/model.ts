@@ -16,14 +16,28 @@ export const EventNameModel: NameModel = {
 
 export const TalkNameModel: NameModel = {
     1: {
-        name: "Tech Talk: by ",
+        name: "Test Talk 1",
+        date: "9th December 2023 at 2:00PM to 3:00PM",
+        venue: "Seminar Hall - Ground Floor",
+        max: [150, 500],
+        due: "2024-05-28T15:30:00.234Z"
+    },
+    2: {
+        name: "Test Talk 2",
         date: "9th December 2023 at 2:00PM to 3:00PM",
         venue: "Seminar Hall - Ground Floor",
         max: [150, 500],
         due: "2024-06-08T15:30:00.234Z"
     },
-    2: {
-        name: "Tech Talk: by ",
+    3: {
+        name: "Test Talk 3",
+        date: "9th December 2023 at 2:00PM to 3:00PM",
+        venue: "Seminar Hall - Ground Floor",
+        max: [150, 500],
+        due: "2024-06-08T15:30:00.234Z"
+    },
+    4: {
+        name: "Test Talk 4",
         date: "9th December 2023 at 2:00PM to 3:00PM",
         venue: "Seminar Hall - Ground Floor",
         max: [150, 500],
@@ -55,12 +69,11 @@ export const gender = {
 }
 
 export const toDo = {
-    0: "All users",
-    1: "Male users",
-    2: "Female users",
-    3: "Event",
-    4: "Talk",
-    5: "Hackathon"
+    1: "Send to all hackathon team leaders",
+    2: "Send to all hackathon participant",
+    3: "Send to participants of particular event",
+    4: "Send to all participants of event",
+    5: "broadcast to all"
 }
 
 export const Theme = {
@@ -87,6 +100,7 @@ export interface EventModels {
     qrId?: string,
     isEvent: boolean,
     // Talk
+    attendee?: any,
     talk?: Array<Talk>,
     // Event
     event?: {
@@ -199,6 +213,18 @@ export interface HackathonResponseModel {
             lead?: boolean
         }[],
         verify?: Boolean
+    }>
+}
+
+export interface EventResponseModel {
+    eve: number,
+    data: Array<{
+        verify: boolean,
+        qrId: string,
+        participant: {
+            info: any,
+            lead?: boolean
+        }[]
     }>
 }
 

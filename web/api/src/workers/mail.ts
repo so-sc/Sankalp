@@ -84,7 +84,7 @@ export const sendChangePasswordMail = async (mail: string, otp: string, name: st
   }
 }
 
-export const sendAdminHackathonMail = async (mail: string, subject: string, para: string, button: string) => {
+export const sendAdminHackathonMail = async (mails: string[], subject: string, para: string, button: string) => {
   try {
     const replacements = {
       '${para}': para,
@@ -95,15 +95,10 @@ export const sendAdminHackathonMail = async (mail: string, subject: string, para
       const regex = new RegExp(`\\${key}`, 'g');
       html = html.replace(regex, value);
     }
-
      const result = await transporter.sendMail({
       from: process.env.EMAIL,
-      to: mail,
+      to: mails.join(","),
       subject: `SOSC: ${subject}`,
-      envelope: {
-          from: `SOSC ${process.env.EMAIL}`,
-          to: `${mail}`
-      },
       html: String(html),
     });
     if (!result) {
@@ -185,9 +180,10 @@ export const sendAdminVerifyMail = async (mail: string, otp: string) => {
 }
 
 export const sendCopyMail = async (event: number, eve: any, email: string, name: string, qrId: string) => {
-  // name or eventDate or eventVenue or email or qrDL
   try {
-    var eventDate, eventVenue, eventName: string;
+    var eventDate: string = "";
+    var eventVenue: string = "";
+    var eventName: string = "";
     if (event===2) {
       eventName = HackathonNameModel.name + " - Hackathon";
       eventDate = HackathonNameModel.date;

@@ -12,8 +12,10 @@ export const verifyToken = async (req: Request, res: Response, next: () => void)
     try {
         const decoded = jwt.verify(token, process.env.KEY) as { id: string };
         req.body.id = await decrypt(decoded.id);
+        console.log(req.body.id);
         next();
     } catch (error) {
+        console.log(error);
         return res.status(401).json({ success: false, message: 'Authentication failed' });
     }
 };

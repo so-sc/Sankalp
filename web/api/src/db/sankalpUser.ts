@@ -70,8 +70,8 @@ const userRegisteration = new mongo.Schema<SignupModal>({
 export const User = mongo.model('users', userRegisteration);
 export const UserRegisters = (st: boolean) => { return User.find( { student: st } ); }
 export const UserRegistersBy = (param: any) => { return User.find({ param }); }
-export const UserRegisterByID = async (id: String) => {
-    return await User.findById(id);
+export const UserRegisterByID = async (id: string) => {
+    return await User.findOne({_id: new mongo.Types.ObjectId(id)});
 }
 
 export const UserRegisterForHackNEvent = async (id: String) => {
@@ -309,7 +309,7 @@ export const UserSigninChecker = async (data: SigninModal) => {
             if (await decrypt(result.password) !== data.password) {
                 return { success: false, message: 'Check your given password.' }
             }
-            var rs = await createToken(result.id.toString());
+            var rs = await createToken(result._id.toString());
             if (rs.success) {
                 if (!result.verify) {
                     return { success: false, message: "User not verified."};
@@ -387,30 +387,76 @@ export const UserChangePassword = async (data: any) => {
     }
 }
 
-export const SendMail = async (data: any, toDo: number, subject: string, body: string, button: string) => {
+export const SendMail = async (data: any, toDo: number) => {
     try {
-        var agg = []
+        var res, temp;
+        var button;
+        try { 
+            button = await buttonCode(data.button.title, data.button.url);
+        } catch (e) {
+            button = '';
+        }
         if (toDo === 1) {
-            agg.push({ $match: { gender: { $eq: { $or: [{ $eq: 1 }, { $eq: 3 }] } } } })
+            temp = (await Hackathon.aggregate([
+                { $unwind: "$member" },
+                { $match: {'member.lead': {$exists: true, $eq: true} }},
+                { $group: { _id: null, data: { $push: { info: { $toObjectId: "$member.info" } } } } },   
+                { $project: { _id: 0, info: "$data.info" } }
+              ]))[0]['info'];
+            res = (await User.aggregate([
+                { $match: { _id: { $in: temp } } },
+                { $group: { _id: null, email: {$push: "$email" } } }
+            ]))[0]['email']
         } else if (toDo === 2) {
-            agg.push({ $match: { gender: { $eq: { $or: [{ $eq: 2 }, { $eq: 4 }] } } } })
-        }
-        agg.push({ $group: {
-            _id: null, 
-            mails: { $push: '$email' }, 
-            id: { $push: '$_id' }
-        } })
-        var result = (await User.aggregate(agg))[0]
-        data = result.mails
-        var mails = [];
-        if (toDo === 3) {
-            
+            temp = (await Hackathon.aggregate([
+                { $unwind: "$member" },
+                { $group: { _id: null, data: { $push: { info: "$member.info" } } } },   
+                { $project: { _id: 0, info: "$data.info" } }
+            ]))[0]['info'];
+            res = (await User.aggregate([
+                { $match: { _id: { $in: temp } } },
+                { $group: { _id: null, email: {$push: "$email" } } }
+            ]))[0]['email']
+        } else if (toDo === 3) {
+            temp = (await Event.aggregate([
+                { $match:{ isEvent: true, "event.eve": data.eve } },
+                { $group: { _id: null, data: { $push: { info: "$event.participant.info" } } } }, 
+                { $unwind: "$data" }, { $unwind: "$data.info" },  
+                { $group: { _id: 0, info: { $addToSet: "$data.info" } } },
+                { $project: { _id: 0, info: "$info" } }
+            ]))[0]['info'];
+            res = (await User.aggregate([
+                { $match: { _id: { $in: temp } } },
+                { $group: { _id: null, email: {$push: "$email" } } }
+            ]))[0]['email']
         } else if (toDo === 4) {
-
+            temp = (await Event.aggregate([
+                { $match:{ isEvent: true } },
+                { $group: { _id: null, data: { $push: { info: "$event.participant.info" } } } }, 
+                { $unwind: "$data" }, { $unwind: "$data.info" },  
+                { $group: { _id: 0, info: { $addToSet: "$data.info" } } },
+                { $project: { _id: 0, info: "$info" } }
+            ]))[0]['info'];
+            res = (await User.aggregate([
+                { $match: { _id: { $in: temp } } },
+                { $group: { _id: null, email: {$push: "$email" } } }
+            ]))[0]['email']
         } else if (toDo === 5) {
-
+            temp = (await Event.aggregate([
+                { $match:{ isEvent: true } },
+                { $group: { _id: null, data: { $push: { info: "$event.participant.info" } } } }, 
+                { $unwind: "$data" }, { $unwind: "$data.info" },  
+                { $group: { _id: 0, info: { $addToSet: "$data.info" } } },
+                { $project: { _id: 0, info: "$info" } }
+            ]))[0]['info'];
+            res = (await User.aggregate([
+                { $match: { _id: { $in: temp } } },
+                { $group: { _id: null, email: {$push: "$email" } } }
+            ]))[0]['email']
         }
-        await sendAnnouncementMail(result['mails'], subject, data, button)
+        let result = await sendAdminHackathonMail(res, data.subject, await paraCode(data.p), button);
+        // let result = await sendAnnouncementMail(res, subject, data, button)
+        return result
     } catch (e) {
         console.log(`db>dbAuth>UserChangePassword: ${e}`)
         return { success: false, message: 'Something went wrong.' }
@@ -441,6 +487,10 @@ const eventRegistration = new mongo.Schema<EventModels>({
     isEvent: {
         type: Boolean,
         require: true
+    },
+    attendee: {
+        type: String,
+        require: false
     },
     talk: {
         type: [{
@@ -483,19 +533,18 @@ const eventRegistration = new mongo.Schema<EventModels>({
         require: false
     }
 }, {
-    collection: "events",
-    timestamps: true,
+    collection: "events"
 })
 
 eventRegistration.pre('save', function (next) {
     try{
         if (!this.isEvent) {
             // Convert the talk array into a Set to remove duplicates
-            const uniqueTalks = this.talk.map(talk => talk.id); // Assuming each talk has an 'id' property
-            this.talk = Array.from(new Set(uniqueTalks)).map(id => ({ id: id, verify: false }));
+            const uniqueTalkIds = Array.from(new Set(this.talk.map(talk => talk.id)));
+            this.talk = uniqueTalkIds.map(id => ({ id: id, verify: false }));
         } else {
             this.set('talk', undefined);
-        }
+        } 
         next();
     } catch(e) {}
 });
@@ -549,7 +598,7 @@ export const EventGetTeamwiseDetails = async (eve: number) => {
     }
 }
 
-export const EventRegister = async (id: string, data: any) => {
+export const EventRegister = async (id: string, data: EventModels | any) => {
     let info;
     try { 
         if (data.isEvent) {
@@ -589,32 +638,36 @@ export const EventRegister = async (id: string, data: any) => {
             // }
             data.verify = false; 
         } else {
-            console.log(TalkNameModel[data.talk])
-            if ((new Date())>(new Date(TalkNameModel[data.talk].due))) {
-                return { success: false, message: `The registration is closed for ${TalkNameModel[data.eve].name}.` }
-            }
+            data.attendee = id;
             for (const talk of data.talk) {
-                if ((await Event.aggregate([
-                    { $match: { isEvent: {$exists: true, $eq: false}, 'talk': { $elemMatch: { id: talk.id } } } },
-                    { $count: "count" }
-                ]))[0]["count"]+1 > Number(TalkNameModel[data.eve]['max'][0])) {
-                    return { success: false, message: `The talk registration of ${TalkNameModel[data.eve]['name']} is closed.` }
+                if ((new Date())>(new Date(TalkNameModel[talk.id].due))) {
+                    return { success: false, message: `The registration is closed for ${TalkNameModel[talk.id].name}.` }
                 }
+                const count = await Event.aggregate([
+                    { $match: { isEvent: false, 'talk.id': talk.id } },
+                    { $count: 'count' }
+                ]);
+                // const count = countResult.length && countResult[0].count ? countResult[0].count : 0;
+                if (!count && count[0]["count"]+1 > Number(TalkNameModel[talk.id]['max'][0])) {
+                    return { success: false, message: `The talk registration of ${TalkNameModel[talk.id]['name']} is closed.` }
+                }
+                // data.talk[data.talk.findIndex((obj: any) => obj.id === talk.id)].verify = false;
             }
         }
         const event = new Event(data);
         info = await event.save();
         return { success: true, id: info._id.toString() }
     } catch (e) {
-        console.log(e);
+        // console.log(e);
         try {
+            console.log("Issue")
             if (info._id.toString()) {
-                await Event.deleteOne({ _id: info._id.toString() })
+                await Event.deleteOne({ _id: info._id })
             }
         } catch (e) {
-            return { success: false, message: 'Application failed to register. Do check the provided fields.' }
+            return { success: false, message: '1: Application failed to register. Do check the provided fields.' }
         }
-        return { success: false, message: 'Application failed to register. Do check the provided fields.' }
+        return { success: false, message: '2: Application failed to register. Do check the provided fields.' }
     }
 }
 
@@ -922,8 +975,7 @@ const hackathonRegistration = new mongo.Schema({
         require: false
     }
 }, {
-    collection: "hackathon",
-    timestamps: true,
+    collection: "hackathon"
 })
 
 hackathonRegistration.pre('save', function (next) {
@@ -1129,54 +1181,53 @@ export const HackathonGetTeamwiseDetails = async () => {
     }
 }
 
-export const HackathonSendEmailLead = async (data: any) => {
-    try {
-        let unable = Array();
-        let res = (await Hackathon.aggregate([
-            { $unwind: "$member" },
-            { $match: {'member.lead': {$exists: true, $eq: true} }},
-            { $group: { _id: null, data: { $push: { info: "$member.info" } } } },   
-            { $project: { _id: 0, info: "$data.info" } }
-          ]))[0]['info'];
-        for (const reso of res) {
-            let result = await sendAdminHackathonMail((await UserRegisterMailByID(reso)).email, data.subject, await paraCode(data.p), await buttonCode(data.button.title, data.button.url));
-            if (!result.success) {
-                unable.push(reso);
-            }
-        }
-        return { success: true, data: unable.length?`Unable to send mail to ${unable.join(',')}`:`Sent mail to everyone successfully.`}
-    } catch (e) {
-        console.log(e);
-        return { success: false, message: 'Something went wrong.'}
-    }
-}
+// export const HackathonSendEmailLead = async (data: any) => {
+//     try {
+//         let unable = Array();
+//         let res = (await Hackathon.aggregate([
+//             { $unwind: "$member" },
+//             { $match: {'member.lead': {$exists: true, $eq: true} }},
+//             { $group: { _id: null, data: { $push: { info: "$member.info" } } } },   
+//             { $project: { _id: 0, info: "$data.info" } }
+//           ]))[0]['info'];
+//         for (const reso of res) {
+//             let result = await sendAdminHackathonMail((await UserRegisterMailByID(reso)).email, data.subject, await paraCode(data.p), await buttonCode(data.button.title, data.button.url));
+//             if (!result.success) {
+//                 unable.push(reso);
+//             }
+//         }
+//         return { success: true, data: unable.length?`Unable to send mail to ${unable.join(',')}`:`Sent mail to everyone successfully.`}
+//     } catch (e) {
+//         console.log(e);
+//         return { success: false, message: 'Something went wrong.'}
+//     }
+// }
 
-export const HackathonSendEmailAll = async (data: any) => {
-    try {
-        let unable = Array();
-        let res = (await Hackathon.aggregate([
-            { $unwind: "$member" },
-            { $group: { _id: null, data: { $push: { info: "$member.info" } } } },   
-            { $project: { _id: 0, info: "$data.info" } }
-        ]))[0]['info'];
-        var button;
-        try { 
-            button = await buttonCode(data.button.title, data.button.url);
-        } catch (e) {
-            button = '';
-        }
-        for (const reso of res) {
-            let result = await sendAdminHackathonMail((await UserRegisterMailByID(reso)).email, data.subject, await paraCode(data.p), button);
-            if (!result.success) {
-                unable.push(reso);
-            }
-        }
-        return { success: true, data: unable.length?`Unable to send mail to ${unable.join(',')}`:`Sent mail to everyone successfully.`}
-    } catch (e) {
-        console.log(e);
-        return { success: false, message: 'Something went wrong.'}
-    }
-}
+// export const HackathonSendEmailAll = async (data: any) => {
+//     try {
+//         let unable = Array();
+//         let result = (await Hackathon.aggregate([
+//             { $unwind: "$member" },
+//             { $group: { _id: null, data: { $push: { info: "$member.info" } } } },   
+//             { $project: { _id: 0, info: "$data.info" } }
+//         ]))[0]['info'];
+//         var button;
+//         try { 
+//             button = await buttonCode(data.button.title, data.button.url);
+//         } catch (e) {
+//             button = '';
+//         }
+//         for (const reso of res) {
+//             if (!result.success) {
+//                 unable.push(reso);
+//             }
+//         }
+//         return { success: true, data: unable.length?`Unable to send mail to ${unable.join(',')}`:`Sent mail to everyone successfully.`}
+//     } catch (e) {
+//         console.log(e);
+//         return { success: false, message: 'Something went wrong.'}
+//     }
+// }
 
 export const hackathonRegistersVerify = async (id: string) => {
     if (!(await Hackathon.findOne({ _id: new mongo.Types.ObjectId(id) }))) {
