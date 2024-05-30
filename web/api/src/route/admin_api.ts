@@ -2,7 +2,6 @@
 import express from "express";
 import { UserRegisterTotal, HackathonCount, TalkCount, EventCount, UserRegisterYear, UserRegisterStudent, UserRegisterGender, EventRegisters, HackathonRegistersDetails, EventRegistersVerifyTalk, EventRegistersVerifyEvent, hackathonRegistersVerify, User, EventRegisterAll, HackathonRegisterAll, EventRegisterOfEvent, UserRegisterGetDetails, HackathonGetPhoneNo, HackathonGetLeaderPhoneNo, EventRegistersGetEventPhoneNo, EventRegistersGetPhoneNo, UserRegisterGetInfoDetails, HackathonGetTeamwiseDetails, EventGetTeamwiseDetails, SendMail } from '../db/sankalpUser';
 import { adminVerifyToken } from "../workers/auth";
-import { toDo } from "workers/model";
 
 const router = express.Router();
 
