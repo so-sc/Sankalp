@@ -24,7 +24,7 @@ export const sendUserVerifyMail = async (mail: string, id: string, name: string)
   try {
     const replacements = {
       '${name}': name,
-      '${verify}': `${process.env.URL}/api/auth/verify/${id}`,
+      '${verify}': `${process.env.DOMAIN}/verify/${id}`,
     };
     let html = fs.readFileSync('./src/workers/template/verify.html', 'utf8');
     for (const [key, value] of Object.entries(replacements)) {

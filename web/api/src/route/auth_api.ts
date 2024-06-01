@@ -112,9 +112,9 @@ router.get("/token-checker", async(req, res) => {
 });
 
 // Verify the user
-router.post("/verify/:id", async(req, res) => {
+router.post("/verify", async(req, res) => {
     try {
-        const token = req.params.id;
+        const token = req.body.id;
         req.body.id = await decrypt(token);
         const result = await UserRegistersVerifyByID(req.body.id);
         return res.status(200).json(result)
