@@ -52,6 +52,7 @@ export default function UserRegistration({
   function onNextStep(values: User) {
     if (password !== confirmPassword) {
       alert("Passwords don't match")
+      return
     }
 
     setRegistrationData((prev: UserProfile) => ({ ...prev, user: values }))

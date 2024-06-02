@@ -65,7 +65,7 @@ export default function Login({ isVerify }: LoginProps) {
   async function onLogin(values: LoginUser) {
     const signInData: SignIn = {
       email: values.email,
-      id: values.password,
+      password: values.password,
     }
 
     try {

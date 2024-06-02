@@ -54,7 +54,7 @@ export type SignUp = {
 
 export type SignIn = {
   email: string
-  id: string
+  password: string
 }
 
 export type HackathonMemberAPI = {
